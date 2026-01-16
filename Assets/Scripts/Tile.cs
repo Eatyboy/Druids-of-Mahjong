@@ -105,4 +105,10 @@ public class Tile : MonoBehaviour
             TileType.WhiteDragon => TileSuit.Dragons,
             _ => throw new ArgumentException("Invalid TileType enum ", nameof(tileType))
         };
+
+    void Start()
+    {
+        // assign sprite and properties here or something
+        // maybe an Initialize() is better
+    }
 }
