@@ -1,5 +1,9 @@
 using System;
+using System.Diagnostics;
 using UnityEngine;
+using TMPro;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 public enum TileType
 {
@@ -60,9 +64,17 @@ public class Tile : MonoBehaviour
     public TileType type;
     public TileSuit suit;
 
+    public bool isSelected;
+    // may use for optimal hand algorithm
+    public float tileWeight;
+
+    [SerializeField] private TextMeshProUGUI tmpElement;
+
     private void Awake()
     {
         suit = GetSuitFromType(type);
+        isSelected = false;
+        GetRandomType();
     }
 
     public TileSuit GetSuitFromType(TileType tileType) =>
@@ -110,5 +122,25 @@ public class Tile : MonoBehaviour
     {
         // assign sprite and properties here or something
         // maybe an Initialize() is better
+    }
+
+    public void SwitchSelectionType()
+    {
+        isSelected = !isSelected;
+        if (isSelected)
+        {
+            PlayerHand.Instance.SelectTile(this);
+        }
+        else
+        {
+            PlayerHand.Instance.DeselectTile(this);
+        }
+    }
+
+    public void GetRandomType()
+    {
+        type = (TileType)UnityEngine.Random.Range(1, Enum.GetNames(typeof(TileType)).Length);
+        suit = GetSuitFromType(type);
+        tmpElement.text = type.ToString();
     }
 }
