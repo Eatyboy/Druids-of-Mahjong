@@ -15,6 +15,7 @@ public class TilesManager : MonoBehaviour
         GenerateTiles();
     }
     
+    //Create tiles with random suit and value
     public void GenerateTiles()
     {
         for (int i = 0; i < numTiles; i++)
