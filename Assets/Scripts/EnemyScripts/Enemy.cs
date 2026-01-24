@@ -1,8 +1,8 @@
 using UnityEngine;
 
 // Abstract Class that Enemies should inherit from
-// Only Common Functionality Here
-public abstract class Enemy : MonoBehaviour
+// Only Common Functionality and can be Overrided
+public abstract class Enemy : MonoBehaviour, IDamageable
 {
     [SerializeField]
     protected int health = 10; // Default: 10
@@ -20,7 +20,6 @@ public abstract class Enemy : MonoBehaviour
 
     }
 
-
     protected void Init()
     {
         // Setup any variables and object assignments here
@@ -35,4 +34,14 @@ public abstract class Enemy : MonoBehaviour
     {
         Debug.Log("Enemy Died!");
     }
+
+    // IDamageable
+    public virtual void TakeDamage(int dmg) 
+    {
+        Health -= dmg;
+        Debug.Log("Took Damage= " + dmg);
+        if (Health < 0) { OnDeath(); }
+    }
+
+    public int Health { get{ return health; } set{ health = value; } }
 }

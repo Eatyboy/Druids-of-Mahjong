@@ -11,7 +11,7 @@ public class TestEnemy : Enemy
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
-            OnDeath();
+            TakeDamage(2);
         }
     }
 }
