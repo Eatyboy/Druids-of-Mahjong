@@ -1,6 +1,6 @@
 using UnityEngine;
 
-// Abstract Class that Enemies should inherit from
+[Tooltip("Abstract Class that Enemies should inherit from")]
 // Only Common Functionality and can be Overrided
 public abstract class Enemy : MonoBehaviour, IDamageable
 {
