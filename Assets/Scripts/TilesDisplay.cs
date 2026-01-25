@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-
+//This class might not be needed in the future with images being added
 public class TilesDisplay : MonoBehaviour
 {
     public MajongTiles majongData;
