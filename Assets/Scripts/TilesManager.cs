@@ -10,7 +10,15 @@ public class TilesManager : MonoBehaviour
 
     public void Start()
     {
-        tilesList = new List<MajongTiles>(numTiles);
+        foreach (MahjongTile tile in baseTileDataList)
+        {
+            if (tile.suit == TileSuit.Dragon) continue;
+            for (int i = 0; i < defaultDuplicateCount; i++)
+            {
+                deck.Add(GenerateRandomTile());
+            }
+        }
+        ShuffleDeck();
 
         GenerateTiles();
     }

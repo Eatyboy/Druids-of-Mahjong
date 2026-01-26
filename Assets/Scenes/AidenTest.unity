@@ -1246,11 +1246,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3e94097e6df0143b596a97a60811db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHand
-  gameManager: {fileID: 1710218546}
+  tileContainer: {fileID: 1030329370}
+  tileObjectPrefab: {fileID: 8667527576963648452, guid: 1acf5fca96135b444aea16b239bc8ee3, type: 3}
   maxHorizontalTileOffset: 7
   defaultHandSize: 14
-  tileObj: {fileID: 1179808109316424535, guid: 637205a30a6db25439eea89e99c366e1, type: 3}
   tileOffsetX: -1
+  tileSelectedOffset: {x: 0, y: 0}
   currentHand: []
   selectedTiles: []
 --- !u!223 &1510961223
@@ -1466,7 +1467,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c9b418249edd5e4ba7f7ea5d4308a3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  playerHandObj: {fileID: 1510961219}
+  enemyPrefabs: {fileID: 0}
+  enemySpawn: {fileID: 0}
 --- !u!1 &1868677864
 GameObject:
   m_ObjectHideFlags: 0
