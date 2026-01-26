@@ -1,44 +1,50 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class PlayerHand : MonoBehaviour
 {
-    public static PlayerHand Instance {get; private set;}
+    public static PlayerHand instance {get; private set;}
 
     [Header("References and Such")]
-    [SerializeField] private GameManager gameManager;
+    [SerializeField] private Transform tileContainer;
+    [SerializeField] private TileObject tileObjectPrefab;
     [SerializeField] private float maxHorizontalTileOffset;
 
     [Header("Hand/Tiles")]
     [SerializeField] private int defaultHandSize = 14;
-    [SerializeField] private GameObject tileObj;
     [SerializeField] private float tileOffsetX;
+    [SerializeField] private Vector2 tileSelectedOffset;
 
-    public List<Tile> currentHand;
-    public List<Tile> selectedTiles;
+    public List<TileObject> currentHand;
+    public List<TileObject> selectedTiles;
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
+        if (instance != null && instance != this) Destroy(gameObject);
+        else instance = this;
+
+        StartCoroutine(DrawInitialHand());
     }
-    
-    private void Start()
+
+    public IEnumerator DrawInitialHand()
     {
-        currentHand = new();
+        yield return new WaitForEndOfFrame();
 
         for (int i = 0; i < defaultHandSize; i++)
         {
-            GameObject newTile = Instantiate(tileObj, this.gameObject.transform);
-            currentHand.Add(newTile.GetComponent<Tile>());
+            DrawTile();
         }
+    }
 
-        RepositionTiles();
+    public void DrawTile()
+    {
+        TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
+        newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
+        currentHand.Add(newTileObj);
+        RepositionTile(newTileObj);
     }
 
     public void AddTile(Tile tile)
@@ -51,49 +57,39 @@ public class PlayerHand : MonoBehaviour
 
     }
 
-    public void SelectTile(Tile tile)
+    public void SelectTile(TileObject tile)
     {
         selectedTiles.Add(tile);
-        tile.gameObject.transform.Translate(0.0f, 0.1f, 0.0f);
+        tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
+        tile.selectedOverlay.SetActive(true);
         List<Tile> optimalHand = PickOptimalHand();
-        foreach(Tile t in currentHand)
-        {
-            t.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
-        }
-        foreach(Tile t in optimalHand)
-        {
-            t.gameObject.GetComponent<Image>().color = new Color(0.8f, 1f, 1f, 1f);
-        }
+        //foreach(Tile t in optimalHand)
+        //{
+        //    t.gameObject.GetComponent<Image>().color = new Color(0.8f, 1f, 1f, 1f);
+        //}
     }
 
-    public void DeselectTile(Tile tile)
+    public void DeselectTile(TileObject tile)
     {
         selectedTiles.Remove(tile);
-        tile.gameObject.transform.Translate(0.0f, -0.1f, 0.0f);
+        tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
+        tile.selectedOverlay.SetActive(false);
         List<Tile> optimalHand = PickOptimalHand();
-        foreach(Tile t in currentHand)
-        {
-            t.gameObject.GetComponent<Image>().color = new Color(1f, 1f, 1f, 1f);
-        }
-        foreach(Tile t in optimalHand)
-        {
-            t.gameObject.GetComponent<Image>().color = new Color(0.8f, 1f, 1f, 1f);
-        }
     }
 
     // clear
     public void ClearTiles()
     {
-        foreach (Tile t in currentHand)
+        foreach (TileObject t in currentHand)
         {
             Destroy(t.gameObject);
         }
     }
 
-    public void RepositionTiles()
+    public void RepositionTile(TileObject tileObj)
     {
         int numTiles = currentHand.Count;
-        float offsetPerTile = tileObj.GetComponent<RectTransform>().rect.width + 0.1f;
+        float offsetPerTile = tileObj.rt.rect.width + 0.1f;
         
         // if too many tiles, they should overlap
         if (offsetPerTile * numTiles > maxHorizontalTileOffset * 2.0f)
@@ -119,8 +115,9 @@ public class PlayerHand : MonoBehaviour
     {
         List<Tile> optimalHand = new();
         int optimalHandValue = 0;
-        foreach (Tile st in selectedTiles)
+        foreach (TileObject stObj in selectedTiles)
         {
+            Tile st = stObj.tileData;
             List<Tile> testHandStraight = new();
             List<Tile> testHandTriplet = new();
             testHandTriplet.Add(st);
@@ -129,24 +126,24 @@ public class PlayerHand : MonoBehaviour
             int tripletValue = 1;
 
             // find best combination for selected tile; straight or triplet
-            foreach (Tile ht in currentHand)
+            foreach (TileObject htObj in currentHand)
             {
+                Tile ht = htObj.tileData;
                 if (st.Equals(ht)) continue;
-                if (ht.GetSuitFromType(ht.type) != st.GetSuitFromType(st.type)) continue;
-
-                // triplets
-                if (!ContainsTileType(ht.type, testHandTriplet) &&
-                    ((int)ht.type + 1 == (int)st.type || (int)ht.type - 1 == (int)st.type))
-                {
-                    testHandTriplet.Add(ht);
-                    tripletValue += 1;
-                }
+                if (ht.suit != st.suit) continue;
 
                 // straights
-                if (st.type == ht.type)
+                if (ht.rank + 1 == st.rank || ht.rank - 1 == st.rank)
                 {
                     testHandStraight.Add(ht);
                     straightValue += 1;
+                }
+
+                // triplets
+                if (st.rank == ht.rank)
+                {
+                    testHandTriplet.Add(ht);
+                    tripletValue += 1;
                 }
             }
 
@@ -164,15 +161,16 @@ public class PlayerHand : MonoBehaviour
         return optimalHand;
     }
     
-    private bool ContainsTileType(TileType typeToCheck, List<Tile> tiles)
-    {
-        foreach (Tile t in tiles)
-        {
-            if (t.type == typeToCheck)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+    // Ethan: I removed TileType, so this is deprecated
+    //private bool ContainsTileType(TileType typeToCheck, List<Tile> tiles)
+    //{
+    //    foreach (Tile t in tiles)
+    //    {
+    //        if (t.type == typeToCheck)
+    //        {
+    //            return true;
+    //        }
+    //    }
+    //    return false;
+    //}
 }
