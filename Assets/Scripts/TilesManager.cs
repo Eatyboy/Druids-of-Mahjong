@@ -4,9 +4,18 @@ using UnityEngine;
 
 public class TilesManager : MonoBehaviour
 {
-    public List<MajongTiles> tilesList;
+    public static TilesManager instance;
 
-    public int numTiles = 14;
+    [SerializeField] private int defaultDuplicateCount = 4;
+
+    public List<MahjongTile> baseTileDataList;
+    public List<Tile> deck;
+
+    private void Awake()
+    {
+        if (instance != null && instance != this) Destroy(gameObject);
+        else instance = this;
+    }
 
     public void Start()
     {
@@ -15,29 +24,28 @@ public class TilesManager : MonoBehaviour
             if (tile.suit == TileSuit.Dragon) continue;
             for (int i = 0; i < defaultDuplicateCount; i++)
             {
-                deck.Add(GenerateRandomTile());
+                deck.Add(new Tile(tile));
             }
         }
         ShuffleDeck();
+    }
 
-        GenerateTiles();
+    public void ShuffleDeck()
+    {
+        Utils.ShuffleList(deck);
+    }
+
+    public Tile DrawFromDeck()
+    {
+        int topIndex = deck.Count - 1;
+        Tile drawnTile = deck[topIndex];
+        deck.RemoveAt(topIndex);
+        return drawnTile;
     }
     
     //Create tiles with random suit and value
-    public void GenerateTiles()
+    public Tile GenerateRandomTile()
     {
-        for (int i = 0; i < numTiles; i++)
-        {
-            MajongTiles.TileSuit suit = (MajongTiles.TileSuit)
-                                            UnityEngine.Random.Range
-                                            (0, Enum.GetNames(typeof
-                                            (MajongTiles.TileSuit)).Length);
-
-            int value = UnityEngine.Random.Range(1, 10);
-
-            MajongTiles tiles = MajongTiles.CreateInstance(suit, value);
-
-            tilesList.Add(tiles);
-        }
+        return new(Utils.GetRandomItemInList(baseTileDataList));
     }
 }

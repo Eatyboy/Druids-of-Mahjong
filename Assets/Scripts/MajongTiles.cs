@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-
+// This should be deprecated
 [CreateAssetMenu(fileName = "New Tiles", menuName = "Majong Tiles")]
 public class MajongTiles : ScriptableObject
 {    
