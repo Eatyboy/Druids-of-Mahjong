@@ -1,20 +1,23 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject playerHandObj;
+    public GameObject enemyPrefabs;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public Transform enemySpawn;
+
+    Unit enemyUnit;
+
     void Start()
     {
-        
+        SetUpBattle();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetUpBattle()
     {
-        
-    }
+        //Enemy's center is at spawn's center
+        GameObject enemyGO = Instantiate(enemyPrefabs, enemySpawn);
 
+        enemyUnit = enemyGO.GetComponent<Unit>();
+    }
 }

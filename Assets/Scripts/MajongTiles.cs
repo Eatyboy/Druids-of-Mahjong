@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 
@@ -9,6 +10,7 @@ public class MajongTiles : ScriptableObject
     public TileSuit suit;
 
     public int value;
+    public Boolean selected;
 
     internal static MajongTiles CreateInstance(TileSuit suit, int value)
     {
@@ -17,6 +19,8 @@ public class MajongTiles : ScriptableObject
         newTiles.suit = suit;
 
         newTiles.value = value;
+
+        newTiles.selected = false;
 
         return newTiles;
     }

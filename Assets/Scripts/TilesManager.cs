@@ -4,16 +4,6 @@ using UnityEngine;
 
 public class TilesManager : MonoBehaviour
 {
-    public static TilesManager Instance { get; private set; }
-
-    void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-    }
-
     public List<MajongTiles> tilesList;
 
     public int numTiles = 14;
@@ -24,7 +14,8 @@ public class TilesManager : MonoBehaviour
 
         GenerateTiles();
     }
-
+    
+    //Create tiles with random suit and value
     public void GenerateTiles()
     {
         for (int i = 0; i < numTiles; i++)
@@ -41,6 +32,4 @@ public class TilesManager : MonoBehaviour
             tilesList.Add(tiles);
         }
     }
-
-   
 }
