@@ -22,7 +22,8 @@ public class MahjongHands
 {
     public static (MahjongHandTypes type, List<Tile> tiles) GetMahjongHand(List<Tile> tiles)
     {
+        // list1.AddRange(list2); to concat lists
         // TODO: Implement hand checking
-        return MahjongHandTypes.None;
+        return (MahjongHandTypes.None, null);
     }
 }

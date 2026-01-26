@@ -1246,11 +1246,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a3e94097e6df0143b596a97a60811db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHand
-  gameManager: {fileID: 1710218546}
-  maxHorizontalTileOffset: 7
+  tileContainer: {fileID: 1030329370}
+  tileObjectPrefab: {fileID: 8667527576963648452, guid: 1acf5fca96135b444aea16b239bc8ee3, type: 3}
+  maxHorizontalTileOffset: 8
   defaultHandSize: 14
-  tileObj: {fileID: 1179808109316424535, guid: 637205a30a6db25439eea89e99c366e1, type: 3}
   tileOffsetX: -1
+  tileSelectedOffset: {x: 0, y: 0}
   currentHand: []
   selectedTiles: []
 --- !u!223 &1510961223
@@ -1463,10 +1464,46 @@ MonoBehaviour:
   m_GameObject: {fileID: 1710218544}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6c9b418249edd5e4ba7f7ea5d4308a3f, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c7f3cf5282c3184ab81c5e0764e4567, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  playerHandObj: {fileID: 1510961219}
+  m_EditorClassIdentifier: Assembly-CSharp::TilesManager
+  defaultDuplicateCount: 4
+  baseTileDataList:
+  - {fileID: 11400000, guid: 290a79181f885f14babdc9c5d96ecbc8, type: 2}
+  - {fileID: 11400000, guid: a758bdff7a4fd714eb7d74fd50051d8e, type: 2}
+  - {fileID: 11400000, guid: b09df92a7cb80ec4ea939fb67d3f783f, type: 2}
+  - {fileID: 11400000, guid: 22cce8e28f4367649a60f40e03cf32d9, type: 2}
+  - {fileID: 11400000, guid: d31959f8229744c46a3b308a1389ae57, type: 2}
+  - {fileID: 11400000, guid: a21dc8d1c2a4fe24e8d9313b128b0105, type: 2}
+  - {fileID: 11400000, guid: 89a008cf40def194eae590175b0e82a5, type: 2}
+  - {fileID: 11400000, guid: b2ebc78e1a6121147a5f5914e6bfc0a9, type: 2}
+  - {fileID: 11400000, guid: 640da3d450ce13540848a8349310bfd2, type: 2}
+  - {fileID: 11400000, guid: 2b57003bdc02bfb4ea76f56cfa32a04f, type: 2}
+  - {fileID: 11400000, guid: 627d71f52f1e98344b22cfe8deb0bba1, type: 2}
+  - {fileID: 11400000, guid: 56a2cd5a9d7a7614fb8dde7ae73ff6d0, type: 2}
+  - {fileID: 11400000, guid: 64208765fa9fd2f4887031d361e05c8e, type: 2}
+  - {fileID: 11400000, guid: b0f1e1f8446cc5143b6e0293de6c842f, type: 2}
+  - {fileID: 11400000, guid: 107fc6aae65b7844081376c28a6e3ce5, type: 2}
+  - {fileID: 11400000, guid: cb421fbc60c49674f8148eb538d98beb, type: 2}
+  - {fileID: 11400000, guid: 5c1854da59b2020439dbd80a8bd1d9a0, type: 2}
+  - {fileID: 11400000, guid: fa6da8e04ce0bbc4d95af01d97fbb3c8, type: 2}
+  - {fileID: 11400000, guid: 8a6cb9a4f91a00a43908b8a81ac96701, type: 2}
+  - {fileID: 11400000, guid: 7b75a3286c0e41245b01473e8a2d358f, type: 2}
+  - {fileID: 11400000, guid: 13a8a9faff850df4980a08e6f7dfdf62, type: 2}
+  - {fileID: 11400000, guid: 0081fff4b657a21448f688202e08bc7f, type: 2}
+  - {fileID: 11400000, guid: b4e20ae3945aba3438eb7ba7c38a7753, type: 2}
+  - {fileID: 11400000, guid: 7aab6986274dd944f975c8292d8650fa, type: 2}
+  - {fileID: 11400000, guid: 16f5f2847f104424d96d9d128c988e1c, type: 2}
+  - {fileID: 11400000, guid: 9e46e9026630d374ab0c4f3be720d6d5, type: 2}
+  - {fileID: 11400000, guid: d1da4e84cd29bf84895c3538e5334890, type: 2}
+  - {fileID: 11400000, guid: 2c9b501381b074c43a56e187a609845a, type: 2}
+  - {fileID: 11400000, guid: 63a2bde949f21e4479b1020028dad4c2, type: 2}
+  - {fileID: 11400000, guid: 9b65aa02362206f4680f85315fe241ab, type: 2}
+  - {fileID: 11400000, guid: c4717bfe7298672409ac3220d989e03d, type: 2}
+  - {fileID: 11400000, guid: add892ae0765fa941957d788d487d81e, type: 2}
+  - {fileID: 11400000, guid: ba2b6a4c3e777ae489862601298bf16a, type: 2}
+  - {fileID: 11400000, guid: 01283c3b8da40eb4e91dcab474017e7b, type: 2}
+  deck: []
 --- !u!1 &1868677864
 GameObject:
   m_ObjectHideFlags: 0
