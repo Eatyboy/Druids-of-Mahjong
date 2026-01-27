@@ -48,7 +48,7 @@ public static class HandAttackResolver
         OnAttackResolved?.Invoke(result);
     }
 
-    // Bonus damage from honor tiles (Winds, Dragons)
+    // Bonus damage from honor tiles (Wind, Dragon)
     // Simply +1 damage per honor tile for now
     // Can be changed later
     static int GetHonorDamageBonus(List<Tile> hand)
@@ -57,7 +57,7 @@ public static class HandAttackResolver
         int honorCount = 0;
         foreach (var t in hand)
         {
-            if (t != null && (t.suit == TileSuit.Winds || t.suit == TileSuit.Dragons))
+            if (t != null && (t.suit == TileSuit.Wind || t.suit == TileSuit.Dragon))
                 honorCount++;
         }
         return honorCount;
