@@ -203,7 +203,29 @@ public class MahjongHands
     static bool IsFullWin(List<Tile> t)
     {
         if (t.Count != 14) return false;
-        // 1 pair + 4 sets/runs (12 tiles). Placeholder: not implemented.
+        for (int i = 0; i < t.Count; i++)
+            for (int j = i + 1; j < t.Count; j++)
+            {
+                if (!SameTile(t[i], t[j])) continue;
+                var rest = t.Where((x, idx) => idx != i && idx != j).ToList();
+                if (CanFormKMelds(rest, 4)) return true;
+            }
+        return false;
+    }
+
+    static bool CanFormKMelds(List<Tile> t, int k)
+    {
+        if (k == 0) return t.Count == 0;
+        if (t.Count != k * 3) return false;
+        for (int i = 0; i < t.Count; i++)
+            for (int j = i + 1; j < t.Count; j++)
+                for (int m = j + 1; m < t.Count; m++)
+                {
+                    var meld = new List<Tile> { t[i], t[j], t[m] };
+                    if (!IsSet(meld) && !IsRun(meld)) continue;
+                    var rest = t.Except(meld).ToList();
+                    if (CanFormKMelds(rest, k - 1)) return true;
+                }
         return false;
     }
 }
