@@ -52,7 +52,7 @@ public class MahjongHands
             sequenceList.Add(st);
 
             // check for same kind (pair, set, quad) combinations by iterating through entire sorted list
-            foreach (TileObject at in allTiles)
+            foreach (TileObject at in sortedHand)
             {
                 if (st.Equals(at) || at.tileData.suit != st.tileData.suit) continue;
 
@@ -80,6 +80,7 @@ public class MahjongHands
             int i = sortedHand.IndexOf(st);
 
             // case-by-case checking for sequence (this sucks vro)
+            // this code SUCKS: does not consider duplicates when checking sequences, must fix
             if (i <= sortedHand.Count - 3)
             {
                 if (sortedHand[i + 2].tileData.suit == sortedHand[i].tileData.suit)
