@@ -49,11 +49,11 @@ public class MahjongHands
             List<TileObject> sameKindList = new();
             List<TileObject> sequenceList = new();
             sameKindList.Add(st);
-            sequenceList.Add(st);
 
             // check for same kind (pair, set, quad) combinations by iterating through entire sorted list
             foreach (TileObject at in sortedHand)
             {
+                // does not check own tile
                 if (st.Equals(at) || at.tileData.suit != st.tileData.suit) continue;
 
                 if (at.tileData.rank == st.tileData.rank)
@@ -76,35 +76,7 @@ public class MahjongHands
 
             // check for sequences (left and right check)
             // this implementation sucks tbh
-            int uniqueRanks = 0;
             int i = sortedHand.IndexOf(st);
-
-            // case-by-case checking for sequence (this sucks vro)
-            // this code SUCKS: does not consider duplicates when checking sequences, must fix
-            if (i <= sortedHand.Count - 3)
-            {
-                if (sortedHand[i + 2].tileData.suit == sortedHand[i].tileData.suit)
-                {
-                    List<TileObject> newCombo = new List<TileObject> {sortedHand[i], sortedHand[i + 1], sortedHand[i + 2]};
-                    threeRunCombinations.Add(newCombo);
-                }   
-            }
-            if (i >= 2)
-            {
-                if (sortedHand[i - 2].tileData.suit == sortedHand[i].tileData.suit)
-                {
-                    List<TileObject> newCombo = new List<TileObject> {sortedHand[i - 2], sortedHand[i - 1], sortedHand[i]};
-                    threeRunCombinations.Add(newCombo);
-                }
-            }
-            if (i > 0 && i < sortedHand.Count - 1)
-            {
-                if (sortedHand[i + 1].tileData.suit == sortedHand[i - 1].tileData.suit)
-                {
-                    List<TileObject> newCombo = new List<TileObject> {sortedHand[i - 1], sortedHand[i], sortedHand[i + 1]};
-                    threeRunCombinations.Add(newCombo);
-                }
-            }
 
             // check for 9-run
             // bring to left of suit in sorted list
@@ -115,17 +87,38 @@ public class MahjongHands
             // check rightward
             while (sortedHand[i].tileData.suit == st.tileData.suit && i < sortedHand.Count - 1)
             {
+                // no duplicates
                 if (sortedHand[i + 1].tileData.rank != sortedHand[i].tileData.rank)
                 {
-                    uniqueRanks++;
                     sequenceList.Add(sortedHand[i + 1]);
                 }
                 i++;
             }
 
-            if (uniqueRanks == 9)
+            // should already be sorted
+            // check for nine-run and sequence in sequence list (duplicates removed)
+            if (sequenceList.Count == 9)
             {
                 nineRunCombinations.Add(sequenceList);
+            }
+            if (sequenceList.Count > 3)
+            {
+                int pivotIndex = sequenceList.IndexOf(st);
+                if (pivotIndex + 2 <= sequenceList.Count - 1)
+                {
+                    List<TileObject> newCombo = new List<TileObject> {sequenceList[i], sequenceList[i + 1], sequenceList[i + 2]};
+                    threeRunCombinations.Add(newCombo);
+                }
+                if (pivotIndex - 2 >= 0)
+                {
+                    List<TileObject> newCombo = new List<TileObject> {sequenceList[i - 2], sequenceList[i - 1], sequenceList[i]};
+                    threeRunCombinations.Add(newCombo);
+                }
+                if (pivotIndex - 1 > 0 && pivotIndex + 1 <= sequenceList.Count - 1)
+                {
+                    List<TileObject> newCombo = new List<TileObject> {sequenceList[i - 1], sequenceList[i], sequenceList[i + 1]};
+                    threeRunCombinations.Add(newCombo);
+                }
             }
 
         }
