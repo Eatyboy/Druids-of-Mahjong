@@ -63,6 +63,7 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         tile.selectedOverlay.SetActive(true);
+        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetMahjongHand(currentHand, selectedTiles);
         //List<Tile> optimalHand = PickOptimalHand();
         //foreach(Tile t in optimalHand)
         //{
@@ -75,6 +76,7 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         tile.selectedOverlay.SetActive(false);
+        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetMahjongHand(currentHand, selectedTiles);
         //List<Tile> optimalHand = PickOptimalHand();
     }
 
@@ -96,7 +98,6 @@ public class PlayerHand : MonoBehaviour
         // 200 bc of ui space vs world space shenanigans
         if (offsetPerTile * numTiles > maxHorizontalTileOffset * 2.0f * 100.0f)
         {
-            UnityEngine.Debug.Log("Yes");
             offsetPerTile = 100.0f * maxHorizontalTileOffset / (0.5f * (float)numTiles);
         }
 
