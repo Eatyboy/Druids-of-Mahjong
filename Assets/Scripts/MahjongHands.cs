@@ -30,12 +30,13 @@ public class MahjongHands
         List<TileObject> optimalHand = new();
         MahjongHandTypes optimalHandType = MahjongHandTypes.None;
         List<TileObject> sortedHand = MahjongMergeSort(allTiles, 0, allTiles.Count - 1);
+        List<TileObject> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
         
-        // UnityEngine.Debug.Log("sorted list");
-        // foreach(TileObject t in sortedHand)
-        // {
-        //     UnityEngine.Debug.Log(t.tileData.rank + " of " + t.tileData.suit);
-        // }
+        UnityEngine.Debug.Log("sorted list");
+        foreach(TileObject t in sortedHand)
+        {
+            UnityEngine.Debug.Log(t.tileData.rank + " of " + t.tileData.suit);
+        }
 
         List<List<TileObject>> pairCombinations = new(); // 2 of a kind
         List<List<TileObject>> setCombinations = new(); // 3 of a kind
@@ -44,7 +45,7 @@ public class MahjongHands
         List<List<TileObject>> nineRunCombinations = new(); // 9 in sequence\
         // each tile can only be part of one type of combination; e.g. if its in a run, it can't be in a set
 
-        foreach (TileObject st in selectedTiles)
+        foreach (TileObject st in sortedSelectedTiles)
         {
             List<TileObject> sameKindList = new();
             List<TileObject> sequenceList = new();
@@ -109,14 +110,14 @@ public class MahjongHands
                     List<TileObject> newCombo = new List<TileObject> {sequenceList[i], sequenceList[i + 1], sequenceList[i + 2]};
                     threeRunCombinations.Add(newCombo);
                 }
-                if (pivotIndex - 2 >= 0)
-                {
-                    List<TileObject> newCombo = new List<TileObject> {sequenceList[i - 2], sequenceList[i - 1], sequenceList[i]};
-                    threeRunCombinations.Add(newCombo);
-                }
                 if (pivotIndex - 1 > 0 && pivotIndex + 1 <= sequenceList.Count - 1)
                 {
                     List<TileObject> newCombo = new List<TileObject> {sequenceList[i - 1], sequenceList[i], sequenceList[i + 1]};
+                    threeRunCombinations.Add(newCombo);
+                }
+                if (pivotIndex - 2 >= 0)
+                {
+                    List<TileObject> newCombo = new List<TileObject> {sequenceList[i - 2], sequenceList[i - 1], sequenceList[i]};
                     threeRunCombinations.Add(newCombo);
                 }
             }
@@ -128,29 +129,73 @@ public class MahjongHands
         // limited by pair
 
         // DEBUG: check if this actually works using combinatorics and stats
+        // Addendum: brute force it, check every single combination, O(n^2)
+        List<TileObject> possiblefullWin = new();
         foreach (List<TileObject> t in pairCombinations)
         {
-            List<TileObject> possiblefullWin = new();
+            possiblefullWin.Clear();
             possiblefullWin.AddRange(t);
-            foreach (List<TileObject> setCombo in setCombinations)
+            // oh god
+            foreach (List<TileObject> setPivot in setCombinations)
             {
-                if (!CheckForCommonTile(possiblefullWin, setCombo))
+                if (CheckForCommonTile(setPivot, possiblefullWin)) continue;
+
+                possiblefullWin.AddRange(setPivot);
+
+                foreach (List<TileObject> sc1 in setCombinations)
                 {
-                    possiblefullWin.AddRange(setCombo);
-                    if (possiblefullWin.Count == 14)
+                    if (ContainsSameTiles(setPivot, sc1)) continue;
+
+                    if (!CheckForCommonTile(possiblefullWin, setPivot))
                     {
-                        return (MahjongHandTypes.FullWin, possiblefullWin);
+                        possiblefullWin.AddRange(sc1);
+                        if (possiblefullWin.Count == 14)
+                        {
+                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                        }
+                    }
+                }
+                foreach (List<TileObject> rc1 in threeRunCombinationsCombinations)
+                {
+                    if (!CheckForCommonTile(possiblefullWin, rc1))
+                    {
+                        possiblefullWin.AddRange(rc1);
+                        if (possiblefullWin.Count == 14)
+                        {
+                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                        }
                     }
                 }
             }
-            foreach (List<TileObject> runCombo in threeRunCombinations)
+
+            foreach (List<TileObject> runPivot in threeRunCombinations)
             {
-                if (!CheckForCommonTile(possiblefullWin, runCombo))
+                if (CheckForCommonTile(runPivot, possiblefullWin)) continue;
+
+                possiblefullWin.AddRange(runPivot);
+
+                foreach (List<TileObject> rc2 in threeRunCombinations)
                 {
-                    possiblefullWin.AddRange(runCombo);
-                    if (possiblefullWin.Count == 14)
+                    if (ContainsSameTiles(runPivot, rc2)) continue;
+
+                    if (!CheckForCommonTile(possiblefullWin, runPivot))
                     {
-                        return (MahjongHandTypes.FullWin, possiblefullWin);
+                        possiblefullWin.AddRange(rc2);
+                        if (possiblefullWin.Count == 14)
+                        {
+                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                        }
+                    }
+                }
+                foreach (List<TileObject> sc2 in setCombinations)
+                {
+                    if (!CheckForCommonTile(possiblefullWin, sc2))
+                    {
+                        possiblefullWin.AddRange(sc2);
+                        if (possiblefullWin.Count == 14)
+                        {
+                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                        }
                     }
                 }
             }
@@ -229,5 +274,15 @@ public class MahjongHands
     {
         // Use Any() to check if any element of list1 is present in list2
         return list1.Any(item1 => list2.Contains(item1));
+    }
+
+    private static bool ContainsSameTiles(List<TileObject> list1, List<TileObject> list2)
+    {
+        if (list1.Count != list2.Count) return false;
+        for (int i = 0; i < list1.Count; i++)
+        {
+            if (!list1[i].Equals(list2[i])) return false;
+        }
+        return true;
     }
 }
