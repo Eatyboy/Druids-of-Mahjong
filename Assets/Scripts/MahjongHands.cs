@@ -174,7 +174,7 @@ public class MahjongHands
             }
 
             optimalHand.Clear();
-            optimalHand.AddRange(t);
+            optimalHand.AddRange(p);
 
             foreach (List<TileObject> runPivot in threeRunCombinations)
             {
