@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 
     public Transform enemySpawn;
 
-    Unit enemyUnit;
+    Enemy enemyUnit;
 
     void Start()
     {
@@ -18,6 +18,6 @@ public class GameManager : MonoBehaviour
         //Enemy's center is at spawn's center
         GameObject enemyGO = Instantiate(enemyPrefabs, enemySpawn);
 
-        enemyUnit = enemyGO.GetComponent<Unit>();
+        enemyUnit = enemyGO.GetComponent<Enemy>();
     }
 }

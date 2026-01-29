@@ -2,13 +2,16 @@ using UnityEngine;
 
 [Tooltip("Abstract Class that Enemies should inherit from")]
 // Only Common Functionality and can be Overrided
+// Create New Enemy Scripts inheriting from Enemy
 public abstract class Enemy : MonoBehaviour, IDamageable
 {
     [SerializeField]
-    protected int health = 10; // Default: 10
+    protected int currentHP = 100; // Default: 10
+    [SerializeField]
+    protected int maxHP = 100; // Default: 10
 
     [SerializeField]
-    protected Transform player;
+    protected Transform player; // Reference to deal damage to player
 
     protected void Start()
     {
@@ -23,25 +26,29 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected void Init()
     {
         // Setup any variables and object assignments here
+        currentHP = maxHP;
+        if (player == null) { /*Debug.Log("Missing Player Reference");*/ }
     }
 
     protected virtual void Attack()
     {
-        Debug.Log("Enemy Attacks!");
+        //Debug.Log("Enemy Attacks!");
     }
 
     protected virtual void OnDeath()
     {
-        Debug.Log("Enemy Died!");
+        //Debug.Log("Enemy Died!");
     }
 
     // IDamageable
-    public virtual void TakeDamage(int dmg) 
+    public virtual bool TakeDamage(int dmg) 
     {
-        Health -= dmg;
-        Debug.Log("Took Damage= " + dmg);
-        if (Health < 0) { OnDeath(); }
-    }
+        currentHP -= dmg;
 
-    public int Health { get{ return health; } set{ health = value; } }
+        if (currentHP < 0) { 
+            OnDeath(); 
+            return true; 
+        }
+        return false;
+    }
 }
