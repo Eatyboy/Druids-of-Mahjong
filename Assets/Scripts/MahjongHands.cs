@@ -32,11 +32,7 @@ public class MahjongHands
         List<TileObject> sortedHand = MahjongMergeSort(allTiles, 0, allTiles.Count - 1);
         List<TileObject> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
         
-        UnityEngine.Debug.Log("sorted list");
-        foreach(TileObject t in sortedHand)
-        {
-            UnityEngine.Debug.Log(t.tileData.rank + " of " + t.tileData.suit);
-        }
+        PrintTilesList(sortedHand);
 
         List<List<TileObject>> pairCombinations = new(); // 2 of a kind
         List<List<TileObject>> setCombinations = new(); // 3 of a kind
