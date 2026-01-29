@@ -23,7 +23,7 @@ public enum MahjongHandTypes
 
 public class MahjongHands
 {
-    public static (MahjongHandTypes type, List<TileObject> tiles) GetMahjongHand(List<TileObject> allTiles, List<TileObject> selectedTiles)
+    public static (MahjongHandTypes type, List<TileObject> tiles) GetOptimalHand(List<TileObject> allTiles, List<TileObject> selectedTiles)
     {
         if (selectedTiles.Count == 0 || allTiles.Count == 0) return (MahjongHandTypes.None, null);
 

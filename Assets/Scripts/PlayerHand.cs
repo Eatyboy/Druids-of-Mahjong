@@ -63,7 +63,7 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         tile.selectedOverlay.SetActive(true);
-        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetMahjongHand(currentHand, selectedTiles);
+        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetOptimalHand(currentHand, selectedTiles);
         //List<Tile> optimalHand = PickOptimalHand();
         //foreach(Tile t in optimalHand)
         //{
@@ -76,7 +76,7 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         tile.selectedOverlay.SetActive(false);
-        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetMahjongHand(currentHand, selectedTiles);
+        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetOptimalHand(currentHand, selectedTiles);
         //List<Tile> optimalHand = PickOptimalHand();
     }
 
