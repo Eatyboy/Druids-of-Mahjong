@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-
+// This should be deprecated
 [CreateAssetMenu(fileName = "New Tiles", menuName = "Majong Tiles")]
 public class MajongTiles : ScriptableObject
 {    
@@ -9,6 +10,7 @@ public class MajongTiles : ScriptableObject
     public TileSuit suit;
 
     public int value;
+    public Boolean selected;
 
     internal static MajongTiles CreateInstance(TileSuit suit, int value)
     {
@@ -17,6 +19,8 @@ public class MajongTiles : ScriptableObject
         newTiles.suit = suit;
 
         newTiles.value = value;
+
+        newTiles.selected = false;
 
         return newTiles;
     }

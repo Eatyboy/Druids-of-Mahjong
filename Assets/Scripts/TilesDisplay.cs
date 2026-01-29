@@ -1,10 +1,10 @@
 using TMPro;
 using UnityEngine;
 
-
+//This class might not be needed in the future with images being added
 public class TilesDisplay : MonoBehaviour
 {
-    public MajongTiles majongData;
+    public MahjongTile mahjongData;
 
     public TMP_Text suitText;
 
@@ -16,14 +16,14 @@ public class TilesDisplay : MonoBehaviour
     }
     public void UpdateTilesDisplay()
     {
-        valueText.text = majongData.value.ToString();
+        valueText.text = mahjongData.rank.ToString();
 
-        suitText.text = majongData.suit.ToString();
+        suitText.text = mahjongData.suit.ToString();
     }
 
-    public void setTile(MajongTiles tile)
+    public void setTile(MahjongTile tile)
     {
-        majongData = tile;
+        mahjongData = tile;
     }
 
     public void setSuitText(string text)
