@@ -124,81 +124,115 @@ public class MahjongHands
 
         }
 
+        Print2DTilesList(pairCombinations);
+        Print2DTilesList(setCombinations);
+        Print2DTilesList(threeRunCombinations);
+        Print2DTilesList(quadCombinations);
+        Print2DTilesList(nineRunCombinations);
+
         // return most powerful hand type (full win, all pairs, nine run, three sets, two quads, two sets, two runs, set and run, three pairs, quad, run set, pair, in that order)
         // for full win, go through each set, run, and pair combination; if theres a duplicate, skip that combination and try to get at least 1 pair + 4 sets/runs
         // limited by pair
 
         // DEBUG: check if this actually works using combinatorics and stats
         // Addendum: brute force it, check every single combination, O(n^2)
-        List<TileObject> possiblefullWin = new();
-        foreach (List<TileObject> t in pairCombinations)
+        foreach (List<TileObject> p in pairCombinations)
         {
-            possiblefullWin.Clear();
-            possiblefullWin.AddRange(t);
+            optimalHand.Clear();
+            optimalHand.AddRange(p);
             // oh god
             foreach (List<TileObject> setPivot in setCombinations)
             {
-                if (CheckForCommonTile(setPivot, possiblefullWin)) continue;
+                if (CheckForCommonTile(setPivot, optimalHand)) continue;
 
-                possiblefullWin.AddRange(setPivot);
+                optimalHand.AddRange(setPivot);
 
                 foreach (List<TileObject> sc1 in setCombinations)
                 {
                     if (ContainsSameTiles(setPivot, sc1)) continue;
 
-                    if (!CheckForCommonTile(possiblefullWin, setPivot))
+                    if (!CheckForCommonTile(optimalHand, setPivot))
                     {
-                        possiblefullWin.AddRange(sc1);
-                        if (possiblefullWin.Count == 14)
+                        optimalHand.AddRange(sc1);
+                        if (optimalHand.Count == 14)
                         {
-                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                            return (MahjongHandTypes.FullWin, optimalHand);
                         }
                     }
                 }
-                foreach (List<TileObject> rc1 in threeRunCombinationsCombinations)
+                foreach (List<TileObject> rc1 in threeRunCombinations)
                 {
-                    if (!CheckForCommonTile(possiblefullWin, rc1))
+                    if (!CheckForCommonTile(optimalHand, rc1))
                     {
-                        possiblefullWin.AddRange(rc1);
-                        if (possiblefullWin.Count == 14)
+                        optimalHand.AddRange(rc1);
+                        if (optimalHand.Count == 14)
                         {
-                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                            return (MahjongHandTypes.FullWin, optimalHand);
                         }
                     }
                 }
             }
 
+            optimalHand.Clear();
+            optimalHand.AddRange(t);
+
             foreach (List<TileObject> runPivot in threeRunCombinations)
             {
-                if (CheckForCommonTile(runPivot, possiblefullWin)) continue;
+                if (CheckForCommonTile(runPivot, optimalHand)) continue;
 
-                possiblefullWin.AddRange(runPivot);
+                optimalHand.AddRange(runPivot);
 
                 foreach (List<TileObject> rc2 in threeRunCombinations)
                 {
                     if (ContainsSameTiles(runPivot, rc2)) continue;
 
-                    if (!CheckForCommonTile(possiblefullWin, runPivot))
+                    if (!CheckForCommonTile(optimalHand, runPivot))
                     {
-                        possiblefullWin.AddRange(rc2);
-                        if (possiblefullWin.Count == 14)
+                        optimalHand.AddRange(rc2);
+                        if (optimalHand.Count == 14)
                         {
-                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                            return (MahjongHandTypes.FullWin, optimalHand);
                         }
                     }
                 }
                 foreach (List<TileObject> sc2 in setCombinations)
                 {
-                    if (!CheckForCommonTile(possiblefullWin, sc2))
+                    if (!CheckForCommonTile(optimalHand, sc2))
                     {
-                        possiblefullWin.AddRange(sc2);
-                        if (possiblefullWin.Count == 14)
+                        optimalHand.AddRange(sc2);
+                        if (optimalHand.Count == 14)
                         {
-                            return (MahjongHandTypes.FullWin, possiblefullWin);
+                            return (MahjongHandTypes.FullWin, optimalHand);
                         }
                     }
                 }
             }
+        }
+
+        // full pair (O(n^2))
+        // DEBUG: might not check for all pairs, if so, new algorithm will likely by O(n!) or O(n^n)
+        foreach (List<TileObject> pPivot in pairCombinations)
+        {
+            optimalHand.Clear();
+            optimalHand.AddRange(pPivot);
+
+            foreach(List<TileObject> p in pairCombinations)
+            {
+                if (!CheckForCommonTile(optimalHand, p))
+                {
+                    optimalHand.AddRange(p);
+                    if (optimalHand.Count == 14)
+                    {
+                        return (MahjongHandTypes.AllPairs, optimalHand);
+                    }
+                }
+            }
+        }
+
+        // nine run
+        if (nineRunCombinations.Count > 0)
+        {
+            return (MahjongHandTypes.NineRun, nineRunCombinations[nineRunCombinations.Count - 1]);
         }
         
 
@@ -284,5 +318,44 @@ public class MahjongHands
             if (!list1[i].Equals(list2[i])) return false;
         }
         return true;
+    }
+
+    private static void PrintTilesList(List<TileObject> list)
+    {
+        if (list.Count == 0)
+        {
+            UnityEngine.Debug.Log("Empty list");
+            return;
+        }
+
+        string msg = "{";
+        foreach (TileObject t in list)
+        {
+            msg += t.tileData.rank + " of " + t.tileData.suit;
+        }
+        msg += "}";
+        UnityEngine.Debug.Log(msg);
+    }
+    
+    private static void Print2DTilesList(List<List<TileObject>> list)
+    {
+        if (list.Count == 0)
+        {
+            UnityEngine.Debug.Log("Empty list");
+            return;
+        }
+
+        string msg = "{";
+        foreach (List<TileObject> l in list)
+        {
+            msg += "{";
+            foreach (TileObject t in l)
+            {
+                msg += t.tileData.rank + " of " + t.tileData.suit;
+            }
+            msg += "}, ";
+        }
+        msg += "}";
+        UnityEngine.Debug.Log(msg);
     }
 }
