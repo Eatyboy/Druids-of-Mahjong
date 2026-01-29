@@ -207,22 +207,11 @@ public class MahjongHands
 
         // full pair (O(n^2))
         // DEBUG: might not check for all pairs, if so, new algorithm will likely by O(n!) or O(n^n)
-        foreach (List<TileObject> pPivot in pairCombinations)
+        // right now, since max = 14, this is fine
+        optimalHand = FindSetOfCombinationsFromAll(pairCombinations, 14);
+        if (optimalHand != null)
         {
-            optimalHand.Clear();
-            optimalHand.AddRange(pPivot);
-
-            foreach(List<TileObject> p in pairCombinations)
-            {
-                if (!CheckForCommonTile(optimalHand, p))
-                {
-                    optimalHand.AddRange(p);
-                    if (optimalHand.Count == 14)
-                    {
-                        return (MahjongHandTypes.AllPairs, optimalHand);
-                    }
-                }
-            }
+            return (MahjongHandTypes.AllPairs, optimalHand);
         }
 
         // nine run
@@ -230,11 +219,113 @@ public class MahjongHands
         {
             return (MahjongHandTypes.NineRun, nineRunCombinations[nineRunCombinations.Count - 1]);
         }
-        
 
-        // list1.AddRange(list2); to concat lists
-        // TODO: Implement hand checking
-        return (optimalHandType, optimalHand);
+        // three sets
+        optimalHand = FindSetOfCombinationsFromAll(setCombinations, 9);
+        if (optimalHand != null)
+        {
+            return (MahjongHandTypes.ThreeSets, optimalHand);
+        }
+
+        // two quads
+        optimalHand = FindSetOfCombinationsFromAll(quadCombinations, 8);
+        if (optimalHand != null)
+        {
+            return (MahjongHandTypes.TwoQuads, optimalHand);
+        }
+
+        // two sets (works)
+        optimalHand = FindSetOfCombinationsFromAll(setCombinations, 6);
+        if (optimalHand != null)
+        {
+            return (MahjongHandTypes.TwoSets, optimalHand);
+        }
+
+        // two runs (works)
+        optimalHand = FindSetOfCombinationsFromAll(threeRunCombinations, 6);
+        if (optimalHand != null)
+        {
+            return (MahjongHandTypes.TwoRuns, optimalHand);
+        }
+
+        // set and run (should include all combos)
+        foreach (List<TileObject> setPivot in setCombinations)
+        {
+            optimalHand.Clear();
+            optimalHand.AddRange(setPivot);
+
+            foreach (List<TileObject> r in threeRunCombinations)
+            {
+                if (ContainsSameTiles(setPivot, sc1)) continue;
+
+                if (!CheckForCommonTile(optimalHand, setPivot))
+                {
+                    optimalHand.AddRange(sc1);
+                    if (optimalHand.Count == 6)
+                    {
+                        return (MahjongHandTypes.SetAndRun, optimalHand);
+                    }
+                }
+            }
+        }
+
+        // three pairs
+        optimalHand = FindSetOfCombinationsFromAll(pairCombinations, 6);
+        if (optimalHand != null)
+        {
+            return (MahjongHandTypes.ThreePairs, optimalHand);
+        }
+
+        // quad (everything below should work)
+        if (quadCombinations.Count > 0)
+        {
+            return (MahjongHandTypes.Quad, quadCombinations[quadCombinations.Count - 1]);
+        }
+
+        //run
+        if (threeRunCombinations.Count > 0)
+        {
+            return (MahjongHandTypes.Run, threeRunCombinations[threeRunCombinations.Count - 1]);
+        }
+
+        // set
+        if (setCombinations.Count > 0)
+        {
+            return (MahjongHandTypes.Set, setCombinations[setCombinations.Count - 1]);
+        }
+
+        // pair
+        if (pairCombinations.Count > 0)
+        {
+            return (MahjongHandTypes.Pair, pairCombinations[pairCombinations.Count - 1]);
+        }
+
+        return (MahjongHandTypes.None, null);
+    }
+
+    private static List<TileObject> FindSetOfCombinationsFromAll(List<List<TileObject>> allCombinationsList, int outputSize)
+    {
+        List<TileObject> output = new();
+
+        foreach (List<TileObject> tPivot in allCombinationsList)
+        {
+            output.Clear();
+            output.AddRange(tPivot);
+
+            foreach(List<TileObject> t in allCombinationsList)
+            {
+                if (!CheckForCommonTile(output, t))
+                {
+                    output.AddRange(p);
+                    if (output.Count == outputSize)
+                    {
+                        return output;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     // implement merge sort for player hand (suit order based on MahjongTile TileSuit enum)
@@ -354,7 +445,7 @@ public class MahjongHands
         msg += "}";
         UnityEngine.Debug.Log(msg);
     }
-    
+
     public static readonly IReadOnlyDictionary<MahjongHandTypes, int> HandScores = new Dictionary<MahjongHandTypes, int>
     {
         { MahjongHandTypes.None, 0 },
