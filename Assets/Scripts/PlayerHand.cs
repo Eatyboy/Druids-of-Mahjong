@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,8 @@ public class PlayerHand : MonoBehaviour
 
     [Header("References and Such")]
     [SerializeField] private Transform tileContainer;
+    [SerializeField] private GameObject castSpellButton;
+    [SerializeField] private TextMeshProUGUI castSpellText;
     [SerializeField] private TileObject tileObjectPrefab;
     [SerializeField] private float maxHorizontalTileOffset;
 
@@ -40,6 +43,8 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator DrawInitialHand()
     {
+        foreach (Transform tileObj in tileContainer) Destroy(tileObj.gameObject);
+
         yield return new WaitForEndOfFrame();
 
         for (int i = 0; i < defaultHandSize; i++)
@@ -55,6 +60,7 @@ public class PlayerHand : MonoBehaviour
 
         TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
         newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
+        newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
         currentHand.Add(newTileObj);
         RepositionTiles(newTileObj);
     }
@@ -86,12 +92,6 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    public void CastSpell()
-    {
-        HandAttackResolver.ResolveHandAttack(selectedTiles.Select((o) => o.tileData).ToList());
-        DiscardTiles();
-    }
-
     public void AddTile(Tile tile)
     {
 
@@ -108,6 +108,8 @@ public class PlayerHand : MonoBehaviour
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         tile.selectedOverlay.SetActive(true);
         UpdateCurrentHandType();
+
+        castSpellButton.SetActive(true);
     }
 
     public void DeselectTile(TileObject tile)
@@ -116,6 +118,11 @@ public class PlayerHand : MonoBehaviour
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         tile.selectedOverlay.SetActive(false);
         UpdateCurrentHandType();
+
+        if (selectedTiles.Count == 0)
+        {
+            castSpellButton.SetActive(false);
+        }
     }
 
     List<Tile> GetSelectedTileData()
@@ -129,11 +136,14 @@ public class PlayerHand : MonoBehaviour
     void UpdateCurrentHandType()
     {
         currentHandType = MahjongHands.GetMahjongHand(GetSelectedTileData());
+        castSpellText.text = $"Cast {(currentHandType == MahjongHandTypes.None ? "Nothing" : currentHandType)}";
     }
 
     public void PlaySelectedHand()
     {
         HandAttackResolver.ResolveHandAttack(GetSelectedTileData());
+        castSpellButton.SetActive(false);
+        StartCoroutine(DiscardTiles());
     }
 
     // clear

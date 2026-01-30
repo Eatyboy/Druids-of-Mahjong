@@ -12,6 +12,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField]
     protected Transform player; // Reference to deal damage to player
+    [SerializeField] private HealthBarUI healthBar;
 
     protected void OnEnable()
     {
@@ -42,6 +43,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         // Setup any variables and object assignments here
         currentHP = maxHP;
+        healthBar.SetMaxHealth(maxHP);
+        healthBar.SetHealth(currentHP);
         if (player == null) { /*Debug.Log("Missing Player Reference");*/ }
     }
 
@@ -59,6 +62,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public virtual bool TakeDamage(int dmg) 
     {
         currentHP -= dmg;
+        healthBar.SetHealth(currentHP);
 
         if (currentHP < 0) { 
             OnDeath(); 

@@ -1,35 +1,21 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class HealthBarUI : MonoBehaviour
 {
-    public float Health;
-    public float MaxHealth;
-    public float Width;
-    public float Height;
+    public float currentHealth;
+    public float maxHealth;
+    public Slider slider;
 
-    [SerializeField]
-    private RectTransform healthBar;
-
-    void Start()
+    public void SetMaxHealth(float newMaxHealth)
     {
-        Width = healthBar.sizeDelta.x;
-        Height = healthBar.sizeDelta.y;
-        SetMaxHealth(MaxHealth);
-        Health = MaxHealth;
+        maxHealth = newMaxHealth;
     }
 
-
-    public void SetMaxHealth(float maxHealth)
+    public void SetHealth(float newHealth)
     {
-        MaxHealth = maxHealth;
-    }
-
-    public void SetHealth(float currentHealth)
-    {
-        Health = currentHealth;
-
-        float newWidth = (Health / MaxHealth) * Width;
-        healthBar.sizeDelta = new Vector2(newWidth, Height);
+        currentHealth = newHealth;
+        slider.value = currentHealth / maxHealth;
     }
 }
