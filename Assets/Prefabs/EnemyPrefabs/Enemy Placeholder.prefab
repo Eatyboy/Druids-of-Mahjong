@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7302320415515243593}
   - component: {fileID: 2827261908996766433}
-  - component: {fileID: 5897846415653344863}
+  - component: {fileID: 6995330044464407938}
   m_Layer: 0
   m_Name: Enemy Placeholder
   m_TagString: Untagged
@@ -92,7 +92,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &5897846415653344863
+--- !u!114 &6995330044464407938
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -101,10 +101,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 379446380324435016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7884be4c1e6b3cf45aeefb55bb0da0a1, type: 3}
+  m_Script: {fileID: 11500000, guid: 5bdc18b0647004045a475751f7d7b489, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Unit
-  unitName: Enemy Placeholder
-  damage: 0
-  maxHP: 100
+  m_EditorClassIdentifier: Assembly-CSharp::TestEnemy
   currentHP: 100
+  maxHP: 100
+  player: {fileID: 0}
