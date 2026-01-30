@@ -32,7 +32,7 @@ public class MahjongHands
         List<TileObject> sortedHand = MahjongMergeSort(allTiles, 0, allTiles.Count - 1); // probably no use
         List<TileObject> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
         
-        PrintTilesList(sortedSelectedTiles);
+        // PrintTilesList(sortedSelectedTiles);
 
         List<List<TileObject>> pairCombinations = new(); // 2 of a kind
         List<List<TileObject>> setCombinations = new(); // 3 of a kind
@@ -54,7 +54,6 @@ public class MahjongHands
                 if (at.tileData.rank == st.tileData.rank)
                 {
                     sameKindList.Add(at);
-                    UnityEngine.Debug.Log("Added to sameKindList; new size: " + sameKindList.Count);
                     switch (sameKindList.Count)
                     {
                         case 2: pairCombinations.Add(sameKindList.GetRange(0, 2)); break;
@@ -90,8 +89,8 @@ public class MahjongHands
                 i++;
             }
 
-            UnityEngine.Debug.Log("sequence list");
-            PrintTilesList(sequenceList);
+            // UnityEngine.Debug.Log("sequence list");
+            // PrintTilesList(sequenceList);
 
             // should already be sorted
             // check for nine-run and sequence in sequence list (duplicates removed)
@@ -133,12 +132,12 @@ public class MahjongHands
 
         }
 
-        UnityEngine.Debug.Log("Printing pairs, sets, runs, quads, and nine runs");
-        Print2DTilesList(pairCombinations);
-        Print2DTilesList(setCombinations);
-        Print2DTilesList(threeRunCombinations);
-        Print2DTilesList(quadCombinations);
-        Print2DTilesList(nineRunCombinations);
+        // UnityEngine.Debug.Log("Printing pairs, sets, runs, quads, and nine runs");
+        // Print2DTilesList(pairCombinations);
+        // Print2DTilesList(setCombinations);
+        // Print2DTilesList(threeRunCombinations);
+        // Print2DTilesList(quadCombinations);
+        // Print2DTilesList(nineRunCombinations);
 
         // return most powerful hand type (full win, all pairs, nine run, three sets, two quads, two sets, two runs, set and run, three pairs, quad, run set, pair, in that order)
         // for full win, go through each set, run, and pair combination; if theres a duplicate, skip that combination and try to get at least 1 pair + 4 sets/runs
