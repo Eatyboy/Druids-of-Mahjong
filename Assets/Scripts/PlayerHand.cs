@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -80,6 +81,12 @@ public class PlayerHand : MonoBehaviour
 
             yield return DrawTile();
         }
+    }
+
+    public void CastSpell()
+    {
+        HandAttackResolver.ResolveHandAttack(selectedTiles.Select((o) => o.tileData).ToList());
+        DiscardTiles();
     }
 
     public void AddTile(Tile tile)
