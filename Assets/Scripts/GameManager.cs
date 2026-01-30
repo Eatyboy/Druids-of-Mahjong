@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
         SetUpBattle();
     }
 
-    // get an weighted random index for enemyPrefabs using a list of weights
+    // get a random index for enemyPrefabs using a list of weights for weighted probablity
     int GetWeightedRandom(int[] weights)
     {
         int weightTotal = 0;
@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
         return result;
     }
 
+    // spawn enemy
     public void SetUpBattle()
     {
         //Enemy's center is at spawn's center
