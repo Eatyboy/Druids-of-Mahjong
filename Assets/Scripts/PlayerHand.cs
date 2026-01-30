@@ -21,6 +21,9 @@ public class PlayerHand : MonoBehaviour
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
 
+    [Header("Current hand type (for display)")]
+    public MahjongHandTypes currentHandType = MahjongHandTypes.None;
+
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
@@ -62,11 +65,7 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         tile.selectedOverlay.SetActive(true);
-        List<Tile> optimalHand = PickOptimalHand();
-        //foreach(Tile t in optimalHand)
-        //{
-        //    t.gameObject.GetComponent<Image>().color = new Color(0.8f, 1f, 1f, 1f);
-        //}
+        UpdateCurrentHandType();
     }
 
     public void DeselectTile(TileObject tile)
@@ -74,7 +73,25 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         tile.selectedOverlay.SetActive(false);
-        List<Tile> optimalHand = PickOptimalHand();
+        UpdateCurrentHandType();
+    }
+
+    List<Tile> GetSelectedTileData()
+    {
+        List<Tile> list = new List<Tile>();
+        foreach (TileObject t in selectedTiles)
+            list.Add(t.tileData);
+        return list;
+    }
+
+    void UpdateCurrentHandType()
+    {
+        currentHandType = MahjongHands.GetMahjongHand(GetSelectedTileData());
+    }
+
+    public void PlaySelectedHand()
+    {
+        HandAttackResolver.ResolveHandAttack(GetSelectedTileData());
     }
 
     // clear
