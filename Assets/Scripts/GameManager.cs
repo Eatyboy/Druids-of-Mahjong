@@ -1,5 +1,14 @@
 using UnityEngine;
 
+public enum GameState
+{
+    TitleScreen,
+    InMap,
+    InCombat,
+    AtTree,
+    PlayerDead,
+}
+
 public class GameManager : MonoBehaviour
 {
     public GameObject enemyPrefabs;
