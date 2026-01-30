@@ -24,10 +24,38 @@ public class TilesManager : MonoBehaviour
             if (tile.suit == TileSuit.Dragon) continue;
             for (int i = 0; i < defaultDuplicateCount; i++)
             {
-                deck.Add(new Tile(tile));
+                // generate random tile should be removed later - Aiden
+                deck.Add(GenerateRandomTile());
             }
         }
         ShuffleDeck();
+
+        // force sets
+        // Tile a = GenerateRandomTile();
+        // for (int i = 0; i < 3; i++)
+        // {
+        //     deck.Add(a);
+        // }
+        // t = GenerateRandomTile();
+        // for (int i = 0; i < 3; i++)
+        // {
+        //     deck.Add(t);
+        // }
+        // force nine run
+        // for (int i = 0; i < 9; i++)
+        // {
+        //     Tile t = new(baseTileDataList[i]);
+        //     deck.Add(t);
+        // }
+        // // force pair
+        // Tile b = GenerateRandomTile();
+        // for (int i = 0; i < 2; i++)
+        // {
+        //     deck.Add(b);
+        // }
+        // deck.Add(baseTileDataList[0]);
+        // deck.Add(baseTileDataList[1]);
+        // deck.Add(baseTileDataList[2]);
     }
 
     public void ShuffleDeck()
