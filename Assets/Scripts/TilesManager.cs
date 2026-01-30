@@ -24,7 +24,8 @@ public class TilesManager : MonoBehaviour
             if (tile.suit == TileSuit.Dragon) continue;
             for (int i = 0; i < defaultDuplicateCount; i++)
             {
-                deck.Add(new Tile(tile));
+                // generate random tile should be removed later - Aiden
+                deck.Add(GenerateRandomTile());
             }
         }
         ShuffleDeck();
