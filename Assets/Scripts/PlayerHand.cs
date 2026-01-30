@@ -18,14 +18,18 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private int defaultHandSize = 14;
     [SerializeField] private float tileOffsetX;
     [SerializeField] private Vector2 tileSelectedOffset;
+    [SerializeField] private float drawDuration = 0.03f;
 
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
+    public int currentHandSize = 14;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        currentHandSize = defaultHandSize;
 
         StartCoroutine(DrawInitialHand());
     }
@@ -36,16 +40,46 @@ public class PlayerHand : MonoBehaviour
 
         for (int i = 0; i < defaultHandSize; i++)
         {
-            DrawTile();
+            yield return new WaitForSeconds(0.5f / (float)defaultHandSize);
+            StartCoroutine(DrawTile());
         }
     }
 
-    public void DrawTile()
+    public IEnumerator DrawTile()
     {
+        yield return new WaitForSeconds(drawDuration);
+
         TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
         newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
         currentHand.Add(newTileObj);
         RepositionTiles(newTileObj);
+    }
+
+    public void DiscardButton()
+    {
+        StartCoroutine(DiscardTiles());
+    }
+
+    public IEnumerator DiscardTiles()
+    {
+        foreach (TileObject tileObj in selectedTiles)
+        {
+            yield return new WaitForSeconds(drawDuration);
+
+            TilesManager.instance.discardPile.Add(tileObj.tileData);
+            currentHand.Remove(tileObj);
+            Destroy(tileObj.gameObject);
+        }
+        selectedTiles.Clear();
+
+        yield return new WaitForSeconds(0.7f);
+
+        while (currentHand.Count < currentHandSize)
+        {
+            if (TilesManager.instance.deck.Count == 0) break;
+
+            yield return DrawTile();
+        }
     }
 
     public void AddTile(Tile tile)
@@ -63,7 +97,6 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         tile.selectedOverlay.SetActive(true);
-        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetOptimalHand(currentHand, selectedTiles);
         //List<Tile> optimalHand = PickOptimalHand();
         //foreach(Tile t in optimalHand)
         //{
@@ -76,7 +109,6 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         tile.selectedOverlay.SetActive(false);
-        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetOptimalHand(currentHand, selectedTiles);
         //List<Tile> optimalHand = PickOptimalHand();
     }
 

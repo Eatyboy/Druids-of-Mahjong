@@ -256,11 +256,11 @@ public class MahjongHands
 
             foreach (List<TileObject> r in threeRunCombinations)
             {
-                if (ContainsSameTiles(setPivot, sc1)) continue;
+                if (ContainsSameTiles(setPivot, r)) continue;
 
                 if (!CheckForCommonTile(optimalHand, setPivot))
                 {
-                    optimalHand.AddRange(sc1);
+                    optimalHand.AddRange(r);
                     if (optimalHand.Count == 6)
                     {
                         return (MahjongHandTypes.SetAndRun, optimalHand);
@@ -316,7 +316,7 @@ public class MahjongHands
             {
                 if (!CheckForCommonTile(output, t))
                 {
-                    output.AddRange(p);
+                    output.AddRange(t);
                     if (output.Count == outputSize)
                     {
                         return output;
