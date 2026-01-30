@@ -13,6 +13,21 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [SerializeField]
     protected Transform player; // Reference to deal damage to player
 
+    protected void OnEnable()
+    {
+        HandAttackResolver.OnAttackResolved += HandleAttackResolved;
+    }
+
+    protected void OnDisable()
+    {
+        HandAttackResolver.OnAttackResolved -= HandleAttackResolved;
+    }
+
+    void HandleAttackResolved(AttackResult result)
+    {
+        TakeDamage(result.FinalDamage);
+    }
+
     protected void Start()
     {
         Init();
