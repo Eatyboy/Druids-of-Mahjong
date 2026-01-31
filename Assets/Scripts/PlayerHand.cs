@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,12 +15,14 @@ public class PlayerHand : MonoBehaviour
     [Header("References and Such")]
     [SerializeField] private Transform tileContainer;
     [SerializeField] private GameObject castSpellButton;
+    [SerializeField] private TextMeshProUGUI discardsText;
     [SerializeField] private TextMeshProUGUI castSpellText;
     [SerializeField] private TileObject tileObjectPrefab;
     [SerializeField] private float maxHorizontalTileOffset;
 
     [Header("Hand/Tiles")]
     [SerializeField] private int defaultHandSize = 14;
+    [SerializeField] private int defaultMaxDiscards = 3;
     [SerializeField] private float tileOffsetX;
     [SerializeField] private Vector2 tileSelectedOffset;
     [SerializeField] private float drawDuration = 0.03f;
@@ -27,6 +30,8 @@ public class PlayerHand : MonoBehaviour
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
     public int currentHandSize = 14;
+    public int maxDiscards;
+    public int currentDiscards;
 
     [Header("Current hand type (for display)")]
     public MahjongHandTypes currentHandType = MahjongHandTypes.None;
@@ -37,6 +42,9 @@ public class PlayerHand : MonoBehaviour
         else instance = this;
 
         currentHandSize = defaultHandSize;
+        maxDiscards = defaultMaxDiscards;
+        currentDiscards = maxDiscards;
+        discardsText.text = $"{currentDiscards}/{maxDiscards}";
 
         StartCoroutine(DrawInitialHand());
     }
@@ -67,6 +75,11 @@ public class PlayerHand : MonoBehaviour
 
     public void DiscardButton()
     {
+        if (currentDiscards <= 0 || selectedTiles.Count == 0) return;
+
+        currentDiscards--;
+        discardsText.text = $"{currentDiscards}/{maxDiscards}";
+
         StartCoroutine(DiscardTiles());
     }
 
@@ -104,9 +117,10 @@ public class PlayerHand : MonoBehaviour
 
     public void SelectTile(TileObject tile)
     {
+        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
-        tile.selectedOverlay.SetActive(true);
         UpdateCurrentHandType();
 
         castSpellButton.SetActive(true);
@@ -114,9 +128,10 @@ public class PlayerHand : MonoBehaviour
 
     public void DeselectTile(TileObject tile)
     {
+        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
-        tile.selectedOverlay.SetActive(false);
         UpdateCurrentHandType();
 
         if (selectedTiles.Count == 0)
@@ -141,9 +156,13 @@ public class PlayerHand : MonoBehaviour
 
     public void PlaySelectedHand()
     {
+        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+
         HandAttackResolver.ResolveHandAttack(GetSelectedTileData());
         castSpellButton.SetActive(false);
         StartCoroutine(DiscardTiles());
+
+        GameManager.instance.EndPlayerTurn();
     }
 
     // clear
@@ -175,9 +194,22 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    public void SortTiles()
+    public void SortTilesBySuit()
     {
-        
+        TileObject[] sortedTiles = currentHand.OrderByDescending(t => t.tileData.suit).ToArray();
+        for (int i = 0; i < sortedTiles.Length; ++i)
+        {
+            sortedTiles[i].transform.SetSiblingIndex(i);
+        }
+    }
+
+    public void SortTilesByRank()
+    {
+        TileObject[] sortedTiles = currentHand.OrderByDescending(t => t.tileData.rank).ToArray();
+        for (int i = 0; i < sortedTiles.Length; ++i)
+        {
+            sortedTiles[i].transform.SetSiblingIndex(i);
+        }
     }
 
     // O(n)
