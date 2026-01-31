@@ -48,10 +48,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        SetUpBattle();
+        StartCoroutine(SetUpBattle());
     }
 
-    public void PlayerVictory()
+    public void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Utils.QuitGame();
+        }
+    }
+
+    public IEnumerator PlayerVictory()
     {
         combatState = CombatState.EnemyDead;
         Debug.Log("Victory!");
@@ -59,7 +67,10 @@ public class GameManager : MonoBehaviour
         Destroy(currentEnemy.gameObject);
         currentEnemy = null;
 
-        StartCoroutine(SpawnEnemy());
+        yield return SpawnEnemy();
+        yield return PlayerHand.instance.DrawUntilFullHand();
+
+        combatState = CombatState.PlayerTurn;
     }
 
     public void PlayerDefeat()
@@ -68,11 +79,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Defeat!");
 
         // TEMP: Remove after prototype
-        #if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
-        #else
-            Application.Quit();
-        #endif
+        Utils.QuitGame();
     }
 
     // get a random index for enemyPrefabs using a list of weights for weighted probablity
@@ -106,42 +113,43 @@ public class GameManager : MonoBehaviour
         spawnedEnemy.transform.position = enemySpawn.transform.position;
 
         currentEnemy = spawnedEnemy;
-
-        yield return new WaitForSeconds(0.2f);
-
-        combatState = CombatState.PlayerTurn;
     }
 
     // spawn enemy
-    public void SetUpBattle()
+    public IEnumerator SetUpBattle()
     {
         gameState = GameState.InCombat;
         combatState = CombatState.PreBattle;
 
-        StartCoroutine(SpawnEnemy());
+        yield return SpawnEnemy();
+        yield return PlayerHand.instance.DrawUntilFullHand();
+
+        combatState = CombatState.PlayerTurn;
     }
 
-    public void EndPlayerTurn()
+    public IEnumerator EndPlayerTurn()
     {
         if (currentEnemy.currentHP <= 0)
         {
-            PlayerVictory();
+            yield return PlayerVictory();
         }
         else
         {
             combatState = CombatState.EnemyTurn;
-            StartCoroutine(currentEnemy.Attack());
+            yield return currentEnemy.Attack();
         }
     }
 
-    public void EndEnemyTurn()
+    public IEnumerator EndEnemyTurn()
     {
         if (Player.instance.health <= 0)
         {
             PlayerDefeat();
+            yield break;
         }
         else
         {
+            yield return PlayerHand.instance.DrawUntilFullHand();
             combatState = CombatState.PlayerTurn;
         }
     }

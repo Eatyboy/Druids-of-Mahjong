@@ -36,15 +36,15 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Keyboard.current.qKey.wasPressedThisFrame)
-        {
-            ChangeHealth(-1.0f);
-        }
+        //if (Keyboard.current.qKey.wasPressedThisFrame)
+        //{
+        //    ChangeHealth(-1.0f);
+        //}
 
-        if (Keyboard.current.eKey.wasPressedThisFrame)
-        {
-            ChangeHealth(1.0f);
-        }
+        //if (Keyboard.current.eKey.wasPressedThisFrame)
+        //{
+        //    ChangeHealth(1.0f);
+        //}
     }
 
     public void ChangeHealth(float healthChange) {

@@ -46,20 +46,7 @@ public class PlayerHand : MonoBehaviour
         currentDiscards = maxDiscards;
         discardsText.text = $"{currentDiscards}/{maxDiscards}";
 
-        StartCoroutine(DrawInitialHand());
-    }
-
-    public IEnumerator DrawInitialHand()
-    {
         foreach (Transform tileObj in tileContainer) Destroy(tileObj.gameObject);
-
-        yield return new WaitForEndOfFrame();
-
-        for (int i = 0; i < defaultHandSize; i++)
-        {
-            yield return new WaitForSeconds(0.5f / (float)defaultHandSize);
-            StartCoroutine(DrawTile());
-        }
     }
 
     public IEnumerator DrawTile()
@@ -73,6 +60,20 @@ public class PlayerHand : MonoBehaviour
         RepositionTiles(newTileObj);
     }
 
+    public IEnumerator DrawUntilFullHand()
+    {
+        while (currentHand.Count < currentHandSize)
+        {
+            if (TilesManager.instance.deck.Count == 0) yield break;
+            if (currentHand.Count >= currentHandSize) yield break;
+
+            yield return DrawTile();
+        }
+        SortTiles();
+
+        yield break;
+    }
+
     public void DiscardButton()
     {
         if (currentDiscards <= 0 || selectedTiles.Count == 0) return;
@@ -80,10 +81,10 @@ public class PlayerHand : MonoBehaviour
         currentDiscards--;
         discardsText.text = $"{currentDiscards}/{maxDiscards}";
 
-        StartCoroutine(DiscardTiles());
+        StartCoroutine(DiscardTiles(drawWhenDone: true));
     }
 
-    public IEnumerator DiscardTiles()
+    public IEnumerator DiscardTiles(bool drawWhenDone = false)
     {
         foreach (TileObject tileObj in selectedTiles)
         {
@@ -95,14 +96,11 @@ public class PlayerHand : MonoBehaviour
         }
         selectedTiles.Clear();
 
+        if (!drawWhenDone) yield break;
+
         yield return new WaitForSeconds(0.7f);
 
-        while (currentHand.Count < currentHandSize)
-        {
-            if (TilesManager.instance.deck.Count == 0) break;
-
-            yield return DrawTile();
-        }
+        yield return DrawUntilFullHand();
     }
 
     public void AddTile(Tile tile)
@@ -160,9 +158,9 @@ public class PlayerHand : MonoBehaviour
 
         HandAttackResolver.ResolveHandAttack(GetSelectedTileData());
         castSpellButton.SetActive(false);
-        StartCoroutine(DiscardTiles());
 
-        GameManager.instance.EndPlayerTurn();
+        StartCoroutine(DiscardTiles(drawWhenDone: false));
+        StartCoroutine(GameManager.instance.EndPlayerTurn());
     }
 
     // clear
@@ -194,18 +192,23 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    public void SortTilesBySuit()
+    public void SortTiles()
     {
-        TileObject[] sortedTiles = currentHand.OrderByDescending(t => t.tileData.suit).ToArray();
-        for (int i = 0; i < sortedTiles.Length; ++i)
+        // TEMP
+        foreach (TileObject tile in selectedTiles)
         {
-            sortedTiles[i].transform.SetSiblingIndex(i);
+            tile.isSelected = false;
+            tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
+            currentHandType = MahjongHandTypes.None;
+            castSpellText.text = $"Cast Nothing";
         }
-    }
+        selectedTiles.Clear();
+        castSpellButton.SetActive(false);
 
-    public void SortTilesByRank()
-    {
-        TileObject[] sortedTiles = currentHand.OrderByDescending(t => t.tileData.rank).ToArray();
+        TileObject[] sortedTiles = currentHand
+            .OrderBy(t => t.tileData.suit)
+            .ThenBy(t =>  t.tileData.rank)
+            .ToArray();
         for (int i = 0; i < sortedTiles.Length; ++i)
         {
             sortedTiles[i].transform.SetSiblingIndex(i);

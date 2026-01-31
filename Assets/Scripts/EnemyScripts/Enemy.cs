@@ -59,13 +59,12 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(0.4f);
 
-        GameManager.instance.EndEnemyTurn();
+        yield return GameManager.instance.EndEnemyTurn();
     }
 
     protected virtual void OnDeath()
     {
         Player.instance.AddQi(qiOnDeath);
-        GameManager.instance.PlayerVictory();
     }
 
     // IDamageable
