@@ -1,6 +1,9 @@
+using NUnit.Framework.Internal;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,41 +14,93 @@ public class PlayerHand : MonoBehaviour
 
     [Header("References and Such")]
     [SerializeField] private Transform tileContainer;
+    [SerializeField] private GameObject castSpellButton;
+    [SerializeField] private TextMeshProUGUI discardsText;
+    [SerializeField] private TextMeshProUGUI castSpellText;
     [SerializeField] private TileObject tileObjectPrefab;
     [SerializeField] private float maxHorizontalTileOffset;
 
     [Header("Hand/Tiles")]
     [SerializeField] private int defaultHandSize = 14;
+    [SerializeField] private int defaultMaxDiscards = 3;
     [SerializeField] private float tileOffsetX;
     [SerializeField] private Vector2 tileSelectedOffset;
+    [SerializeField] private float drawDuration = 0.03f;
 
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
+    public int currentHandSize = 14;
+    public int maxDiscards;
+    public int currentDiscards;
+
+    [Header("Current hand type (for display)")]
+    public MahjongHandTypes currentHandType = MahjongHandTypes.None;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
 
-        StartCoroutine(DrawInitialHand());
+        currentHandSize = defaultHandSize;
+        maxDiscards = defaultMaxDiscards;
+        currentDiscards = maxDiscards;
+        discardsText.text = $"{currentDiscards}/{maxDiscards}";
+
+        foreach (Transform tileObj in tileContainer) Destroy(tileObj.gameObject);
     }
 
-    public IEnumerator DrawInitialHand()
+    public IEnumerator DrawTile()
     {
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(drawDuration);
 
-        for (int i = 0; i < defaultHandSize; i++)
-        {
-            DrawTile();
-        }
-    }
-
-    public void DrawTile()
-    {
         TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
         newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
+        newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
         currentHand.Add(newTileObj);
         RepositionTiles(newTileObj);
+    }
+
+    public IEnumerator DrawUntilFullHand()
+    {
+        while (currentHand.Count < currentHandSize)
+        {
+            if (TilesManager.instance.deck.Count == 0) yield break;
+            if (currentHand.Count >= currentHandSize) yield break;
+
+            yield return DrawTile();
+        }
+        SortTiles();
+
+        yield break;
+    }
+
+    public void DiscardButton()
+    {
+        if (currentDiscards <= 0 || selectedTiles.Count == 0) return;
+
+        currentDiscards--;
+        discardsText.text = $"{currentDiscards}/{maxDiscards}";
+
+        StartCoroutine(DiscardTiles(drawWhenDone: true));
+    }
+
+    public IEnumerator DiscardTiles(bool drawWhenDone = false)
+    {
+        foreach (TileObject tileObj in selectedTiles)
+        {
+            yield return new WaitForSeconds(drawDuration);
+
+            TilesManager.instance.discardPile.Add(tileObj.tileData);
+            currentHand.Remove(tileObj);
+            Destroy(tileObj.gameObject);
+        }
+        selectedTiles.Clear();
+
+        if (!drawWhenDone) yield break;
+
+        yield return new WaitForSeconds(0.7f);
+
+        yield return DrawUntilFullHand();
     }
 
     public void AddTile(Tile tile)
@@ -60,28 +115,52 @@ public class PlayerHand : MonoBehaviour
 
     public void SelectTile(TileObject tile)
     {
+        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
-        tile.selectedOverlay.SetActive(true);
-        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetOptimalHand(currentHand, selectedTiles);
-        UnityEngine.Debug.Log("Optimal hand type: " + type.ToString());
-        MahjongHands.PrintTilesList(optimalTiles);
-        //List<Tile> optimalHand = PickOptimalHand();
-        //foreach(Tile t in optimalHand)
-        //{
-        //    t.gameObject.GetComponent<Image>().color = new Color(0.8f, 1f, 1f, 1f);
-        //}
+        UpdateCurrentHandType();
+
+        castSpellButton.SetActive(true);
     }
 
     public void DeselectTile(TileObject tile)
     {
+        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
-        tile.selectedOverlay.SetActive(false);
-        (MahjongHandTypes type, List<TileObject> optimalTiles) = MahjongHands.GetOptimalHand(currentHand, selectedTiles);
-        UnityEngine.Debug.Log("Optimal hand type: " + type.ToString());
-        MahjongHands.PrintTilesList(optimalTiles);
-        //List<Tile> optimalHand = PickOptimalHand();
+        UpdateCurrentHandType();
+
+        if (selectedTiles.Count == 0)
+        {
+            castSpellButton.SetActive(false);
+        }
+    }
+
+    List<Tile> GetSelectedTileData()
+    {
+        List<Tile> list = new List<Tile>();
+        foreach (TileObject t in selectedTiles)
+            list.Add(t.tileData);
+        return list;
+    }
+
+    void UpdateCurrentHandType()
+    {
+        currentHandType = MahjongHands.GetMahjongHand(GetSelectedTileData());
+        castSpellText.text = $"Cast {(currentHandType == MahjongHandTypes.None ? "Nothing" : currentHandType)}";
+    }
+
+    public void PlaySelectedHand()
+    {
+        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+
+        HandAttackResolver.ResolveHandAttack(GetSelectedTileData());
+        castSpellButton.SetActive(false);
+
+        StartCoroutine(DiscardTiles(drawWhenDone: false));
+        StartCoroutine(GameManager.instance.EndPlayerTurn());
     }
 
     // clear
@@ -115,7 +194,25 @@ public class PlayerHand : MonoBehaviour
 
     public void SortTiles()
     {
-        
+        // TEMP
+        foreach (TileObject tile in selectedTiles)
+        {
+            tile.isSelected = false;
+            tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
+            currentHandType = MahjongHandTypes.None;
+            castSpellText.text = $"Cast Nothing";
+        }
+        selectedTiles.Clear();
+        castSpellButton.SetActive(false);
+
+        TileObject[] sortedTiles = currentHand
+            .OrderBy(t => t.tileData.suit)
+            .ThenBy(t =>  t.tileData.rank)
+            .ToArray();
+        for (int i = 0; i < sortedTiles.Length; ++i)
+        {
+            sortedTiles[i].transform.SetSiblingIndex(i);
+        }
     }
 
     // O(n)

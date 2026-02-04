@@ -10,6 +10,7 @@ public class TilesManager : MonoBehaviour
 
     public List<MahjongTile> baseTileDataList;
     public List<Tile> deck;
+    public List<Tile> discardPile;
 
     private void Awake()
     {

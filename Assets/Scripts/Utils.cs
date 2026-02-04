@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 /// <summary>
@@ -20,4 +21,13 @@ public static class Utils
             (list[n], list[k]) = (list[k], list[n]);
         }
     } 
+
+    public static void QuitGame()
+    {
+        #if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
 }

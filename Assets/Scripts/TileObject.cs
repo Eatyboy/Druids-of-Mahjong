@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileObject : MonoBehaviour, IPointerClickHandler
+public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public RectTransform rt;
 
@@ -45,5 +45,15 @@ public class TileObject : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         ToggleSelected();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        selectedOverlay.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        selectedOverlay.SetActive(false);
     }
 }

@@ -4,15 +4,16 @@ using UnityEngine;
 public class TestEnemy : Enemy
 {
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            Attack();
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            TakeDamage(2);
-        }
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    GameManager.instance.combatState = CombatState.EnemyTurn;
+        //    StartCoroutine(Attack());
+        //}
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    TakeDamage(2);
+        //}
     }
 }

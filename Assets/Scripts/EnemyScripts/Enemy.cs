@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [Tooltip("Abstract Class that Enemies should inherit from")]
@@ -5,13 +6,30 @@ using UnityEngine;
 // Create New Enemy Scripts inheriting from Enemy
 public abstract class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField]
-    protected int currentHP = 100; // Default: 10
-    [SerializeField]
-    protected int maxHP = 100; // Default: 10
+    public int currentHP = 100; // Default: 10
+    public int maxHP = 100; // Default: 10
+    public int qiOnDeath = 100;
+    public int attackDamage = 1;
+
 
     [SerializeField]
     protected Transform player; // Reference to deal damage to player
+    [SerializeField] private HealthBarUI healthBar;
+
+    protected void OnEnable()
+    {
+        HandAttackResolver.OnAttackResolved += HandleAttackResolved;
+    }
+
+    protected void OnDisable()
+    {
+        HandAttackResolver.OnAttackResolved -= HandleAttackResolved;
+    }
+
+    void HandleAttackResolved(AttackResult result)
+    {
+        TakeDamage(result.FinalDamage);
+    }
 
     protected void Start()
     {
@@ -27,28 +45,36 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         // Setup any variables and object assignments here
         currentHP = maxHP;
+        healthBar.SetMaxHealth(maxHP);
+        healthBar.SetHealth(currentHP);
         if (player == null) { /*Debug.Log("Missing Player Reference");*/ }
     }
 
-    protected virtual void Attack()
+    public virtual IEnumerator Attack()
     {
+        yield return new WaitForSeconds(0.4f);
+
         //Debug.Log("Enemy Attacks!");
+        Player.instance.ChangeHealth(-attackDamage);
+
+        yield return new WaitForSeconds(0.4f);
+
+        yield return GameManager.instance.EndEnemyTurn();
     }
 
     protected virtual void OnDeath()
     {
-        //Debug.Log("Enemy Died!");
+        Player.instance.AddQi(qiOnDeath);
     }
 
     // IDamageable
-    public virtual bool TakeDamage(int dmg) 
+    public virtual void TakeDamage(int dmg) 
     {
         currentHP -= dmg;
+        healthBar.SetHealth(currentHP);
 
-        if (currentHP < 0) { 
+        if (currentHP <= 0) { 
             OnDeath(); 
-            return true; 
         }
-        return false;
     }
 }
