@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
         health = maxHealth;
 
         healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetHealth(health);
         qiCounter.SetQi(qi);
     }
 
@@ -45,6 +46,22 @@ public class Player : MonoBehaviour
         //{
         //    ChangeHealth(1.0f);
         //}
+    }
+
+    public class PlayerTakeDamage : ICombatAction
+    {
+        private readonly int damageToTake;
+
+        public PlayerTakeDamage(int damageToTake)
+        {
+            this.damageToTake = damageToTake;
+        }
+
+        public IEnumerator Execute()
+        {
+            instance.ChangeHealth(-damageToTake);
+            yield break;
+        }
     }
 
     public void ChangeHealth(float healthChange) {

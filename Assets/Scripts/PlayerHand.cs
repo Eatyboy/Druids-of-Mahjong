@@ -33,6 +33,8 @@ public class PlayerHand : MonoBehaviour
     public int maxDiscards;
     public int currentDiscards;
 
+    public bool isTurnActive = false;
+
     [Header("Current hand type (for display)")]
     public MahjongHandTypes currentHandType = MahjongHandTypes.None;
 
@@ -115,7 +117,7 @@ public class PlayerHand : MonoBehaviour
 
     public void SelectTile(TileObject tile)
     {
-        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+        if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Add(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
@@ -126,7 +128,7 @@ public class PlayerHand : MonoBehaviour
 
     public void DeselectTile(TileObject tile)
     {
-        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+        if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Remove(tile);
         tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
@@ -154,13 +156,14 @@ public class PlayerHand : MonoBehaviour
 
     public void PlaySelectedHand()
     {
-        if (GameManager.instance.combatState != CombatState.PlayerTurn) return;
+        if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
-        HandAttackResolver.ResolveHandAttack(GetSelectedTileData());
+        CombatManager.instance.actionQueue.Enqueue(new HandAttackResolver.HandAttack(GetSelectedTileData()));
         castSpellButton.SetActive(false);
 
         StartCoroutine(DiscardTiles(drawWhenDone: false));
-        StartCoroutine(GameManager.instance.EndPlayerTurn());
+        
+        isTurnActive = false;
     }
 
     // clear

@@ -11,6 +11,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public int qiOnDeath = 100;
     public int attackDamage = 1;
 
+    public bool isTurnActive = false;
+
 
     [SerializeField]
     protected Transform player; // Reference to deal damage to player
@@ -28,14 +30,14 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     void HandleAttackResolved(AttackResult result)
     {
-        TakeDamage(result.FinalDamage);
+        CombatManager.instance.actionQueue.Enqueue(new EnemyTakeDamage(this, result.FinalDamage));
     }
 
     protected void Start()
     {
         Init();
-        Debug.Log("Initializing Enemy");
     }
+
     protected virtual void Update()
     {
 
@@ -50,16 +52,28 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (player == null) { /*Debug.Log("Missing Player Reference");*/ }
     }
 
-    public virtual IEnumerator Attack()
+    public class EnemyAttack : ICombatAction
     {
-        yield return new WaitForSeconds(0.4f);
+        private readonly int damage;
 
-        //Debug.Log("Enemy Attacks!");
-        Player.instance.ChangeHealth(-attackDamage);
+        public EnemyAttack(int damage)
+        {
+            this.damage = damage;
+        }
 
-        yield return new WaitForSeconds(0.4f);
+        public IEnumerator Execute()
+        {
+            yield return new WaitForSeconds(0.4f);
 
-        yield return GameManager.instance.EndEnemyTurn();
+            CombatManager.instance.actionQueue.Enqueue(new Player.PlayerTakeDamage(-damage));
+
+            yield return new WaitForSeconds(0.4f);
+        }
+    }
+
+    public virtual void MakeAttackDecision()
+    {
+        CombatManager.instance.actionQueue.Enqueue(new EnemyAttack(attackDamage));
     }
 
     protected virtual void OnDeath()
@@ -67,14 +81,27 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         Player.instance.AddQi(qiOnDeath);
     }
 
-    // IDamageable
-    public virtual void TakeDamage(int dmg) 
+    public class EnemyTakeDamage : ICombatAction
     {
-        currentHP -= dmg;
-        healthBar.SetHealth(currentHP);
+        private readonly Enemy enemy;
+        private readonly int damageToTake;
 
-        if (currentHP <= 0) { 
-            OnDeath(); 
+        public EnemyTakeDamage(Enemy enemy, int damageToTake)
+        {
+            this.enemy = enemy;
+            this.damageToTake = damageToTake;
         }
+
+        public IEnumerator Execute()
+        {
+            enemy.currentHP -= damageToTake;
+            enemy.healthBar.SetHealth(enemy.currentHP);
+
+            if (enemy.currentHP <= 0) { 
+                enemy.OnDeath(); 
+            }
+
+            yield break;
+        }  
     }
 }

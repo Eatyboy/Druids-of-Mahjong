@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 // Result of resolving a played hand into an attack
@@ -17,23 +18,34 @@ public static class HandAttackResolver
     // Raised when a hand attack is resolved. Subscribe to deal damage, show VFX, etc
     public static event Action<AttackResult> OnAttackResolved;
 
-    // Takes the played hand, determines its type, computes damage, and raises OnAttackResolved.
-    public static void ResolveHandAttack(List<Tile> hand)
+    public class HandAttack : ICombatAction
     {
-        if (hand == null || hand.Count == 0)
+        private readonly List<Tile> hand;
+
+        public HandAttack(List<Tile> hand)
         {
-            RaiseResult(0, 0, MahjongHandTypes.None, hand);
-            return;
+            this.hand = hand;
         }
 
-        MahjongHandTypes handType = MahjongHands.GetMahjongHand(hand);
-        int baseDamage = MahjongHands.GetScoreForHand(handType);
+        public IEnumerator Execute()
+        {
+            if (hand == null || hand.Count == 0)
+            {
+                RaiseResult(0, 0, MahjongHandTypes.None, hand);
+                yield break;
+            }
 
-        int honorBonus = GetHonorDamageBonus(hand);
-        int modifierBonus = GetTileModifierBonus(hand);
-        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
+            MahjongHandTypes handType = MahjongHands.GetMahjongHand(hand);
+            int baseDamage = MahjongHands.GetScoreForHand(handType);
 
-        RaiseResult(baseDamage, finalDamage, handType, hand);
+            int honorBonus = GetHonorDamageBonus(hand);
+            int modifierBonus = GetTileModifierBonus(hand);
+            int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
+
+            RaiseResult(baseDamage, finalDamage, handType, hand);
+
+            yield break;
+        }
     }
 
     static void RaiseResult(int baseDamage, int finalDamage, MahjongHandTypes handType, List<Tile> tiles)
