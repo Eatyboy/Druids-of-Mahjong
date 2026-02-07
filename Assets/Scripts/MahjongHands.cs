@@ -23,35 +23,29 @@ public enum MahjongHandTypes
 
 public class MahjongHands
 {
-    public static (MahjongHandTypes type, List<TileObject> tiles) GetOptimalHand(List<TileObject> allTiles, List<TileObject> selectedTiles)
+    // elements 0-4: pairs, sets, three runs, quads, nine runs
+    public static List<List<Tile>> GetAllHandCombinations(List<Tile> selectedTiles)
     {
-        if (selectedTiles.Count == 0 || allTiles.Count == 0) return (MahjongHandTypes.None, null);
+        List<Tile> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
 
-        List<TileObject> optimalHand = new();
-        MahjongHandTypes optimalHandType = MahjongHandTypes.None;
-        List<TileObject> sortedHand = MahjongMergeSort(allTiles, 0, allTiles.Count - 1); // probably no use
-        List<TileObject> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
-        
-        // PrintTilesList(sortedSelectedTiles);
-
-        List<List<TileObject>> pairCombinations = new(); // 2 of a kind
-        List<List<TileObject>> setCombinations = new(); // 3 of a kind
-        List<List<TileObject>> threeRunCombinations = new(); // 3 in sequence
-        List<List<TileObject>> quadCombinations = new(); // 4 of a kind
-        List<List<TileObject>> nineRunCombinations = new(); // 9 in sequence\
+        List<List<Tile>> pairCombinations = new(); // 2 of a kind
+        List<List<Tile>> setCombinations = new(); // 3 of a kind
+        List<List<Tile>> threeRunCombinations = new(); // 3 in sequence
+        List<List<Tile>> quadCombinations = new(); // 4 of a kind
+        List<List<Tile>> nineRunCombinations = new(); // 9 in sequence\
         // each tile can only be part of one type of combination; e.g. if its in a run, it can't be in a set
 
-        foreach (TileObject st in sortedSelectedTiles)
+        foreach (Tile st in sortedSelectedTiles)
         {
-            List<TileObject> sameKindList = new();
-            List<TileObject> sequenceList = new();
+            List<Tile> sameKindList = new();
+            List<Tile> sequenceList = new();
             
             // check for same kind (pair, set, quad) combinations by iterating through entire sorted list
-            foreach (TileObject at in sortedSelectedTiles)
+            foreach (Tile at in sortedSelectedTiles)
             {
-                if (at.tileData.suit != st.tileData.suit) continue;
+                if (at.suit != st.suit) continue;
 
-                if (at.tileData.rank == st.tileData.rank)
+                if (at.rank == st.rank)
                 {
                     sameKindList.Add(at);
                     switch (sameKindList.Count)
@@ -69,20 +63,20 @@ public class MahjongHands
 
             // check for 9-run
             // bring to left of suit in sorted list
-            while (sortedSelectedTiles[i].tileData.suit == st.tileData.suit && i > 0)
+            while (sortedSelectedTiles[i].suit == st.suit && i > 0)
             {
                 i--;
             }
             if (i > 0) i++;
             // check rightward
-            if (sortedSelectedTiles[i].tileData.suit == st.tileData.suit)
+            if (sortedSelectedTiles[i].suit == st.suit)
             {
                 sequenceList.Add(sortedSelectedTiles[i]);
             }
-            while (sortedSelectedTiles[i].tileData.suit == st.tileData.suit && i < sortedSelectedTiles.Count - 1)
+            while (sortedSelectedTiles[i].suit == st.suit && i < sortedSelectedTiles.Count - 1)
             {
                 // no duplicates
-                if (sortedSelectedTiles[i + 1].tileData.rank != sortedSelectedTiles[i].tileData.rank)
+                if (sortedSelectedTiles[i + 1].rank != sortedSelectedTiles[i].rank)
                 {
                     sequenceList.Add(sortedSelectedTiles[i + 1]);
                 }
@@ -103,28 +97,145 @@ public class MahjongHands
                 int pI = sequenceList.IndexOf(st);
                 if (pI - 2 >= 0)
                 {
-                    if (((float)sequenceList[pI - 2].tileData.rank + (float)sequenceList[pI - 1].tileData.rank + (float)sequenceList[pI].tileData.rank) / 3 
-                        == (float)st.tileData.rank)
+                    if (((float)sequenceList[pI - 2].rank + (float)sequenceList[pI - 1].rank + (float)sequenceList[pI].rank) / 3 
+                        == (float)st.rank)
                     {
-                        List<TileObject> newCombo = new List<TileObject> {sequenceList[pI - 2], sequenceList[pI - 1], sequenceList[pI]};
+                        List<Tile> newCombo = new List<Tile> {sequenceList[pI - 2], sequenceList[pI - 1], sequenceList[pI]};
                         threeRunCombinations.Add(newCombo);
                     }
                 }
                 if (pI - 1 >= 0 && pI + 1 <= sequenceList.Count - 1)
                 {
-                    if (((float)sequenceList[pI - 1].tileData.rank + (float)sequenceList[pI].tileData.rank + (float)sequenceList[pI + 1].tileData.rank) / 3 
-                        == (float)st.tileData.rank)
+                    if (((float)sequenceList[pI - 1].rank + (float)sequenceList[pI].rank + (float)sequenceList[pI + 1].rank) / 3 
+                        == (float)st.rank)
                     {
-                        List<TileObject> newCombo = new List<TileObject> {sequenceList[pI - 1], sequenceList[pI], sequenceList[pI + 1]};
+                        List<Tile> newCombo = new List<Tile> {sequenceList[pI - 1], sequenceList[pI], sequenceList[pI + 1]};
                         threeRunCombinations.Add(newCombo);
                     }
                 }
                 if (pI + 2 <= sequenceList.Count - 1)
                 {
-                    if (((float)sequenceList[pI].tileData.rank + (float)sequenceList[pI + 1].tileData.rank + (float)sequenceList[pI + 2].tileData.rank) / 3 == 
-                        (float)st.tileData.rank)
+                    if (((float)sequenceList[pI].rank + (float)sequenceList[pI + 1].rank + (float)sequenceList[pI + 2].rank) / 3 == 
+                        (float)st.rank)
                     {
-                        List<TileObject> newCombo = new List<TileObject> {sequenceList[pI], sequenceList[pI + 1], sequenceList[pI + 2]};
+                        List<Tile> newCombo = new List<Tile> {sequenceList[pI], sequenceList[pI + 1], sequenceList[pI + 2]};
+                        threeRunCombinations.Add(newCombo);
+                    }
+                }
+            }
+
+        }
+
+        List<List<Tile>> result = new();
+        result.AddRange(pairCombinations);
+        result.AddRange(setCombinations);
+        result.AddRange(threeRunCombinations);
+        result.AddRange(quadCombinations);
+        result.AddRange(nineRunCombinations);
+
+        return result;
+    }
+
+    public static (MahjongHandTypes type, List<Tile> tiles) GetOptimalHand(List<Tile> selectedTiles)
+    {
+        if (selectedTiles.Count == 0) return (MahjongHandTypes.None, null);
+
+        List<Tile> optimalHand = new();
+        List<Tile> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
+        
+        // PrintTilesList(sortedSelectedTiles);
+
+        List<List<Tile>> pairCombinations = new(); // 2 of a kind
+        List<List<Tile>> setCombinations = new(); // 3 of a kind
+        List<List<Tile>> threeRunCombinations = new(); // 3 in sequence
+        List<List<Tile>> quadCombinations = new(); // 4 of a kind
+        List<List<Tile>> nineRunCombinations = new(); // 9 in sequence\
+        // each tile can only be part of one type of combination; e.g. if its in a run, it can't be in a set
+
+        foreach (Tile st in sortedSelectedTiles)
+        {
+            List<Tile> sameKindList = new();
+            List<Tile> sequenceList = new();
+            
+            // check for same kind (pair, set, quad) combinations by iterating through entire sorted list
+            foreach (Tile at in sortedSelectedTiles)
+            {
+                if (at.suit != st.suit) continue;
+
+                if (at.rank == st.rank)
+                {
+                    sameKindList.Add(at);
+                    switch (sameKindList.Count)
+                    {
+                        case 2: pairCombinations.Add(sameKindList.GetRange(0, 2)); break;
+                        case 3: setCombinations.Add(sameKindList.GetRange(0, 3)); break;
+                        case 4: quadCombinations.Add(sameKindList.GetRange(0, 4)); break;
+                    }
+                }
+            }
+
+            // check for sequences (left and right check)
+            // this implementation sucks tbh
+            int i = sortedSelectedTiles.IndexOf(st);
+
+            // check for 9-run
+            // bring to left of suit in sorted list
+            while (sortedSelectedTiles[i].suit == st.suit && i > 0)
+            {
+                i--;
+            }
+            if (i > 0) i++;
+            // check rightward
+            if (sortedSelectedTiles[i].suit == st.suit)
+            {
+                sequenceList.Add(sortedSelectedTiles[i]);
+            }
+            while (sortedSelectedTiles[i].suit == st.suit && i < sortedSelectedTiles.Count - 1)
+            {
+                // no duplicates
+                if (sortedSelectedTiles[i + 1].rank != sortedSelectedTiles[i].rank)
+                {
+                    sequenceList.Add(sortedSelectedTiles[i + 1]);
+                }
+                i++;
+            }
+
+            // UnityEngine.Debug.Log("sequence list");
+            // PrintTilesList(sequenceList);
+
+            // should already be sorted
+            // check for nine-run and sequence in sequence list (duplicates removed)
+            if (sequenceList.Count == 9)
+            {
+                nineRunCombinations.Add(sequenceList);
+            }
+            if (sequenceList.Count >= 3)
+            {
+                int pI = sequenceList.IndexOf(st);
+                if (pI - 2 >= 0)
+                {
+                    if (((float)sequenceList[pI - 2].rank + (float)sequenceList[pI - 1].rank + (float)sequenceList[pI].rank) / 3 
+                        == (float)st.rank)
+                    {
+                        List<Tile> newCombo = new List<Tile> {sequenceList[pI - 2], sequenceList[pI - 1], sequenceList[pI]};
+                        threeRunCombinations.Add(newCombo);
+                    }
+                }
+                if (pI - 1 >= 0 && pI + 1 <= sequenceList.Count - 1)
+                {
+                    if (((float)sequenceList[pI - 1].rank + (float)sequenceList[pI].rank + (float)sequenceList[pI + 1].rank) / 3 
+                        == (float)st.rank)
+                    {
+                        List<Tile> newCombo = new List<Tile> {sequenceList[pI - 1], sequenceList[pI], sequenceList[pI + 1]};
+                        threeRunCombinations.Add(newCombo);
+                    }
+                }
+                if (pI + 2 <= sequenceList.Count - 1)
+                {
+                    if (((float)sequenceList[pI].rank + (float)sequenceList[pI + 1].rank + (float)sequenceList[pI + 2].rank) / 3 == 
+                        (float)st.rank)
+                    {
+                        List<Tile> newCombo = new List<Tile> {sequenceList[pI], sequenceList[pI + 1], sequenceList[pI + 2]};
                         threeRunCombinations.Add(newCombo);
                     }
                 }
@@ -145,18 +256,18 @@ public class MahjongHands
 
         // DEBUG: check if this actually works using combinatorics and stats
         // Addendum: brute force it, check every single combination, O(n^2)
-        foreach (List<TileObject> p in pairCombinations)
+        foreach (List<Tile> p in pairCombinations)
         {
             optimalHand.Clear();
             optimalHand.AddRange(p);
             // oh god
-            foreach (List<TileObject> setPivot in setCombinations)
+            foreach (List<Tile> setPivot in setCombinations)
             {
                 if (CheckForCommonTile(setPivot, optimalHand)) continue;
 
                 optimalHand.AddRange(setPivot);
 
-                foreach (List<TileObject> sc1 in setCombinations)
+                foreach (List<Tile> sc1 in setCombinations)
                 {
                     if (ContainsSameTiles(setPivot, sc1)) continue;
 
@@ -169,7 +280,7 @@ public class MahjongHands
                         }
                     }
                 }
-                foreach (List<TileObject> rc1 in threeRunCombinations)
+                foreach (List<Tile> rc1 in threeRunCombinations)
                 {
                     if (!CheckForCommonTile(optimalHand, rc1))
                     {
@@ -185,13 +296,13 @@ public class MahjongHands
             optimalHand.Clear();
             optimalHand.AddRange(p);
 
-            foreach (List<TileObject> runPivot in threeRunCombinations)
+            foreach (List<Tile> runPivot in threeRunCombinations)
             {
                 if (CheckForCommonTile(runPivot, optimalHand)) continue;
 
                 optimalHand.AddRange(runPivot);
 
-                foreach (List<TileObject> rc2 in threeRunCombinations)
+                foreach (List<Tile> rc2 in threeRunCombinations)
                 {
                     if (ContainsSameTiles(runPivot, rc2)) continue;
 
@@ -204,7 +315,7 @@ public class MahjongHands
                         }
                     }
                 }
-                foreach (List<TileObject> sc2 in setCombinations)
+                foreach (List<Tile> sc2 in setCombinations)
                 {
                     if (!CheckForCommonTile(optimalHand, sc2))
                     {
@@ -266,7 +377,7 @@ public class MahjongHands
         optimalHand = new();
         if (setCombinations != null)
         {
-            foreach (List<TileObject> setPivot in setCombinations)
+            foreach (List<Tile> setPivot in setCombinations)
             {
                 if (optimalHand != null)
                 {
@@ -274,7 +385,7 @@ public class MahjongHands
                     optimalHand.AddRange(setPivot);  
                 }
 
-                foreach (List<TileObject> r in threeRunCombinations)
+                foreach (List<Tile> r in threeRunCombinations)
                 {
                     if (ContainsSameTiles(setPivot, r)) continue;
 
@@ -288,7 +399,7 @@ public class MahjongHands
                     }
                 }
 
-                foreach (List<TileObject> s in setCombinations)
+                foreach (List<Tile> s in setCombinations)
                 {
                     if (ContainsSameTiles(setPivot, s)) continue;
 
@@ -308,7 +419,7 @@ public class MahjongHands
                     optimalHand.AddRange(setPivot);  
                 }
 
-                foreach (List<TileObject> s in setCombinations)
+                foreach (List<Tile> s in setCombinations)
                 {
                     if (ContainsSameTiles(setPivot, s)) continue;
 
@@ -322,7 +433,7 @@ public class MahjongHands
                     }
                 }
 
-                foreach (List<TileObject> r in threeRunCombinations)
+                foreach (List<Tile> r in threeRunCombinations)
                 {
                     if (ContainsSameTiles(setPivot, r)) continue;
 
@@ -373,17 +484,17 @@ public class MahjongHands
         return (MahjongHandTypes.None, null);
     }
 
-    private static List<TileObject> FindSetOfCombinationsFromAll(List<List<TileObject>> allCombinationsList, int outputSize)
+    private static List<Tile> FindSetOfCombinationsFromAll(List<List<Tile>> allCombinationsList, int outputSize)
     {
-        List<TileObject> output = new();
+        List<Tile> output = new();
         if (allCombinationsList == null) return null;
 
-        foreach (List<TileObject> tPivot in allCombinationsList)
+        foreach (List<Tile> tPivot in allCombinationsList)
         {
             output.Clear();
             output.AddRange(tPivot);
 
-            foreach(List<TileObject> t in allCombinationsList)
+            foreach(List<Tile> t in allCombinationsList)
             {
                 if (!CheckForCommonTile(output, t))
                 {
@@ -400,7 +511,7 @@ public class MahjongHands
     }
 
     // implement merge sort for player hand (suit order based on MahjongTile TileSuit enum)
-    public static List<TileObject> MahjongMergeSort(List<TileObject> inputList, int leftIndex, int rightIndex)
+    public static List<Tile> MahjongMergeSort(List<Tile> inputList, int leftIndex, int rightIndex)
     {
         if (leftIndex < rightIndex)
         {
@@ -414,12 +525,12 @@ public class MahjongHands
     }
 
     // holy copy paste
-    private static void Merge(List<TileObject> inputList, int leftIndex, int middleIndex, int rightIndex)
+    private static void Merge(List<Tile> inputList, int leftIndex, int middleIndex, int rightIndex)
     {
         int leftListLength = middleIndex - leftIndex + 1;
         int rightListLength = rightIndex - middleIndex;
-        List<TileObject> leftTempList = new();
-        List<TileObject> rightTempList = new();
+        List<Tile> leftTempList = new();
+        List<Tile> rightTempList = new();
         int i, j;
         for (i = 0; i < leftListLength; ++i)
             leftTempList.Add(inputList[leftIndex + i]);
@@ -431,19 +542,19 @@ public class MahjongHands
         while (i < leftListLength && j < rightListLength)
         {
             // check suit first
-            if ((int)leftTempList[i].tileData.suit < (int)rightTempList[j].tileData.suit)
+            if ((int)leftTempList[i].suit < (int)rightTempList[j].suit)
             {
                 inputList[k++] = leftTempList[i++];
                 continue;
             }
-            else if ((int)leftTempList[i].tileData.suit > (int)rightTempList[j].tileData.suit)
+            else if ((int)leftTempList[i].suit > (int)rightTempList[j].suit)
             {
                 inputList[k++] = rightTempList[j++];
                 continue;
             }
 
             // then rank
-            if (leftTempList[i].tileData.rank <= rightTempList[j].tileData.rank)
+            if (leftTempList[i].rank <= rightTempList[j].rank)
             {
                 inputList[k++] = leftTempList[i++];
             }
@@ -463,7 +574,7 @@ public class MahjongHands
     } 
 
     // check if two lists contain the same tile
-    private static bool CheckForCommonTile(List<TileObject> list1, List<TileObject> list2)
+    private static bool CheckForCommonTile(List<Tile> list1, List<Tile> list2)
     {
         if (list1 == null || list2 == null) return false;
         // Use Any() to check if any element of list1 is present in list2
@@ -471,7 +582,7 @@ public class MahjongHands
     }
 
     // check if two lists contain the same tiles, in order
-    private static bool ContainsSameTiles(List<TileObject> list1, List<TileObject> list2)
+    private static bool ContainsSameTiles(List<Tile> list1, List<Tile> list2)
     {
         if (list1.Count != list2.Count) return false;
         for (int i = 0; i < list1.Count; i++)
@@ -481,7 +592,7 @@ public class MahjongHands
         return true;
     }
 
-    public static void PrintTilesList(List<TileObject> list)
+    public static void PrintTilesList(List<Tile> list)
     {
         if (list == null)
         {
@@ -495,15 +606,15 @@ public class MahjongHands
         }
 
         string msg = "{";
-        foreach (TileObject t in list)
+        foreach (Tile t in list)
         {
-            msg += t.tileData.rank + " of " + t.tileData.suit  + ", ";
+            msg += t.rank + " of " + t.suit  + ", ";
         }
         msg += "}";
         UnityEngine.Debug.Log(msg);
     }
     
-    public static void Print2DTilesList(List<List<TileObject>> list)
+    public static void Print2DTilesList(List<List<Tile>> list)
     {
         if (list == null)
         {
@@ -517,12 +628,12 @@ public class MahjongHands
         }
 
         string msg = "{";
-        foreach (List<TileObject> l in list)
+        foreach (List<Tile> l in list)
         {
             msg += "{";
-            foreach (TileObject t in l)
+            foreach (Tile t in l)
             {
-                msg += t.tileData.rank + " of " + t.tileData.suit + ", ";
+                msg += t.rank + " of " + t.suit + ", ";
             }
             msg += "}, ";
         }
