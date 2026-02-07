@@ -29,6 +29,7 @@ public class PlayerHand : MonoBehaviour
 
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
+    public List<FlowerTile> flowerTiles;
     public int currentHandSize = 14;
     public int maxDiscards;
     public int currentDiscards;
@@ -140,10 +141,19 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    List<Tile> GetSelectedTileData()
+    // made these two functions public. if its an issue, let me know and ill revert it -aiden
+    public List<Tile> GetSelectedTileData()
     {
         List<Tile> list = new List<Tile>();
         foreach (TileObject t in selectedTiles)
+            list.Add(t.tileData);
+        return list;
+    }
+
+    public List<Tile> GetPlayerHandTileData()
+    {
+        List<Tile> list = new List<Tile>();
+        foreach (TileObject t in currentHand)
             list.Add(t.tileData);
         return list;
     }
@@ -162,8 +172,33 @@ public class PlayerHand : MonoBehaviour
         castSpellButton.SetActive(false);
 
         StartCoroutine(DiscardTiles(drawWhenDone: false));
+        ActivateFlowerTilesOnPlay();
         
         isTurnActive = false;
+    }
+
+    public void ActivateFlowerTilesOnPlay()
+    {
+        foreach (FlowerTile ft in flowerTiles)
+        {
+            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnPlayHand(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData()));
+        }
+    }
+
+    public void ActivateFlowerTilesOnIncomingDamage(int dmg)
+    {
+        foreach (FlowerTile ft in flowerTiles)
+        {
+            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnIncomingAttack(dmg));
+        }
+    }
+
+    public void ActivateFlowerTilesOnTakeDamage(int dmg)
+    {
+        foreach (FlowerTile ft in flowerTiles)
+        {
+            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnTakeDamage(dmg));
+        }
     }
 
     // clear

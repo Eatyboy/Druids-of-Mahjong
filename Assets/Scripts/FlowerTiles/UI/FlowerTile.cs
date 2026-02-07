@@ -23,6 +23,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         this.data = data;
         image.sprite = data.sprite;
+        CombatManager.instance.actionQueue.Enqueue(() => effectClass.OnInitialize(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData()));
     }
 
     public void OnPointerEnter(PointerEventData eventData)
