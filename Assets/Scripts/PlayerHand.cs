@@ -172,33 +172,9 @@ public class PlayerHand : MonoBehaviour
         castSpellButton.SetActive(false);
 
         StartCoroutine(DiscardTiles(drawWhenDone: false));
-        ActivateFlowerTilesOnPlay();
+        FlowerTileManager.instance.ActivateFlowerTilesOnPlay();
         
         isTurnActive = false;
-    }
-
-    public void ActivateFlowerTilesOnPlay()
-    {
-        foreach (FlowerTile ft in flowerTiles)
-        {
-            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnPlayHand(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData()));
-        }
-    }
-
-    public void ActivateFlowerTilesOnIncomingDamage(int dmg)
-    {
-        foreach (FlowerTile ft in flowerTiles)
-        {
-            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnIncomingAttack(dmg));
-        }
-    }
-
-    public void ActivateFlowerTilesOnTakeDamage(int dmg)
-    {
-        foreach (FlowerTile ft in flowerTiles)
-        {
-            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnTakeDamage(dmg));
-        }
     }
 
     // clear

@@ -56,9 +56,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
         yield return new WaitForSeconds(2.0f);
 
-        PlayerHand.instance.ActivateFlowerTilesOnIncomingDamage(-attackDamage);
+        FlowerTileManager.instance.ActivateFlowerTilesOnIncomingDamage(-attackDamage);
         CombatManager.instance.actionQueue.Enqueue(() => Player.instance.PlayerTakeDamage(-attackDamage));
-        PlayerHand.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
+        FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
 
         Destroy(attackTile.gameObject);
     }
