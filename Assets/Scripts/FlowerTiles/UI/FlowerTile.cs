@@ -6,6 +6,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 {
     public FlowerTileData data;
     public RectTransform rectTransform;
+    public FlowerTileEffect effectClass;
 
     [SerializeField] private Image image;
 
