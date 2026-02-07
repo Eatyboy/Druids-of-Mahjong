@@ -23,13 +23,11 @@ public enum MahjongHandTypes
 
 public class MahjongHands
 {
-    public static (MahjongHandTypes type, List<TileObject> tiles) GetOptimalHand(List<TileObject> allTiles, List<TileObject> selectedTiles)
+    public static (MahjongHandTypes type, List<TileObject> tiles) GetOptimalHand(List<TileObject> selectedTiles)
     {
-        if (selectedTiles.Count == 0 || allTiles.Count == 0) return (MahjongHandTypes.None, null);
+        if (selectedTiles.Count == 0) return (MahjongHandTypes.None, null);
 
         List<TileObject> optimalHand = new();
-        MahjongHandTypes optimalHandType = MahjongHandTypes.None;
-        List<TileObject> sortedHand = MahjongMergeSort(allTiles, 0, allTiles.Count - 1); // probably no use
         List<TileObject> sortedSelectedTiles = MahjongMergeSort(selectedTiles, 0, selectedTiles.Count - 1);
         
         // PrintTilesList(sortedSelectedTiles);
