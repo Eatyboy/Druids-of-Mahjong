@@ -1,21 +1,18 @@
 using System.Collections;
 using UnityEngine;
 
-[Tooltip("Abstract Class that Enemies should inherit from")]
-// Only Common Functionality and can be Overrided
-// Create New Enemy Scripts inheriting from Enemy
-public abstract class Enemy : MonoBehaviour, IDamageable
+public class Enemy : MonoBehaviour, IDamageable
 {
     public int currentHP = 100; // Default: 10
     public int maxHP = 100; // Default: 10
     public int qiOnDeath = 100;
     public int attackDamage = 1;
 
+    [SerializeField] private EnemyAttackTileObject tilePrefab;
+    [SerializeField] private Vector2 attackTileOffset;
+
     public bool isTurnActive = false;
 
-
-    [SerializeField]
-    protected Transform player; // Reference to deal damage to player
     [SerializeField] private HealthBarUI healthBar;
 
     protected void OnEnable()
@@ -30,7 +27,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     void HandleAttackResolved(AttackResult result)
     {
-        CombatManager.instance.actionQueue.Enqueue(new EnemyTakeDamage(this, result.FinalDamage));
+        CombatManager.instance.actionQueue.Enqueue(() => EnemyTakeDamage(result.FinalDamage));
     }
 
     protected void Start()
@@ -49,31 +46,25 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         currentHP = maxHP;
         healthBar.SetMaxHealth(maxHP);
         healthBar.SetHealth(currentHP);
-        if (player == null) { /*Debug.Log("Missing Player Reference");*/ }
     }
 
-    public class EnemyAttack : ICombatAction
+    public IEnumerator EnemyAttack(Tile intentedTile)
     {
-        private readonly int damage;
+        EnemyAttackTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
+        attackTile.Initialize(intentedTile);
+        attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
 
-        public EnemyAttack(int damage)
-        {
-            this.damage = damage;
-        }
+        yield return new WaitForSeconds(2.0f);
 
-        public IEnumerator Execute()
-        {
-            yield return new WaitForSeconds(0.4f);
+        CombatManager.instance.actionQueue.Enqueue(() => Player.instance.PlayerTakeDamage(-attackDamage));
 
-            CombatManager.instance.actionQueue.Enqueue(new Player.PlayerTakeDamage(-damage));
-
-            yield return new WaitForSeconds(0.4f);
-        }
+        Destroy(attackTile.gameObject);
     }
 
     public virtual void MakeAttackDecision()
     {
-        CombatManager.instance.actionQueue.Enqueue(new EnemyAttack(attackDamage));
+        Tile intentedTile = TilesManager.instance.GenerateRandomTile();
+        CombatManager.instance.actionQueue.Enqueue(() => EnemyAttack(intentedTile));
     }
 
     protected virtual void OnDeath()
@@ -81,27 +72,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         Player.instance.AddQi(qiOnDeath);
     }
 
-    public class EnemyTakeDamage : ICombatAction
+    public IEnumerator EnemyTakeDamage(int damageToTake)
     {
-        private readonly Enemy enemy;
-        private readonly int damageToTake;
+        currentHP -= damageToTake;
+        healthBar.SetHealth(currentHP);
 
-        public EnemyTakeDamage(Enemy enemy, int damageToTake)
-        {
-            this.enemy = enemy;
-            this.damageToTake = damageToTake;
+        if (currentHP <= 0) { 
+            OnDeath(); 
         }
 
-        public IEnumerator Execute()
-        {
-            enemy.currentHP -= damageToTake;
-            enemy.healthBar.SetHealth(enemy.currentHP);
-
-            if (enemy.currentHP <= 0) { 
-                enemy.OnDeath(); 
-            }
-
-            yield break;
-        }  
-    }
+        yield break;
+    }  
 }

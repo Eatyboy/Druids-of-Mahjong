@@ -158,7 +158,7 @@ public class PlayerHand : MonoBehaviour
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
-        CombatManager.instance.actionQueue.Enqueue(new HandAttackResolver.HandAttack(GetSelectedTileData()));
+        CombatManager.instance.actionQueue.Enqueue(() => HandAttackResolver.HandAttack(GetSelectedTileData()));
         castSpellButton.SetActive(false);
 
         StartCoroutine(DiscardTiles(drawWhenDone: false));

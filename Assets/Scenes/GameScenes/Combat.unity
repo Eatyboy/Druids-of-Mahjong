@@ -1153,6 +1153,7 @@ GameObject:
   - component: {fileID: 1971194712}
   - component: {fileID: 1971194711}
   - component: {fileID: 1971194710}
+  - component: {fileID: 1971194714}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1246,6 +1247,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1971194714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971194709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 233fe92b3e9c2414da89c140921d30da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIManager
 --- !u!224 &2039363317 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6775537827961537692, guid: 967cd4bdcd4b5b042b3ffa02b77bc2c4, type: 3}
@@ -1426,10 +1439,6 @@ PrefabInstance:
       propertyPath: enemySpawn
       value: 
       objectReference: {fileID: 1923497053}
-    - target: {fileID: 1666349130600298449, guid: 44829040f51d2d148acfbf04f09c5e96, type: 3}
-      propertyPath: spawnableEnemies.Array.data[0].spawnWeight
-      value: 10
-      objectReference: {fileID: 0}
     - target: {fileID: 6494747488882278939, guid: 44829040f51d2d148acfbf04f09c5e96, type: 3}
       propertyPath: m_LocalPosition.x
       value: 630.70154
@@ -1483,29 +1492,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 133521789870862884, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 133521789870862884, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 133521789870862884, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1463708378087916918, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
       propertyPath: m_Name
       value: Background
-      objectReference: {fileID: 0}
-    - target: {fileID: 6789119137290861796, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6789119137290861796, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 6789119137290861796, guid: 966ffd7a0305ca243b3f20b752f85c7d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1604,14 +1593,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game Manager
       objectReference: {fileID: 0}
-    - target: {fileID: 8645231350319496712, guid: e2930971175ce0e478a852789f0a3c7c, type: 3}
-      propertyPath: enemySpawn
-      value: 
-      objectReference: {fileID: 1923497053}
-    - target: {fileID: 8645231350319496712, guid: e2930971175ce0e478a852789f0a3c7c, type: 3}
-      propertyPath: 'enemyPrefabs.Array.data[0]'
-      value: 
-      objectReference: {fileID: 379446380324435016, guid: eed6e5c837ac46a4ea242b0ae508dc7b, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

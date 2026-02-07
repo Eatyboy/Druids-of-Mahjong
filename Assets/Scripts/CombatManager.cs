@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,21 +13,13 @@ public enum CombatState
     Victory,
 }
 
-/// <summary>
-/// Represents any combat action. Enemies and the player should enqueue ICombatActions instead of manually executing routines.
-/// </summary>
-public interface ICombatAction
-{
-    IEnumerator Execute(); 
-}
-
 public class CombatManager : MonoBehaviour
 {
     public static CombatManager instance;
 
     public GameState gameState;
     public CombatState combatState;
-    public Queue<ICombatAction> actionQueue = new();
+    public Queue<Func<IEnumerator>> actionQueue = new();
     public bool isPlayerTurnNext;
 
     private void Awake()
@@ -74,7 +67,7 @@ public class CombatManager : MonoBehaviour
                 case CombatState.TurnResolution:
                     while (actionQueue.Count > 0)
                     {
-                        yield return actionQueue.Dequeue().Execute();
+                        yield return actionQueue.Dequeue().Invoke();
                     }
 
                     if (Player.instance.health <= 0) combatState = CombatState.Defeat;

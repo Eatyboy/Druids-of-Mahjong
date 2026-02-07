@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7302320415515243593}
   - component: {fileID: 2827261908996766433}
-  - component: {fileID: 6995330044464407938}
+  - component: {fileID: -6853596958071401160}
   m_Layer: 0
   m_Name: Enemy Placeholder
   m_TagString: Untagged
@@ -93,7 +93,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &6995330044464407938
+--- !u!114 &-6853596958071401160
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,13 +102,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 379446380324435016}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bdc18b0647004045a475751f7d7b489, type: 3}
+  m_Script: {fileID: 11500000, guid: ffeb0a1a8a9787f4eb19bb93d6f4357c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestEnemy
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
   currentHP: 10
   maxHP: 10
   qiOnDeath: 100
-  player: {fileID: 0}
+  attackDamage: 1
+  tilePrefab: {fileID: 3104286343783976574, guid: 9390c9f1d269185479189fb3dd12642d, type: 3}
+  attackTileOffset: {x: 180, y: 120}
+  isTurnActive: 0
   healthBar: {fileID: 2800644182473904679}
 --- !u!1 &3398468050329467044
 GameObject:

@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyManager
   spawnableEnemies:
-  - enemyPrefab: {fileID: 6995330044464407938, guid: eed6e5c837ac46a4ea242b0ae508dc7b, type: 3}
-    spawnWeight: 0
+  - enemyPrefab: {fileID: -6853596958071401160, guid: eed6e5c837ac46a4ea242b0ae508dc7b, type: 3}
+    spawnWeight: 10
   enemySpawn: {fileID: 0}
   currentEnemy: {fileID: 0}

@@ -2,15 +2,11 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public static UIManager instance;
 
-    // Update is called once per frame
-    void Update()
+    private void Awake()
     {
-        
+        if (instance != null && instance != this) Destroy(gameObject);
+        else instance = this;
     }
 }
