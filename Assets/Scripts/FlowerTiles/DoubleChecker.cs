@@ -80,9 +80,9 @@ public class DoubleChecker : FlowerTileEffect
 
         int damageAfter = HandAttackResolver.GetFinalDamageForHand(selectedHand);
         
-        Debug.Log("Player did: " + damageBefore + " damage without flower tile.");
+        // Debug.Log("Player did: " + damageBefore + " damage without flower tile.");
 
-        Debug.Log("Player did: " + damageAfter + " damage without flower tile.");
+        // Debug.Log("Player did: " + damageAfter + " damage without flower tile.");
 
         yield return null;
     }
