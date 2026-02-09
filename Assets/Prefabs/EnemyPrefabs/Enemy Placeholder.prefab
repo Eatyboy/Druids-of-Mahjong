@@ -105,12 +105,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffeb0a1a8a9787f4eb19bb93d6f4357c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  currentHP: 10
-  maxHP: 10
+  currentHP: 100
+  maxHP: 100
   qiOnDeath: 100
   attackDamage: 1
   tilePrefab: {fileID: -5554519734976896734, guid: 9390c9f1d269185479189fb3dd12642d, type: 3}
-  attackTileOffset: {x: 240, y: 120}
+  attackTileOffset: {x: 180, y: 120}
   isTurnActive: 0
   healthBar: {fileID: 2800644182473904679}
 --- !u!1 &3398468050329467044
