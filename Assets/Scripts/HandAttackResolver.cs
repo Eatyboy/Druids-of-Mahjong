@@ -38,6 +38,17 @@ public static class HandAttackResolver
         yield break;
     }
 
+    public static int GetHandBaseDamage(MahjongHandTypes handType, List<Tile> hand)
+    {
+        int baseDamage = MahjongHands.GetScoreForHand(handType);
+
+        int honorBonus = GetHonorDamageBonus(hand);
+        int modifierBonus = GetTileModifierBonus(hand);
+        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
+
+        return finalDamage;
+    }
+
     static void RaiseResult(int baseDamage, int finalDamage, MahjongHandTypes handType, List<Tile> tiles)
     {
         var result = new AttackResult

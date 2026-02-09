@@ -109,8 +109,8 @@ MonoBehaviour:
   maxHP: 10
   qiOnDeath: 100
   attackDamage: 1
-  tilePrefab: {fileID: 3104286343783976574, guid: 9390c9f1d269185479189fb3dd12642d, type: 3}
-  attackTileOffset: {x: 180, y: 120}
+  tilePrefab: {fileID: -5554519734976896734, guid: 9390c9f1d269185479189fb3dd12642d, type: 3}
+  attackTileOffset: {x: 240, y: 120}
   isTurnActive: 0
   healthBar: {fileID: 2800644182473904679}
 --- !u!1 &3398468050329467044

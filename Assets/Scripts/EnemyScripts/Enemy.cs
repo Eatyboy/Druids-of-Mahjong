@@ -1,4 +1,7 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
@@ -54,13 +57,43 @@ public class Enemy : MonoBehaviour, IDamageable
         attackTile.Initialize(intentedTile);
         attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
 
-        yield return new WaitForSeconds(2.0f);
+        Player.ParryContext parryContext;
+        List<Tile> expandedPlayerHand = PlayerHand.instance.currentHand
+            .Select(obj => obj.tileData)
+            .Concat(new[] { attackTile.tileData })
+            .ToList();
+        List<Tile> parryHand = MahjongHands.GetAllHandCombinations(expandedPlayerHand)
+            .Where(hand => hand.Contains(intentedTile))
+            .OrderByDescending(hand => MahjongHands.GetMahjongHand(hand))
+            .FirstOrDefault().ToList();
+        MahjongHandTypes parryHandType = MahjongHands.GetMahjongHand(parryHand);
+        bool canParry = parryHandType != MahjongHandTypes.None
+            && parryHandType != MahjongHandTypes.Pair
+            && parryHandType != MahjongHandTypes.ThreePairs
+            && parryHandType != MahjongHandTypes.AllPairs;
+        if (canParry)
+        {
+            parryContext = new(this, parryHandType, parryHand);
+            Player.instance.OpenParryWindow(parryContext);
+        }
+        else
+        {
+            parryContext = new(this, MahjongHandTypes.None, null);
+        }
+
+        float attackTime = canParry ? Player.instance.baseParryWindow : 2.0f;
+        yield return new WaitForSeconds(attackTime);
 
         FlowerTileManager.instance.ActivateFlowerTilesOnIncomingDamage(-attackDamage);
-        CombatManager.instance.actionQueue.Enqueue(() => Player.instance.PlayerTakeDamage(-attackDamage));
-        FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
-
-        Destroy(attackTile.gameObject);
+        if (parryContext.wasParried)
+        {
+        }
+        else
+        {
+            CombatManager.instance.actionQueue.Enqueue(() => Player.instance.PlayerTakeDamage(attackDamage));
+            FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
+            Destroy(attackTile.gameObject);
+        }
     }
 
     public virtual void MakeAttackDecision()
