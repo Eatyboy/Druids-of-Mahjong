@@ -18,8 +18,6 @@ public static class HandAttackResolver
     // Raised when a hand attack is resolved. Subscribe to deal damage, show VFX, etc
     public static event Action<AttackResult> OnAttackResolved;
 
-    static int modifierBonus = 0;
-
     public static IEnumerator HandAttack(List<Tile> hand)
     {
         if (hand == null || hand.Count == 0)
@@ -32,7 +30,7 @@ public static class HandAttackResolver
         int baseDamage = MahjongHands.GetScoreForHand(handType);
 
         int honorBonus = GetHonorDamageBonus(hand);
-        // int modifierBonus = GetTileModifierBonus(hand);
+        int modifierBonus = GetTileModifierBonus(hand);
         int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
 
         RaiseResult(baseDamage, finalDamage, handType, hand);
@@ -72,25 +70,7 @@ public static class HandAttackResolver
     static int GetTileModifierBonus(List<Tile> hand)
     {
         if (hand == null) return 0;
-
+        // Implement later
         return 0;
-    }
-
-    public static void UpdateModifierBonus(int damageBonus)
-    {
-        modifierBonus += damageBonus;
-    }
-
-    //Helper function to get the final damage for a hand
-    //used for testing and by flower tiles that modify damage after the fact
-    public static int GetFinalDamageForHand(List<Tile> hand)
-    {
-        if (hand == null || hand.Count == 0) return 0;
-
-        MahjongHandTypes handType = MahjongHands.GetMahjongHand(hand);
-        int baseDamage = MahjongHands.GetScoreForHand(handType);
-        int honorBonus = GetHonorDamageBonus(hand);
-        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
-        return finalDamage;
     }
 }
