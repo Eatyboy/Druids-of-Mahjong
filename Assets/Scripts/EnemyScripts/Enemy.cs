@@ -62,18 +62,18 @@ public class Enemy : MonoBehaviour, IDamageable
             .Select(obj => obj.tileData)
             .Concat(new[] { attackTile.tileData })
             .ToList();
-        List<Tile> parryHand = MahjongHands.GetAllHandCombinations(expandedPlayerHand)
-            .Where(hand => hand.Contains(intentedTile))
-            .OrderByDescending(hand => MahjongHands.GetMahjongHand(hand))
-            .FirstOrDefault().ToList();
-        MahjongHandTypes parryHandType = MahjongHands.GetMahjongHand(parryHand);
-        bool canParry = parryHandType != MahjongHandTypes.None
-            && parryHandType != MahjongHandTypes.Pair
-            && parryHandType != MahjongHandTypes.ThreePairs
-            && parryHandType != MahjongHandTypes.AllPairs;
+        (MahjongHandTypes type, List<Tile> tiles) parryHand = MahjongHands
+            .GetAllHandCombinations(expandedPlayerHand)
+            .Where(hand => hand.tiles.Contains(intentedTile))
+            .OrderByDescending(hand => hand.type)
+            .First();
+        bool canParry = parryHand.type != MahjongHandTypes.None
+            && parryHand.type != MahjongHandTypes.Pair
+            && parryHand.type != MahjongHandTypes.ThreePairs
+            && parryHand.type != MahjongHandTypes.AllPairs;
         if (canParry)
         {
-            parryContext = new(this, parryHandType, parryHand);
+            parryContext = new(this, parryHand.type, parryHand.tiles);
             Player.instance.OpenParryWindow(parryContext);
         }
         else
