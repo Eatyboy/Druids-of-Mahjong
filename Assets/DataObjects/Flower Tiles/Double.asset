@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Double
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
   flowerTile: 1
-  tileName: Double Check
+  tileName: Suit Checker
   sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
-  description: Check for pairs
+  description: Give bonus damage for each suit corresponding to the flower tile

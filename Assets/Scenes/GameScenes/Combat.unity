@@ -409,12 +409,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: playerFlowerTiles.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: 'playerFlowerTiles.Array.data[0]'
       value: 
-      objectReference: {fileID: 1960976242}
+      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'playerFlowerTiles.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'playerFlowerTiles.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
     - target: {fileID: 6458211675077567375, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_Name
       value: Flower Tile Manager
@@ -695,17 +703,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a64722aa7ef146d4eb4f17c961ccdf11, type: 3}
---- !u!114 &1580867124 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 894232820659142902, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
-  m_PrefabInstance: {fileID: 743706686}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16652ece54c7124429d8eb7913e36731, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerTileInfoController
 --- !u!1001 &1640580746
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1159,55 +1156,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1960976241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1960976243}
-  - component: {fileID: 1960976242}
-  m_Layer: 0
-  m_Name: DoubleChecker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1960976242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960976241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8113b9f04f0d02429ece1788e131bb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::FlowerTile
-  data: {fileID: 11400000, guid: 52573260d63c09c4cb8da1cc7c086fa9, type: 2}
-  rectTransform: {fileID: 0}
-  effectClass: {fileID: 1575658205815050431, guid: 928875779ff7e6741824a1cf81fb29f8, type: 3}
-  image: {fileID: 0}
-  infoController: {fileID: 1580867124}
---- !u!4 &1960976243
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960976241}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1062.9221, y: 379.61227, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1747,4 +1695,3 @@ SceneRoots:
   - {fileID: 1239511353}
   - {fileID: 2076140659}
   - {fileID: 1923497053}
-  - {fileID: 1960976243}
