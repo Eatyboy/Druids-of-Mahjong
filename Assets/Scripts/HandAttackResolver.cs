@@ -15,52 +15,34 @@ public class AttackResult
 // and raises an event so the enemy (or other listeners) can react
 public static class HandAttackResolver
 {
-    // Raised when a hand attack is resolved. Subscribe to deal damage, show VFX, etc
-    public static event Action<AttackResult> OnAttackResolved;
-
-    static int modifierBonus = 0;
-
-    public static IEnumerator HandAttack(List<Tile> hand)
+    /// <summary>
+    /// Computes the base damage for an attack
+    /// </summary>
+    /// <param name="ctx">The current attack context</param>
+    public static IEnumerator GetBaseAttackDamage(Player.PlayerAttackContext ctx)
     {
-        if (hand == null || hand.Count == 0)
+        if (ctx.selectedHand == null || ctx.selectedHand.Count == 0)
         {
-            RaiseResult(0, 0, MahjongHandTypes.None, hand);
+            ctx.baseDamage = 0;
+            ctx.damage = 0;
+            ctx.handType = MahjongHandTypes.None;
             yield break;
         }
 
+        var hand = ctx.selectedHand;
+
         MahjongHandTypes handType = MahjongHands.GetMahjongHand(hand);
-        int baseDamage = MahjongHands.GetScoreForHand(handType);
-
-        int honorBonus = GetHonorDamageBonus(hand);
-        // int modifierBonus = GetTileModifierBonus(hand);
-        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
-
-        RaiseResult(baseDamage, finalDamage, handType, hand);
-
-        yield break;
-    }
-
-    public static int GetHandBaseDamage(MahjongHandTypes handType, List<Tile> hand)
-    {
         int baseDamage = MahjongHands.GetScoreForHand(handType);
 
         int honorBonus = GetHonorDamageBonus(hand);
         int modifierBonus = GetTileModifierBonus(hand);
         int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
 
-        return finalDamage;
-    }
+        ctx.baseDamage = baseDamage;
+        ctx.damage = finalDamage;
+        ctx.handType = handType;
 
-    static void RaiseResult(int baseDamage, int finalDamage, MahjongHandTypes handType, List<Tile> tiles)
-    {
-        var result = new AttackResult
-        {
-            BaseDamage = baseDamage,
-            FinalDamage = finalDamage,
-            HandType = handType,
-            Tiles = tiles ?? new List<Tile>()
-        };
-        OnAttackResolved?.Invoke(result);
+        yield break;
     }
 
     // Bonus damage from honor tiles (Wind, Dragon)
@@ -85,23 +67,5 @@ public static class HandAttackResolver
         if (hand == null) return 0;
 
         return 0;
-    }
-
-    public static void UpdateModifierBonus(int damageBonus)
-    {
-        modifierBonus += damageBonus;
-    }
-
-    //Helper function to get the final damage for a hand
-    //used for testing and by flower tiles that modify damage after the fact
-    public static int GetFinalDamageForHand(List<Tile> hand)
-    {
-        if (hand == null || hand.Count == 0) return 0;
-
-        MahjongHandTypes handType = MahjongHands.GetMahjongHand(hand);
-        int baseDamage = MahjongHands.GetScoreForHand(handType);
-        int honorBonus = GetHonorDamageBonus(hand);
-        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
-        return finalDamage;
     }
 }

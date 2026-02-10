@@ -3,7 +3,9 @@ using UnityEngine;
 public enum FlowerTileType
 {
     None,
-    ComboChecker, // Increases damage of a hand based on the type of hand played (Pair, Set, Run, etc)
+    BambooBonus, //Give bonus damage for each suit corresponding to the flower tile
+    DotBonus, //Give bonus damage for each suit corresponding to the flower tile
+    CharacterBonus, //Give bonus damage for each suit corresponding to the flower tile
 }
 
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]

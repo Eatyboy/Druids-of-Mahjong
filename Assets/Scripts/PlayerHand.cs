@@ -168,11 +168,10 @@ public class PlayerHand : MonoBehaviour
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
-        CombatManager.instance.actionQueue.Enqueue(() => HandAttackResolver.HandAttack(GetSelectedTileData()));
+        CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
         castSpellButton.SetActive(false);
 
         StartCoroutine(DiscardTiles(drawWhenDone: false));
-        FlowerTileManager.instance.ActivateFlowerTilesOnPlay();
         
         isTurnActive = false;
     }

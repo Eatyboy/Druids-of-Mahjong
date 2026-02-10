@@ -18,29 +18,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField] private HealthBarUI healthBar;
 
-    protected void OnEnable()
-    {
-        HandAttackResolver.OnAttackResolved += HandleAttackResolved;
-    }
-
-    protected void OnDisable()
-    {
-        HandAttackResolver.OnAttackResolved -= HandleAttackResolved;
-    }
-
-    void HandleAttackResolved(AttackResult result)
-    {
-        CombatManager.instance.actionQueue.Enqueue(() => EnemyTakeDamage(result.FinalDamage));
-    }
-
     protected void Start()
     {
         Init();
-    }
-
-    protected virtual void Update()
-    {
-
     }
 
     protected void Init()
@@ -90,7 +70,7 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         else
         {
-            CombatManager.instance.actionQueue.Enqueue(() => Player.instance.PlayerTakeDamage(attackDamage));
+            CombatManager.instance.EnqueueAction(() => Player.instance.PlayerTakeDamage(attackDamage), nameof(Player.instance.PlayerTakeDamage));
             FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
             Destroy(attackTile.gameObject);
         }
@@ -99,7 +79,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public virtual void MakeAttackDecision()
     {
         Tile intentedTile = TilesManager.instance.GenerateRandomTile();
-        CombatManager.instance.actionQueue.Enqueue(() => EnemyAttack(intentedTile));
+        CombatManager.instance.EnqueueAction(() => EnemyAttack(intentedTile), nameof(EnemyAttack));
     }
 
     protected virtual void OnDeath()

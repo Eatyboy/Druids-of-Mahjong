@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -78,6 +79,44 @@ public class Player : MonoBehaviour
         //}
     }
 
+    public class PlayerAttackContext
+    {
+        public float damage = 0.0f;
+        public float baseDamage = 0.0f;
+        public float addedDamageModifier = 0.0f;
+        public float increasedDamageModifier = 1.0f;
+
+        public List<Tile> playerHand = null;
+        public List<Tile> selectedHand = null;
+        public MahjongHandTypes handType = MahjongHandTypes.None;
+
+        public int unresolvedFlowerTiles = 0;
+    }
+
+    public IEnumerator Attack(List<Tile> selectedHand)
+    {
+        PlayerAttackContext context = new()
+        {
+            selectedHand = selectedHand,
+            playerHand = PlayerHand.instance.currentHand.Select(tObj => tObj.tileData).ToList(),
+        };
+
+        FlowerTileManager.instance.ActivateFlowerTilesOnPreAttack(context);
+        CombatManager.instance.EnqueueAction(() => HandAttackResolver.GetBaseAttackDamage(context), nameof(HandAttackResolver.GetBaseAttackDamage));
+        FlowerTileManager.instance.ActivateFlowerTilesOnIntraAttack(context);
+        CombatManager.instance.EnqueueAction(() => GetModifiedAttackDamage(context), nameof(GetModifiedAttackDamage));
+        FlowerTileManager.instance.ActivateFlowerTilesOnPostAttack(context);
+        CombatManager.instance.EnqueueAction(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage), nameof(EnemyManager.instance.currentEnemy.EnemyTakeDamage));
+
+        yield break;
+    }
+
+    public IEnumerator GetModifiedAttackDamage(PlayerAttackContext ctx)
+    {
+        ctx.damage = (ctx.baseDamage + ctx.addedDamageModifier) * ctx.increasedDamageModifier;
+        yield break;
+    }
+
     public IEnumerator PlayerTakeDamage(int damageToTake)
     {
         ChangeHealth(-damageToTake);
@@ -131,7 +170,7 @@ public class Player : MonoBehaviour
     {
         if (!isParryWindowOpen) return;
 
-        CombatManager.instance.actionQueue.Enqueue(() => DoParry(parryContext));
+        CombatManager.instance.EnqueueAction(() => DoParry(parryContext), nameof(DoParry));
     }
 
     private IEnumerator DoParry(ParryContext ctx)

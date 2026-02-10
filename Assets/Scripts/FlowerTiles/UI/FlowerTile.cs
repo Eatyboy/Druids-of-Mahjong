@@ -17,13 +17,18 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Initialize(FlowerTileData data, FlowerTileInfoController infoController)
+    public void Initialize(FlowerTileInfoController infoController)
     {
         this.infoController = infoController;
 
-        this.data = data;
         image.sprite = data.sprite;
-        CombatManager.instance.actionQueue.Enqueue(() => effectClass.OnInitialize(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData()));
+        CombatManager.instance.EnqueueAction(() => 
+            effectClass.OnInitialize(
+                PlayerHand.instance.GetPlayerHandTileData(), 
+                PlayerHand.instance.GetSelectedTileData()
+            ), 
+            nameof(effectClass.OnInitialize)
+        );
     }
 
     public void OnPointerEnter(PointerEventData eventData)
