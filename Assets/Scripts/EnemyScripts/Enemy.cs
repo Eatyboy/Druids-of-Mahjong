@@ -15,29 +15,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField] private HealthBarUI healthBar;
 
-    protected void OnEnable()
-    {
-        HandAttackResolver.OnAttackResolved += HandleAttackResolved;
-    }
-
-    protected void OnDisable()
-    {
-        HandAttackResolver.OnAttackResolved -= HandleAttackResolved;
-    }
-
-    void HandleAttackResolved(AttackResult result)
-    {
-        CombatManager.instance.actionQueue.Enqueue(() => EnemyTakeDamage(result.FinalDamage));
-    }
-
     protected void Start()
     {
         Init();
-    }
-
-    protected virtual void Update()
-    {
-
     }
 
     protected void Init()

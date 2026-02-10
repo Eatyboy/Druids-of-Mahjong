@@ -44,11 +44,11 @@ public class FlowerTileManager : MonoBehaviour
         }
     }
 
-    public void ActivateFlowerTilesOnPlay()
+    public void ActivateFlowerTilesOnPlay(Player.PlayerAttackContext attackContext)
     {
         foreach (FlowerTile ft in playerFlowerTiles)
         {
-            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnPlayHand(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData()));
+            CombatManager.instance.actionQueue.Enqueue(() => ft.effectClass.OnPlayHand(attackContext));
         }
     }
 
