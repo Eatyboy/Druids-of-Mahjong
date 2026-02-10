@@ -90,5 +90,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTile
   data: {fileID: 0}
   rectTransform: {fileID: 3589175133294577107}
+  effectClass: {fileID: 0}
   image: {fileID: 4591764170279316950}
   infoController: {fileID: 0}
