@@ -7,17 +7,9 @@ using System.Linq;
 
 public class SuitChecker : FlowerTileEffect
 {
-    [Serializable]
-    class SuitBonusDamage
-    {
-        public TileSuit suit;
+    public TileSuit suit;
 
-        public int damage;
-    }
-
-    [SerializeField] private List<SuitBonusDamage> suitToCheck;
-
-    private Dictionary<TileSuit, int> bonusDamage;
+    public int damage;
 
     public override IEnumerator OnIncomingAttack(int possibleDamage)
     {
@@ -36,39 +28,27 @@ public class SuitChecker : FlowerTileEffect
         yield break;
     }
 
-    public void Awake()
+    public override IEnumerator OnPlayHand(Player.PlayerAttackContext ctx)
     {
-        bonusDamage = new Dictionary<TileSuit, int>();
-
-        foreach (var tile in suitToCheck)
+        foreach (Tile tile in ctx.selectedHand)
         {
-            bonusDamage[tile.suit] = tile.damage;
-        }
-    }
-
-    public override IEnumerator OnPlayHand(List<Tile> playerHand, List<Tile> selectedHand)
-    {
-        int damageBonus = 0;
-
-        foreach (Tile tile in selectedHand)
-        {
-            if (bonusDamage.TryGetValue(tile.suit, out int damage))
+            if (tile.suit == suit)
             {
-                damageBonus += damage;
+                ctx.addedDamageModifier += damage;
             }
         }
-        
+
         // For testing purposes
         // int damageBefore = HandAttackResolver.GetFinalDamageForHand(selectedHand);
-        
+
         // HandAttackResolver.UpdateModifierBonus(damageBonus);
 
         // int damageAfter = HandAttackResolver.GetFinalDamageForHand(selectedHand);
-        
+
         // Debug.Log("Player did: " + damageBefore + " damage without flower tile.");
 
         // Debug.Log("Player did: " + damageAfter + " damage with flower tile.");
 
-        yield return null;
+        yield break;
     }
 }

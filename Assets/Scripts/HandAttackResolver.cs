@@ -68,22 +68,4 @@ public static class HandAttackResolver
 
         return 0;
     }
-
-    public static void UpdateModifierBonus(int damageBonus)
-    {
-        modifierBonus += damageBonus;
-    }
-
-    //Helper function to get the final damage for a hand
-    //used for testing and by flower tiles that modify damage after the fact
-    public static int GetFinalDamageForHand(List<Tile> hand)
-    {
-        if (hand == null || hand.Count == 0) return 0;
-
-        MahjongHandTypes handType = MahjongHands.GetMahjongHand(hand);
-        int baseDamage = MahjongHands.GetScoreForHand(handType);
-        int honorBonus = GetHonorDamageBonus(hand);
-        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
-        return finalDamage;
-    }
 }

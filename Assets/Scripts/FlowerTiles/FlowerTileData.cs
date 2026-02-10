@@ -3,7 +3,9 @@ using UnityEngine;
 public enum FlowerTileType
 {
     None,
-    SuitChecker, //Give bonus damage for each suit corresponding to the flower tile
+    BambooBonus, //Give bonus damage for each suit corresponding to the flower tile
+    DotBonus, //Give bonus damage for each suit corresponding to the flower tile
+    CharacterBonus, //Give bonus damage for each suit corresponding to the flower tile
 }
 
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]
