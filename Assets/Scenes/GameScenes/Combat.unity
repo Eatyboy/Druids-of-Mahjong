@@ -403,6 +403,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1971194713}
     m_Modifications:
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: testData
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: playerFlowerTiles.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'playerFlowerTiles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'playerFlowerTiles.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'playerFlowerTiles.Array.data[2]'
+      value: 
+      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
     - target: {fileID: 6458211675077567375, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_Name
       value: Flower Tile Manager
@@ -1439,6 +1459,10 @@ PrefabInstance:
       propertyPath: enemySpawn
       value: 
       objectReference: {fileID: 1923497053}
+    - target: {fileID: 1666349130600298449, guid: 44829040f51d2d148acfbf04f09c5e96, type: 3}
+      propertyPath: spawnableEnemies.Array.data[0].enemyPrefab
+      value: 
+      objectReference: {fileID: -6853596958071401160, guid: eed6e5c837ac46a4ea242b0ae508dc7b, type: 3}
     - target: {fileID: 6494747488882278939, guid: 44829040f51d2d148acfbf04f09c5e96, type: 3}
       propertyPath: m_LocalPosition.x
       value: 630.70154

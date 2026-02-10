@@ -65,7 +65,7 @@ public static class HandAttackResolver
     static int GetTileModifierBonus(List<Tile> hand)
     {
         if (hand == null) return 0;
-        // Implement later
+
         return 0;
     }
 }
