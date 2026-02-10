@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -64,6 +65,32 @@ public class Player : MonoBehaviour
         //{
         //    ChangeHealth(1.0f);
         //}
+    }
+
+    public class PlayerAttackContext
+    {
+        public float damage = 0.0f;
+        public float baseDamage = 0.0f;
+        public float addedDamageModifier = 0.0f;
+        public float increasedDamageModifier = 0.0f;
+        public List<Tile> playerHand = null;
+        public List<Tile> selectedHand = null;
+        public MahjongHandTypes handType = MahjongHandTypes.None;
+    }
+
+    public IEnumerator Attack(List<Tile> selectedHand)
+    {
+        PlayerAttackContext context = new()
+        {
+            selectedHand = selectedHand,
+            playerHand = PlayerHand.instance.currentHand.Select(tObj => tObj.tileData).ToList(),
+        };
+
+        CombatManager.instance.actionQueue.Enqueue(() => HandAttackResolver.GetBaseAttackDamage(context));
+        FlowerTileManager.instance.ActivateFlowerTilesOnPlay(context);
+        CombatManager.instance.actionQueue.Enqueue(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage));
+
+        yield break;
     }
 
     public IEnumerator PlayerTakeDamage(int damageToTake)
