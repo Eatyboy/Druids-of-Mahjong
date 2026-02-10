@@ -19,7 +19,7 @@ public class CombatManager : MonoBehaviour
 
     public GameState gameState;
     public CombatState combatState;
-    public Queue<Func<IEnumerator>> actionQueue = new();
+    public Queue<(Func<IEnumerator> action, string actionName)> actionQueue = new();
     public bool isPlayerTurnNext;
 
     private void Awake()
@@ -67,7 +67,7 @@ public class CombatManager : MonoBehaviour
                 case CombatState.TurnResolution:
                     while (actionQueue.Count > 0)
                     {
-                        yield return actionQueue.Dequeue().Invoke();
+                        yield return actionQueue.Dequeue().action.Invoke();
                     }
 
                     if (Player.instance.health <= 0) combatState = CombatState.Defeat;
@@ -101,5 +101,17 @@ public class CombatManager : MonoBehaviour
         combatState = CombatState.Defeat;
         
         Debug.Log("Defeat!");
+    }
+
+    public void EnqueueAction(Func<IEnumerator> action, string actionName = null)
+    {
+        if (action == null)
+        {
+            Debug.LogError("Tried to enqueue a null action");
+            return;
+        }
+
+        string finalActionName = actionName ?? Utils.GetReadableMethodName(action);
+        actionQueue.Enqueue((action, finalActionName));
     }
 }
