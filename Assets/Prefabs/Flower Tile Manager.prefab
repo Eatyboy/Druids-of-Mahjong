@@ -523,8 +523,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileManager
   flowerTileContainer: {fileID: 5524739587606367786}
   infoController: {fileID: 894232820659142902}
-  flowerTilePrefab: {fileID: 2586444533356537900, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+  flowerTilePrefabs:
+  - {fileID: 7581977867385633767, guid: 1f95da7c591ead54f918203eb5aca19f, type: 3}
+  - {fileID: 5816744120301345768, guid: 3ea112225dcda1743b20c2e6f28a7fa1, type: 3}
+  - {fileID: 8588305647248941263, guid: 4426a385006b73b4b9ed4f25dffe7dfa, type: 3}
   playerFlowerTiles: []
+  testData: {fileID: 0}
 --- !u!114 &894232820659142902
 MonoBehaviour:
   m_ObjectHideFlags: 0

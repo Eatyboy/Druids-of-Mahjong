@@ -407,22 +407,6 @@ PrefabInstance:
       propertyPath: testData
       value: 
       objectReference: {fileID: 0}
-    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
-      propertyPath: playerFlowerTiles.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
-      propertyPath: 'playerFlowerTiles.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
-    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
-      propertyPath: 'playerFlowerTiles.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
-    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
-      propertyPath: 'playerFlowerTiles.Array.data[2]'
-      value: 
-      objectReference: {fileID: 2586444533356537900, guid: 8aa44fcd3a5e7e441bb82a985019e028, type: 3}
     - target: {fileID: 6458211675077567375, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_Name
       value: Flower Tile Manager

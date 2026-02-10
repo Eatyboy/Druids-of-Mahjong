@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour, IDamageable
         yield return new WaitForSeconds(2.0f);
 
         FlowerTileManager.instance.ActivateFlowerTilesOnIncomingDamage(-attackDamage);
-        CombatManager.instance.actionQueue.Enqueue(() => Player.instance.PlayerTakeDamage(-attackDamage));
+        CombatManager.instance.EnqueueAction(() => Player.instance.PlayerTakeDamage(-attackDamage), nameof(Player.instance.PlayerTakeDamage));
         FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
 
         Destroy(attackTile.gameObject);
@@ -46,7 +46,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public virtual void MakeAttackDecision()
     {
         Tile intentedTile = TilesManager.instance.GenerateRandomTile();
-        CombatManager.instance.actionQueue.Enqueue(() => EnemyAttack(intentedTile));
+        CombatManager.instance.EnqueueAction(() => EnemyAttack(intentedTile), nameof(EnemyAttack));
     }
 
     protected virtual void OnDeath()

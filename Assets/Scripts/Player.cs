@@ -72,10 +72,13 @@ public class Player : MonoBehaviour
         public float damage = 0.0f;
         public float baseDamage = 0.0f;
         public float addedDamageModifier = 0.0f;
-        public float increasedDamageModifier = 0.0f;
+        public float increasedDamageModifier = 1.0f;
+
         public List<Tile> playerHand = null;
         public List<Tile> selectedHand = null;
         public MahjongHandTypes handType = MahjongHandTypes.None;
+
+        public int unresolvedFlowerTiles = 0;
     }
 
     public IEnumerator Attack(List<Tile> selectedHand)
@@ -86,10 +89,19 @@ public class Player : MonoBehaviour
             playerHand = PlayerHand.instance.currentHand.Select(tObj => tObj.tileData).ToList(),
         };
 
-        CombatManager.instance.actionQueue.Enqueue(() => HandAttackResolver.GetBaseAttackDamage(context));
-        FlowerTileManager.instance.ActivateFlowerTilesOnPlay(context);
-        CombatManager.instance.actionQueue.Enqueue(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage));
+        FlowerTileManager.instance.ActivateFlowerTilesOnPreAttack(context);
+        CombatManager.instance.EnqueueAction(() => HandAttackResolver.GetBaseAttackDamage(context), nameof(HandAttackResolver.GetBaseAttackDamage));
+        FlowerTileManager.instance.ActivateFlowerTilesOnIntraAttack(context);
+        CombatManager.instance.EnqueueAction(() => GetModifiedAttackDamage(context), nameof(GetModifiedAttackDamage));
+        FlowerTileManager.instance.ActivateFlowerTilesOnPostAttack(context);
+        CombatManager.instance.EnqueueAction(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage), nameof(EnemyManager.instance.currentEnemy.EnemyTakeDamage));
 
+        yield break;
+    }
+
+    public IEnumerator GetModifiedAttackDamage(PlayerAttackContext ctx)
+    {
+        ctx.damage = (ctx.baseDamage + ctx.addedDamageModifier) * ctx.increasedDamageModifier;
         yield break;
     }
 
@@ -116,7 +128,7 @@ public class Player : MonoBehaviour
     {
         if (!isParryWindowOpen) return;
 
-        CombatManager.instance.actionQueue.Enqueue(() => DoParry());
+        CombatManager.instance.EnqueueAction(() => DoParry(), nameof(DoParry));
     }
 
     private IEnumerator DoParry()

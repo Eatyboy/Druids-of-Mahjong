@@ -11,24 +11,7 @@ public class SuitChecker : FlowerTileEffect
 
     public int damage;
 
-    public override IEnumerator OnIncomingAttack(int possibleDamage)
-    {
-        yield break;
-    }
-    public override IEnumerator OnTakeDamage(int damageTaken)
-    {
-        yield break;
-    }
-    public override IEnumerator OnDiscard()
-    {
-        yield break;
-    }
-    public override IEnumerator OnInitialize(List<Tile> playerHand, List<Tile> selectedHand)
-    {
-        yield break;
-    }
-
-    public override IEnumerator OnPlayHand(Player.PlayerAttackContext ctx)
+    public override IEnumerator OnIntraAttack(Player.PlayerAttackContext ctx)
     {
         foreach (Tile tile in ctx.selectedHand)
         {

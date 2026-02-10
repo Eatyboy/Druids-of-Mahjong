@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// Container for various utility functions
@@ -29,5 +31,23 @@ public static class Utils
         #else
             Application.Quit();
         #endif
+    }
+
+    /// <summary>
+    /// Extracts the method name from compiler-generated lambda names like "<Foo>b__0"
+    /// </summary>
+    /// <param name="del"></param>
+    /// <returns></returns>
+    public static string GetReadableMethodName(Delegate del)
+    {
+        string raw = del.Method.Name;
+
+        int start = raw.IndexOf('<');
+        int end = raw.IndexOf('>');
+
+        if (start >= 0 && end > start)
+            return raw.Substring(start + 1, end - start - 1);
+
+        return raw;
     }
 }
