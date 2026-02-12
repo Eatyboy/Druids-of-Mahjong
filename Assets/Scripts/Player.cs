@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 
 public class Player : MonoBehaviour
 {
@@ -15,11 +15,9 @@ public class Player : MonoBehaviour
 
     [SerializeField] private HealthBarUI healthBar;
     [SerializeField] private QiCounter qiCounter;
+    public ParryHandler parryHandler;
 
     [SerializeField] private float baseMaxHealth = 10.0f;
-    [SerializeField] private float baseParryWindow = 3.0f;
-
-    public bool isParryWindowOpen = false;
 
     private void Awake()
     {
@@ -50,7 +48,7 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         ctrl.Player.Parry.performed -= Parry;
-        ctrl.Enable();
+        ctrl.Disable();
     }
 
     // Update is called once per frame
@@ -124,15 +122,11 @@ public class Player : MonoBehaviour
         qiCounter.SetQi(qi);
     }
 
+
     public void Parry(InputAction.CallbackContext ctx)
     {
-        if (!isParryWindowOpen) return;
+        if (!parryHandler.isParryWindowOpen) return;
 
-        CombatManager.instance.EnqueueAction(() => DoParry(), nameof(DoParry));
-    }
-
-    private IEnumerator DoParry()
-    {
-        yield break;
+        StartCoroutine(parryHandler.DoParry());
     }
 }

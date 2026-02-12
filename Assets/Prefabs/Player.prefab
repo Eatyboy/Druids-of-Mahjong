@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4158332796505897423}
   - component: {fileID: 9046596757483166088}
   - component: {fileID: 8698466456139869887}
+  - component: {fileID: 5612941604292336062}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -104,6 +105,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50715a4ef00dd0e4ca788e1ef0f98504, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  Health: 100
-  MaxHealth: 100
+  health: 0
+  maxHealth: 0
+  qi: 0
   healthBar: {fileID: 0}
+  qiCounter: {fileID: 0}
+  parryHandler: {fileID: 5612941604292336062}
+  baseMaxHealth: 10
+--- !u!114 &5612941604292336062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8327418613017755880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8831b74d85030274d852bcf0840fe7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParryHandler
+  parryPopup: {fileID: 0}
+  baseParryWindow: 3
+  parryDamageMultiplier: 1

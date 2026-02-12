@@ -11,6 +11,7 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public Image tileBackImage;
     public Image tileFaceImage;
     public GameObject selectedOverlay;
+    public GameObject highlightedOverlay;
 
     public bool isSelected = false;
 
@@ -21,6 +22,7 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         rt = GetComponent<RectTransform>();
         isSelected = false;
         selectedOverlay.SetActive(false);
+        highlightedOverlay.SetActive(false);
     }
 
     public void Initialize(Tile tile)
@@ -40,6 +42,11 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         {
             PlayerHand.instance.DeselectTile(this);
         }
+    }
+
+    public void SetHighlighted(bool isHighlighted)
+    {
+        highlightedOverlay.SetActive(isHighlighted);
     }
 
     public void OnPointerClick(PointerEventData eventData)

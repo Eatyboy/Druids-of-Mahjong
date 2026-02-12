@@ -1,4 +1,7 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable
@@ -10,6 +13,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField] private EnemyAttackTileObject tilePrefab;
     [SerializeField] private Vector2 attackTileOffset;
+    [SerializeField] private float attackDuration = 2.0f;
 
     public bool isTurnActive = false;
 
@@ -28,25 +32,65 @@ public class Enemy : MonoBehaviour, IDamageable
         healthBar.SetHealth(currentHP);
     }
 
-    public IEnumerator EnemyAttack(Tile intentedTile)
+    public IEnumerator EnemyAttack(Tile intendedTile)
     {
         EnemyAttackTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
-        attackTile.Initialize(intentedTile);
+        attackTile.Initialize(intendedTile);
         attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
 
-        yield return new WaitForSeconds(2.0f);
+        ParryHandler.ParryContext parryContext;
+        List<Tile> expandedPlayerHand = PlayerHand.instance.currentHand
+            .Select(obj => obj.tileData)
+            .Concat(new[] { attackTile.tileData })
+            .ToList();
+        (MahjongHandTypes type, List<Tile> tiles) parryHand = MahjongHands
+            .GetAllHandCombinations(expandedPlayerHand)
+            .Where(hand => hand.tiles.Contains(intendedTile))
+            .OrderByDescending(hand => hand.type)
+            .FirstOrDefault();
+        bool canParry = parryHand.type != MahjongHandTypes.None
+            && parryHand.type != MahjongHandTypes.Pair
+            && parryHand.type != MahjongHandTypes.ThreePairs
+            && parryHand.type != MahjongHandTypes.AllPairs;
 
-        FlowerTileManager.instance.ActivateFlowerTilesOnIncomingDamage(-attackDamage);
-        CombatManager.instance.EnqueueAction(() => Player.instance.PlayerTakeDamage(-attackDamage), nameof(Player.instance.PlayerTakeDamage));
-        FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
+        if (canParry)
+        {
+            List<TileObject> parryTileObjects = new();
+            foreach (Tile tile in parryHand.tiles)
+            {
+                var obj = PlayerHand.instance.currentHand.FirstOrDefault(t => t.tileData == tile);
+                if (obj != null)
+                    parryTileObjects.Add(obj);
+            }
+            parryContext = new(this, parryHand.type, parryHand.tiles, parryTileObjects, attackTile);
+            Player.instance.parryHandler.OpenParryWindow(parryContext);
+        }
+        else
+        {
+            parryContext = new(this, MahjongHandTypes.None, null, null, attackTile);
+            parryContext.Resolve(false);
+        }
 
-        Destroy(attackTile.gameObject);
+        yield return (canParry)
+            ? new WaitUntil(() => parryContext.resolved)
+            : new WaitForSeconds(2.0f);
+
+		Destroy(attackTile.gameObject);
+
+        if (parryContext.wasParried)
+        {
+        }
+        else
+        {
+            CombatManager.instance.EnqueueAction(() => Player.instance.PlayerTakeDamage(attackDamage), nameof(Player.instance.PlayerTakeDamage));
+            FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
+        }
     }
 
     public virtual void MakeAttackDecision()
     {
-        Tile intentedTile = TilesManager.instance.GenerateRandomTile();
-        CombatManager.instance.EnqueueAction(() => EnemyAttack(intentedTile), nameof(EnemyAttack));
+        Tile intendedTile = TilesManager.instance.GenerateRandomTile();
+        CombatManager.instance.EnqueueAction(() => EnemyAttack(intendedTile), nameof(EnemyAttack));
     }
 
     protected virtual void OnDeath()
