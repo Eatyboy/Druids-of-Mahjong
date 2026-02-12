@@ -43,4 +43,16 @@ public class FlowerTileManager : MonoBehaviour
             AddFlowerTile(testData);
         }
     }
+
+    public int GetTotalFlatDamageBonus()
+{
+    int total = 0;
+
+    foreach (var tile in playerFlowerTiles)
+    {
+        total += tile.data.flatDamageBonus;
+    }
+
+        return total;
+    }
 }

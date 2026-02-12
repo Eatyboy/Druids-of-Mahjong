@@ -31,7 +31,14 @@ public static class HandAttackResolver
 
         int honorBonus = GetHonorDamageBonus(hand);
         int modifierBonus = GetTileModifierBonus(hand);
-        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
+        int flowerBonus = 0;
+
+        if (FlowerTileManager.instance != null)
+        {
+            flowerBonus = FlowerTileManager.instance.GetTotalFlatDamageBonus();
+        }
+
+        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus + flowerBonus);
 
         RaiseResult(baseDamage, finalDamage, handType, hand);
     }

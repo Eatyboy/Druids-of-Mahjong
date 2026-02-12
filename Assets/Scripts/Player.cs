@@ -16,6 +16,10 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float baseMaxHealth = 10.0f;
 
+    [Header("Combat")]
+    [SerializeField] private int baseDamage = 5; //temporary dmg number
+    [SerializeField] private int flowerFlatDamageBonus = 10; //temporary dmg bonus
+
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
@@ -58,5 +62,18 @@ public class Player : MonoBehaviour
     {
         qi += qiChange;
         qiCounter.SetQi(qi);
+    }
+
+    public int GetFinalDamage()
+{
+    int damage = baseDamage;
+
+    if (FlowerTileManager.instance != null &&
+        FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.FlatDamageBuff))
+    {
+        damage += flowerFlatDamageBonus;
+    }
+
+        return damage;
     }
 }
