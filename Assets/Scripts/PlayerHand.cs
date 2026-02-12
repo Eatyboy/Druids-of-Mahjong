@@ -25,7 +25,9 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private int defaultMaxDiscards = 3;
     [SerializeField] private float tileOffsetX;
     [SerializeField] private Vector2 tileSelectedOffset;
+    [SerializeField] private RectTransform tileDrawOrigin;
     [SerializeField] private float drawDuration = 0.03f;
+    [SerializeField] private float sortDelay = 0.4f;
 
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
@@ -57,10 +59,11 @@ public class PlayerHand : MonoBehaviour
         yield return new WaitForSeconds(drawDuration);
 
         TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
+        newTileObj.rt.position = tileDrawOrigin.position;
         newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
         newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
+        newTileObj.transform.SetAsFirstSibling();
         currentHand.Add(newTileObj);
-        RepositionTiles(newTileObj);
     }
 
     public IEnumerator DrawUntilFullHand()
@@ -72,9 +75,8 @@ public class PlayerHand : MonoBehaviour
 
             yield return DrawTile();
         }
-        SortTiles();
 
-        yield break;
+        yield return SortTilesInHand();
     }
 
     public void DiscardButton()
@@ -185,27 +187,7 @@ public class PlayerHand : MonoBehaviour
         }
     }
 
-    public void RepositionTiles(TileObject tileObj)
-    {
-        int numTiles = currentHand.Count;
-        float offsetPerTile = tileObj.rt.rect.width * 1.1f;
-        
-        // if too many tiles, they should overlap
-        // 200 bc of ui space vs world space shenanigans
-        if (offsetPerTile * numTiles > maxHorizontalTileOffset * 2.0f * 100.0f)
-        {
-            offsetPerTile = 100.0f * maxHorizontalTileOffset / (0.5f * (float)numTiles);
-        }
-
-        float initOffsetX = (0.5f * offsetPerTile) * (1.0f - (float)numTiles); 
-
-        for (int i = 0; i < numTiles; i++)
-        {
-            currentHand[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new(tileOffsetX * 100.0f + initOffsetX + offsetPerTile * i, 0.0f);
-        }
-    }
-
-    public void SortTiles()
+    public IEnumerator SortTilesInHand()
     {
         // TEMP
         foreach (TileObject tile in selectedTiles)
@@ -222,10 +204,15 @@ public class PlayerHand : MonoBehaviour
             .OrderBy(t => t.tileData.suit)
             .ThenBy(t =>  t.tileData.rank)
             .ToArray();
+
+        yield return new WaitForSeconds(sortDelay);
+
         for (int i = 0; i < sortedTiles.Length; ++i)
         {
             sortedTiles[i].transform.SetSiblingIndex(i);
         }
+
+        yield break;
     }
 
     // O(n)
