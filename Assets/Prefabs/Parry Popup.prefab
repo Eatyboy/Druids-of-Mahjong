@@ -92,6 +92,7 @@ MonoBehaviour:
   image: {fileID: 8529539645381634186}
   inputKeyText: {fileID: 3565116493889772593}
   inputKeyName: E
+  offsetFromEnemyAttackTile: {x: 0, y: -200}
 --- !u!1 &4429335307586866766
 GameObject:
   m_ObjectHideFlags: 0

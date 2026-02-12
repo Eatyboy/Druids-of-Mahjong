@@ -45,6 +45,26 @@ public static class HandAttackResolver
         yield break;
     }
 
+    /// <summary>
+    /// Computes the base damage for an parry
+    /// </summary>
+    /// <param name="ctx">The current parry context</param>
+    public static int GetBaseParryDamage(ParryHandler.ParryContext ctx)
+    {
+        if (ctx.parryHand == null || ctx.parryHand.Count == 0) return 0;
+
+        var hand = ctx.parryHand;
+        MahjongHandTypes handType = ctx.parryHandType;
+
+        int baseDamage = MahjongHands.GetScoreForHand(handType);
+
+        int honorBonus = GetHonorDamageBonus(hand);
+        int modifierBonus = GetTileModifierBonus(hand);
+        int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
+
+        return finalDamage;
+    }
+
     // Bonus damage from honor tiles (Wind, Dragon)
     // Simply +1 damage per honor tile for now
     // Can be changed later
