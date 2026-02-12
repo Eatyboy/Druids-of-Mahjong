@@ -35,8 +35,9 @@ public class Enemy : MonoBehaviour, IDamageable
     public IEnumerator EnemyAttack(Tile intendedTile)
     {
         EnemyAttackTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
-        attackTile.Initialize(intendedTile);
-        attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
+        attackTile.Initialize(intendedTile, (Vector2)Camera.main.WorldToScreenPoint(transform.position), attackTileOffset);
+        yield return StartCoroutine(attackTile.PlayDrawAnimation());
+        // attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
 
         ParryHandler.ParryContext parryContext;
         List<Tile> expandedPlayerHand = PlayerHand.instance.currentHand
@@ -73,18 +74,20 @@ public class Enemy : MonoBehaviour, IDamageable
 
         yield return (canParry)
             ? new WaitUntil(() => parryContext.resolved)
-            : new WaitForSeconds(2.0f);
-
-		Destroy(attackTile.gameObject);
+            : new WaitForSeconds(attackDuration);
 
         if (parryContext.wasParried)
         {
+            yield return StartCoroutine(attackTile.PlayParriedAnimation());
         }
         else
         {
+            yield return StartCoroutine(attackTile.PlayAttackAnimation());
             CombatManager.instance.EnqueueAction(() => Player.instance.PlayerTakeDamage(attackDamage), nameof(Player.instance.PlayerTakeDamage));
             FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
         }
+
+        Destroy(attackTile.gameObject);
     }
 
     public virtual void MakeAttackDecision()

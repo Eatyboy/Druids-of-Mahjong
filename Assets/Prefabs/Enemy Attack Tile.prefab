@@ -312,6 +312,14 @@ MonoBehaviour:
     faceSprite: {fileID: 0}
   tileBackImage: {fileID: 1083775665776989564}
   tileFaceImage: {fileID: 8837268203242425692}
+  animationFPS: 30
+  isInAnimation: 0
+  drawAnimationDuration: 0.75
+  attackAnimationDuration: 1
+  parriedAnimationDuration: 1
+  idleOffset: {x: 0, y: 0}
+  initialScale: {x: 0, y: 0}
+  initialPosition: {x: 0, y: 0}
   tmpElement: {fileID: 7926125961832481384}
 --- !u!1 &8907859501017444317
 GameObject:
