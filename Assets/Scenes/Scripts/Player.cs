@@ -92,6 +92,7 @@ public class Player : MonoBehaviour
         FlowerTileManager.instance.ActivateFlowerTilesOnIntraAttack(context);
         CombatManager.instance.EnqueueAction(() => GetModifiedAttackDamage(context), nameof(GetModifiedAttackDamage));
         FlowerTileManager.instance.ActivateFlowerTilesOnPostAttack(context);
+        CombatManager.instance.EnqueueAction(() => PlayerHand.instance.PlayHandAnim(), nameof(PlayerHand.instance.PlayHandAnim)); // Resolve Player Combat Animations Here
         CombatManager.instance.EnqueueAction(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage), nameof(EnemyManager.instance.currentEnemy.EnemyTakeDamage));
 
         yield break;

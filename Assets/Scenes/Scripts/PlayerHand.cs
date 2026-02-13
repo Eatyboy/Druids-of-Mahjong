@@ -29,6 +29,10 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private float drawDuration = 0.03f;
     [SerializeField] private float sortDelay = 0.4f;
 
+    [Header("Anim Parameters")]
+    [SerializeField] private float discardDuration = 0.25f;
+    [SerializeField] private float playDuration = 0.25f;
+
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
     public List<FlowerTile> flowerTiles;
@@ -94,6 +98,17 @@ public class PlayerHand : MonoBehaviour
         foreach (TileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
+
+            float elapsedTime = 0f;
+            Vector3 startPos = tileObj.transform.position;
+            Vector3 discardPos = discardsText.gameObject.transform.position;
+
+            while (elapsedTime < discardDuration)
+            {
+                tileObj.transform.position = Vector3.Lerp(startPos, discardPos, elapsedTime / discardDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
 
             TilesManager.instance.discardPile.Add(tileObj.tileData);
             currentHand.Remove(tileObj);
@@ -164,23 +179,43 @@ public class PlayerHand : MonoBehaviour
         castSpellText.text = $"Cast {(currentHandType == MahjongHandTypes.None ? "Nothing" : currentHandType)}";
     }
 
+    // Called by Player.Attack()
     public IEnumerator PlayHandAnim()
     {
-
         foreach (TileObject tileObj in selectedTiles)
         {
-            Vector3 tileScale = tileObj.transform.localScale;
             float elapsedTime = 0f;
-            float duration = 1f;
-            while (elapsedTime < duration)
+
+            Vector3 startPos = tileObj.transform.localPosition;
+            Vector3 endPos = new Vector3(startPos.x, startPos.y + 30f, startPos.z); // Should be enemy pos or center screen
+            UnityEngine.Debug.Log(endPos);
+
+            while (elapsedTime < playDuration)
             {
-                tileObj.transform.localScale = Vector3.Lerp(tileScale, tileScale * 0.2f, elapsedTime / duration);
+                tileObj.transform.localPosition = Vector3.Lerp(startPos, endPos, elapsedTime / playDuration);
+                elapsedTime += Time.deltaTime;
                 yield return null;
             }
-            yield return new WaitForEndOfFrame();
-        }
 
-        yield return new WaitForSeconds(0.5f);
+            // TODO: Add Rotation "Punch" Effect
+            /*elapsedTime = 0f;
+            startPos = tileObj.transform.position;
+            Vector3 discardPos = discardsText.gameObject.transform.position;
+            float startRotZ = tileObj.transform.eulerAngles.z;
+            float endRotZ = 10f;
+
+            while (elapsedTime < duration)
+            {
+                float z = Mathf.Lerp(startRotZ, endRotZ, elapsedTime / duration);
+                tileObj.transform.position = Vector3.Lerp(startPos, discardPos, elapsedTime / duration);
+
+                tileObj.transform.eulerAngles = new Vector3(0, 0, z);
+
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }*/
+        }
+        yield return DiscardTiles(drawWhenDone: false);
     }
 
     public void PlaySelectedHand()
@@ -189,19 +224,6 @@ public class PlayerHand : MonoBehaviour
 
         CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
         castSpellButton.SetActive(false);
-
-        /*foreach (TileObject tileObj in selectedTiles)
-        {
-            Vector3 tileScale = tileObj.transform.localScale;
-            float elapsedTime = 0f;
-            float duration = 1f;
-            while (elapsedTime < duration)
-            {
-                tileObj.transform.localScale = Vector3.Lerp(tileScale, tileScale * 0.2f, elapsedTime / duration);
-            }
-        }*/
-
-        StartCoroutine(DiscardTiles(drawWhenDone: false));
         
         isTurnActive = false;
     }
