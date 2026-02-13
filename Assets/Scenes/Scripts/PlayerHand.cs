@@ -166,12 +166,42 @@ public class PlayerHand : MonoBehaviour
         castSpellText.text = $"Cast {(currentHandType == MahjongHandTypes.None ? "Nothing" : currentHandType)}";
     }
 
+    public IEnumerator PlayHandAnim()
+    {
+
+        foreach (TileObject tileObj in selectedTiles)
+        {
+            Vector3 tileScale = tileObj.transform.localScale;
+            float elapsedTime = 0f;
+            float duration = 1f;
+            while (elapsedTime < duration)
+            {
+                tileObj.transform.localScale = Vector3.Lerp(tileScale, tileScale * 0.2f, elapsedTime / duration);
+                yield return null;
+            }
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
     public void PlaySelectedHand()
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
         castSpellButton.SetActive(false);
+
+        /*foreach (TileObject tileObj in selectedTiles)
+        {
+            Vector3 tileScale = tileObj.transform.localScale;
+            float elapsedTime = 0f;
+            float duration = 1f;
+            while (elapsedTime < duration)
+            {
+                tileObj.transform.localScale = Vector3.Lerp(tileScale, tileScale * 0.2f, elapsedTime / duration);
+            }
+        }*/
 
         StartCoroutine(DiscardTiles(drawWhenDone: false));
         
