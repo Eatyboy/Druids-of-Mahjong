@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public int qiOnDeath = 100;
     public int attackDamage = 1;
 
-    [SerializeField] private EnemyAttackTileObject tilePrefab;
+    [SerializeField] private TileObject tilePrefab;
     [SerializeField] private Vector2 attackTileOffset;
     [SerializeField] private float attackDuration = 2.0f;
 
@@ -34,7 +34,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyAttack(Tile intendedTile)
     {
-        EnemyAttackTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
+        TileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
         attackTile.Initialize(intendedTile);
         attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
 

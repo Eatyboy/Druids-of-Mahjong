@@ -21,10 +21,11 @@ public class ParryHandler : MonoBehaviour
         public MahjongHandTypes parryHandType { get; private set; }
         public List<Tile> parryHand { get; private set; }
         public List<TileObject> parryTileObjects { get; private set; }
-        public EnemyAttackTileObject enemyAttackTile { get; private set; }
+        public TileObject enemyAttackTile { get; private set; }
         public ParryPopup popup { get; private set; }
 
-        public ParryContext(Enemy enemy, MahjongHandTypes parryHandType, List<Tile> parryHand, List<TileObject> parryTileObjects, EnemyAttackTileObject enemyAttackTile)
+        public ParryContext(Enemy enemy, MahjongHandTypes parryHandType, List<Tile> parryHand, 
+                            List<TileObject> parryTileObjects, TileObject enemyAttackTile)
         {
             resolved = false;
             wasParried = false;
@@ -102,7 +103,10 @@ public class ParryHandler : MonoBehaviour
         parryPopup.gameObject.SetActive(false);
         foreach (TileObject tileObject in activeContext.parryTileObjects)
         {
-            tileObject.SetHighlighted(false);
+            if (tileObject != null && tileObject.gameObject != null)
+            {
+                tileObject.SetHighlighted(false);
+            }
         }
 
         isParryWindowOpen = false;

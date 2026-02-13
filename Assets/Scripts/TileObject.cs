@@ -18,6 +18,8 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     [SerializeField] private TextMeshProUGUI tmpElement;
     [SerializeField] private TextMeshProUGUI label;
 
+    [SerializeField] private bool isPlayerTile = true;
+
     private void Awake()
     {
         rt = GetComponent<RectTransform>();
@@ -55,9 +57,9 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 },
                 TileSuit.Dragon => tile.rank switch
                 {
-                    1 => "G",
-                    2 => "R",
-                    3 => "W",
+                    1 => "F",
+                    2 => "C",
+                    3 => "B",
                     _ => "X"
                 },
                 _ => "X"
@@ -67,6 +69,8 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void ToggleSelected()
     {
+        if (!isPlayerTile) return;
+
         isSelected = !isSelected;
         if (isSelected)
         {
@@ -80,21 +84,29 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
 
     public void SetHighlighted(bool isHighlighted)
     {
+        if (!isPlayerTile) return;
+
         highlightedOverlay.SetActive(isHighlighted);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!isPlayerTile) return;
+
         ToggleSelected();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (!isPlayerTile) return;
+
         selectedOverlay.SetActive(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (!isPlayerTile) return;
+
         selectedOverlay.SetActive(false);
     }
 }
