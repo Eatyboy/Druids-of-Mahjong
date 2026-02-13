@@ -93,7 +93,7 @@ public class PlayerHand : MonoBehaviour
         StartCoroutine(DiscardTiles(drawWhenDone: true));
     }
 
-    public IEnumerator PunchRotation2D(Transform target, float punchAngle = -45f)
+    public IEnumerator DiscardAnim(Transform target, float punchAngle = -45f)
     {
         float startRotation = target.eulerAngles.z;
         float targetRotation = startRotation + punchAngle;
@@ -113,8 +113,8 @@ public class PlayerHand : MonoBehaviour
             float punchStrength = Mathf.Sin(t * Mathf.PI); // 0 -> 1 -> 0
 
             float currentAngle = Mathf.Lerp(startRotation, targetRotation, punchStrength);
-            target.eulerAngles = new Vector3(0, 0, currentAngle);
-            target.position = Vector3.Lerp(startPos, discardPos, t);    
+            target.eulerAngles = new Vector3(0, 0, currentAngle);   // Punch Rotation Effect
+            target.position = Vector3.Lerp(startPos, discardPos, t);// Sends Tile to Discard Pile
 
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -130,7 +130,7 @@ public class PlayerHand : MonoBehaviour
         foreach (TileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
-            yield return PunchRotation2D(tileObj.transform);
+            yield return DiscardAnim(tileObj.transform);
 
             TilesManager.instance.discardPile.Add(tileObj.tileData);
             currentHand.Remove(tileObj);
