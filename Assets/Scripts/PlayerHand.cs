@@ -123,7 +123,6 @@ public class PlayerHand : MonoBehaviour
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Add(tile);
-        tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         UpdateCurrentHandType();
 
         castSpellButton.SetActive(true);
@@ -134,7 +133,6 @@ public class PlayerHand : MonoBehaviour
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Remove(tile);
-        tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         UpdateCurrentHandType();
 
         if (selectedTiles.Count == 0)
@@ -189,14 +187,13 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator SortTilesInHand()
     {
-        // TEMP
         foreach (TileObject tile in selectedTiles)
         {
             tile.isSelected = false;
-            tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
-            currentHandType = MahjongHandTypes.None;
-            castSpellText.text = $"Cast Nothing";
+            tile.ResetToInitialPosition();
         }
+        currentHandType = MahjongHandTypes.None;
+        castSpellText.text = $"Cast Nothing";
         selectedTiles.Clear();
         castSpellButton.SetActive(false);
 
@@ -211,8 +208,6 @@ public class PlayerHand : MonoBehaviour
         {
             sortedTiles[i].transform.SetSiblingIndex(i);
         }
-
-        yield break;
     }
 
     // O(n)
