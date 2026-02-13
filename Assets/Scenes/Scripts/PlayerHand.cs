@@ -29,6 +29,10 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private float drawDuration = 0.03f;
     [SerializeField] private float sortDelay = 0.4f;
 
+    [Header("Animation Parameters")]
+    [SerializeField] private float discardDuration = 0.25f;
+    [SerializeField] private float playDuration = 0.25f;
+
     public List<TileObject> currentHand;
     public List<TileObject> selectedTiles;
     public List<FlowerTile> flowerTiles;
@@ -89,17 +93,51 @@ public class PlayerHand : MonoBehaviour
         StartCoroutine(DiscardTiles(drawWhenDone: true));
     }
 
+    public IEnumerator DiscardAnim(Transform target, float punchAngle = -45f)
+    {
+        float startRotation = target.eulerAngles.z;
+        float targetRotation = startRotation + punchAngle;
+
+        Vector3 startPos = target.position;
+        Vector3 discardPos = discardsText.gameObject.transform.position;
+
+        float elapsedTime = 0f;
+        float durDecrement = 0.05f;
+        float minDuration = 0.1f;
+
+        while (elapsedTime < discardDuration)
+        {
+            float t = elapsedTime / discardDuration;
+
+            // Punch curve: goes up then back down
+            float punchStrength = Mathf.Sin(t * Mathf.PI); // 0 -> 1 -> 0
+
+            float currentAngle = Mathf.Lerp(startRotation, targetRotation, punchStrength);
+            target.eulerAngles = new Vector3(0, 0, currentAngle);   // Punch Rotation Effect
+            target.position = Vector3.Lerp(startPos, discardPos, t);// Sends Tile to Discard Pile
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        target.eulerAngles = new Vector3(0, 0, startRotation);
+        discardDuration = Mathf.Max(minDuration, discardDuration - durDecrement);
+    }
+
     public IEnumerator DiscardTiles(bool drawWhenDone = false)
     {
+        float duration = discardDuration;
         foreach (TileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
+            yield return DiscardAnim(tileObj.transform);
 
             TilesManager.instance.discardPile.Add(tileObj.tileData);
             currentHand.Remove(tileObj);
             Destroy(tileObj.gameObject);
         }
         selectedTiles.Clear();
+        discardDuration = duration;
 
         if (!drawWhenDone) yield break;
 
@@ -123,7 +161,6 @@ public class PlayerHand : MonoBehaviour
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Add(tile);
-        tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         UpdateCurrentHandType();
 
         castSpellButton.SetActive(true);
@@ -134,7 +171,6 @@ public class PlayerHand : MonoBehaviour
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Remove(tile);
-        tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         UpdateCurrentHandType();
 
         if (selectedTiles.Count == 0)
@@ -166,14 +202,33 @@ public class PlayerHand : MonoBehaviour
         castSpellText.text = $"Cast {(currentHandType == MahjongHandTypes.None ? "Nothing" : currentHandType)}";
     }
 
+    // Called by Player.Attack()
+    public IEnumerator PlayHandAnim()
+    {
+        foreach (TileObject tileObj in selectedTiles)
+        {
+            float elapsedTime = 0f;
+
+            Vector3 startPos = tileObj.transform.localPosition;
+            Vector3 endPos = new Vector3(startPos.x, startPos.y + 30f, startPos.z); // Should be enemy pos or center screen
+            UnityEngine.Debug.Log(endPos);
+
+            while (elapsedTime < playDuration)
+            {
+                tileObj.transform.localPosition = Vector3.Lerp(startPos, endPos, elapsedTime / playDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+        yield return DiscardTiles(drawWhenDone: false);
+    }
+
     public void PlaySelectedHand()
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
         castSpellButton.SetActive(false);
-
-        StartCoroutine(DiscardTiles(drawWhenDone: false));
         
         isTurnActive = false;
     }
@@ -189,14 +244,13 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator SortTilesInHand()
     {
-        // TEMP
         foreach (TileObject tile in selectedTiles)
         {
             tile.isSelected = false;
-            tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
-            currentHandType = MahjongHandTypes.None;
-            castSpellText.text = $"Cast Nothing";
+            tile.ResetToInitialPosition();
         }
+        currentHandType = MahjongHandTypes.None;
+        castSpellText.text = $"Cast Nothing";
         selectedTiles.Clear();
         castSpellButton.SetActive(false);
 
@@ -211,8 +265,6 @@ public class PlayerHand : MonoBehaviour
         {
             sortedTiles[i].transform.SetSiblingIndex(i);
         }
-
-        yield break;
     }
 
     // O(n)
