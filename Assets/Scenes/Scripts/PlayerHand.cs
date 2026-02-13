@@ -93,28 +93,51 @@ public class PlayerHand : MonoBehaviour
         StartCoroutine(DiscardTiles(drawWhenDone: true));
     }
 
+    public IEnumerator PunchRotation2D(Transform target, float punchAngle = -45f)
+    {
+        float startRotation = target.eulerAngles.z;
+        float targetRotation = startRotation + punchAngle;
+
+        Vector3 startPos = target.position;
+        Vector3 discardPos = discardsText.gameObject.transform.position;
+
+        float elapsedTime = 0f;
+        float durDecrement = 0.05f;
+        float minDuration = 0.1f;
+
+        while (elapsedTime < discardDuration)
+        {
+            float t = elapsedTime / discardDuration;
+
+            // Punch curve: goes up then back down
+            float punchStrength = Mathf.Sin(t * Mathf.PI); // 0 -> 1 -> 0
+
+            float currentAngle = Mathf.Lerp(startRotation, targetRotation, punchStrength);
+            target.eulerAngles = new Vector3(0, 0, currentAngle);
+            target.position = Vector3.Lerp(startPos, discardPos, t);    
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        target.eulerAngles = new Vector3(0, 0, startRotation);
+        discardDuration = Mathf.Max(minDuration, discardDuration - durDecrement);
+    }
+
     public IEnumerator DiscardTiles(bool drawWhenDone = false)
     {
+        float duration = discardDuration;
         foreach (TileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
-
-            float elapsedTime = 0f;
-            Vector3 startPos = tileObj.transform.position;
-            Vector3 discardPos = discardsText.gameObject.transform.position;
-
-            while (elapsedTime < discardDuration)
-            {
-                tileObj.transform.position = Vector3.Lerp(startPos, discardPos, elapsedTime / discardDuration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
+            yield return PunchRotation2D(tileObj.transform);
 
             TilesManager.instance.discardPile.Add(tileObj.tileData);
             currentHand.Remove(tileObj);
             Destroy(tileObj.gameObject);
         }
         selectedTiles.Clear();
+        discardDuration = duration;
 
         if (!drawWhenDone) yield break;
 
@@ -196,24 +219,6 @@ public class PlayerHand : MonoBehaviour
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }
-
-            // TODO: Add Rotation "Punch" Effect
-            /*elapsedTime = 0f;
-            startPos = tileObj.transform.position;
-            Vector3 discardPos = discardsText.gameObject.transform.position;
-            float startRotZ = tileObj.transform.eulerAngles.z;
-            float endRotZ = 10f;
-
-            while (elapsedTime < duration)
-            {
-                float z = Mathf.Lerp(startRotZ, endRotZ, elapsedTime / duration);
-                tileObj.transform.position = Vector3.Lerp(startPos, discardPos, elapsedTime / duration);
-
-                tileObj.transform.eulerAngles = new Vector3(0, 0, z);
-
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }*/
         }
         yield return DiscardTiles(drawWhenDone: false);
     }
