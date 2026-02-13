@@ -1046,6 +1046,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2291968428886948441, guid: fff0577698050754aaf21946e2ae3b54, type: 3}
+      propertyPath: playDuration
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 2414621840570324623, guid: fff0577698050754aaf21946e2ae3b54, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

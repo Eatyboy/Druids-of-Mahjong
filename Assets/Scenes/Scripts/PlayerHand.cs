@@ -29,7 +29,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private float drawDuration = 0.03f;
     [SerializeField] private float sortDelay = 0.4f;
 
-    [Header("Anim Parameters")]
+    [Header("Animation Parameters")]
     [SerializeField] private float discardDuration = 0.25f;
     [SerializeField] private float playDuration = 0.25f;
 
