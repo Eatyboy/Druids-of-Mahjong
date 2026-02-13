@@ -6,6 +6,7 @@ public enum FlowerTileType
     BambooBonus, //Give bonus damage for each suit corresponding to the flower tile
     DotBonus, //Give bonus damage for each suit corresponding to the flower tile
     CharacterBonus, //Give bonus damage for each suit corresponding to the flower tile
+    QiBonus, //Give bonus damage according to amount of qi
 }
 
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]

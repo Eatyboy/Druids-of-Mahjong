@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     private InputSystem_Actions ctrl;
 
     public float health, maxHealth;
-    public int qi = 0;
+    public static int qi = 0;
 
     [SerializeField] private HealthBarUI healthBar;
     [SerializeField] private QiCounter qiCounter;
@@ -32,7 +32,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        qi = 0;
+        qi = 1000;
         maxHealth = baseMaxHealth;
         health = maxHealth;
 
@@ -122,6 +122,10 @@ public class Player : MonoBehaviour
     {
         qi += qiChange;
         qiCounter.SetQi(qi);
+    }
+
+    public static int GetQi(){
+        return qi;
     }
 
     public void Parry(InputAction.CallbackContext ctx)

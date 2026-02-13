@@ -407,6 +407,14 @@ PrefabInstance:
       propertyPath: testData
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: flowerTilePrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'flowerTilePrefabs.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8588305647248941263, guid: 66c497ad907a54ce8b489fb12e55d255, type: 3}
     - target: {fileID: 6458211675077567375, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_Name
       value: Flower Tile Manager
@@ -1339,6 +1347,10 @@ PrefabInstance:
       propertyPath: qiCounter
       value: 
       objectReference: {fileID: 2039363319}
+    - target: {fileID: 8698466456139869887, guid: 4ce57eecc040f524f80663f5b38d651c, type: 3}
+      propertyPath: isParryWindowOpen
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9046596757483166088, guid: 4ce57eecc040f524f80663f5b38d651c, type: 3}
       propertyPath: m_Enabled
       value: 0
