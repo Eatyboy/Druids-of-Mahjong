@@ -285,6 +285,8 @@ MonoBehaviour:
   isSelected: 0
   tmpElement: {fileID: 4513411678859413458}
   label: {fileID: 283592298313616798}
+  selectionOffsetY: 20
+  selectionAnimDuration: 0.1
 --- !u!1 &2937066682176154215
 GameObject:
   m_ObjectHideFlags: 0
