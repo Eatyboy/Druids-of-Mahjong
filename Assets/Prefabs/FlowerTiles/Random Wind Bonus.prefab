@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &286977789596915421
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2586444533356537900, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: 08113b6b36db7471ea48cfadfc83e9c1, type: 2}
+    - target: {fileID: 2586444533356537900, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: effectClass
+      value: 
+      objectReference: {fileID: 4352183072231063041}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589175133294577107, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3751277541116460454, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_Name
+      value: Random Wind Bonus
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591764170279316950, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_Color.b
+      value: 0.49411765
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591764170279316950, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_Color.g
+      value: 0.45490196
+      objectReference: {fileID: 0}
+    - target: {fileID: 4591764170279316950, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      propertyPath: m_Color.r
+      value: 0.81960785
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3751277541116460454, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4352183072231063041}
+  m_SourcePrefab: {fileID: 100100000, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+--- !u!1 &4032054047417330555 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3751277541116460454, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+  m_PrefabInstance: {fileID: 286977789596915421}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4352183072231063041
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4032054047417330555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c97d4c372c07b4dffac31acf555fa398, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RandomWindChecker
+  currentWind: 1

@@ -115,4 +115,15 @@ public class FlowerTileManager : MonoBehaviour
             );
         }
     }
+
+    public void ActivateFlowerTilesOnTurnStart()
+    {
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            CombatManager.instance.EnqueueAction(
+                () => ft.effectClass.OnTurnStart(),
+                nameof(ft.effectClass.OnTurnStart)
+            );
+        }
+    }
 }

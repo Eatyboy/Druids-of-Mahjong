@@ -51,6 +51,7 @@ public class CombatManager : MonoBehaviour
                 case CombatState.PlayerTurn:
                     yield return PlayerHand.instance.DrawUntilFullHand();
                     PlayerHand.instance.isTurnActive = true;
+                    FlowerTileManager.instance.ActivateFlowerTilesOnTurnStart();
                     yield return new WaitUntil(() => !PlayerHand.instance.isTurnActive);
 
                     isPlayerTurnNext = false;
