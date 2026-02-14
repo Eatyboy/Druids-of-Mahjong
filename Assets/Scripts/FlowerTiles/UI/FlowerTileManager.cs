@@ -10,24 +10,42 @@ public class FlowerTileManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private RectTransform flowerTileContainer;
     [SerializeField] private FlowerTileInfoController infoController;
-    [SerializeField] private FlowerTile flowerTilePrefab;
+    [SerializeField] private List<FlowerTile> flowerTilePrefabs;
+    private Dictionary<FlowerTileType, FlowerTile> flowerTileMap = new();
 
     [Header("Data")]
     public List<FlowerTile> playerFlowerTiles = new();
-
-    [Header("Testing")]
-    [SerializeField] private FlowerTileData testData;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        foreach (FlowerTile flowerTile in flowerTilePrefabs)
+        {
+            if (flowerTile == null)
+            {
+                Debug.LogError("Flower tile manager has a null flower tile");
+            }
+            else if (flowerTile.data == null) 
+            {
+                Debug.LogError($"{flowerTile.name} has null data");
+            }
+            else if (flowerTile.data.flowerTile == FlowerTileType.None)
+            {
+                Debug.LogWarning($"{flowerTile.name} is a None flower tile");
+            }
+            else
+            {
+                flowerTileMap.Add(flowerTile.data.flowerTile, flowerTile);
+            }
+        }
     }
 
-    public void AddFlowerTile(FlowerTileData flowerTileData)
+    public void AddFlowerTile(FlowerTile flowerTilePrefab)
     {
         FlowerTile addedFlowerTile = Instantiate(flowerTilePrefab, flowerTileContainer);
-        addedFlowerTile.Initialize(flowerTileData, infoController);
+        addedFlowerTile.Initialize(infoController);
         playerFlowerTiles.Add(addedFlowerTile);
     }
 
@@ -40,19 +58,61 @@ public class FlowerTileManager : MonoBehaviour
     {
         if (Keyboard.current.fKey.wasReleasedThisFrame)
         {
-            AddFlowerTile(testData);
+            AddFlowerTile(Utils.GetRandomItemInList(flowerTilePrefabs));
         }
     }
 
-    public int GetTotalFlatDamageBonus()
-{
-    int total = 0;
-
-    foreach (var tile in playerFlowerTiles)
+    public void ActivateFlowerTilesOnPreAttack(Player.PlayerAttackContext attackContext)
     {
-        total += tile.data.flatDamageBonus;
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            CombatManager.instance.EnqueueAction(
+                () => ft.effectClass.OnPreAttack(attackContext),
+                nameof(ft.effectClass.OnPreAttack)
+            );
+        }
     }
 
-        return total;
+    public void ActivateFlowerTilesOnIntraAttack(Player.PlayerAttackContext attackContext)
+    {
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            CombatManager.instance.EnqueueAction(
+                () => ft.effectClass.OnIntraAttack(attackContext),
+                nameof(ft.effectClass.OnIntraAttack)
+            );
+        }
+    }
+    public void ActivateFlowerTilesOnPostAttack(Player.PlayerAttackContext attackContext)
+    {
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            CombatManager.instance.EnqueueAction(
+                () => ft.effectClass.OnPostAttack(attackContext),
+                nameof(ft.effectClass.OnPostAttack)
+            );
+        }
+    }
+
+    public void ActivateFlowerTilesOnIncomingDamage(int dmg)
+    {
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            CombatManager.instance.EnqueueAction(
+                () => ft.effectClass.OnIncomingAttack(dmg),
+                nameof(ft.effectClass.OnIncomingAttack)
+            );
+        }
+    }
+
+    public void ActivateFlowerTilesOnTakeDamage(int dmg)
+    {
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            CombatManager.instance.EnqueueAction(
+                () => ft.effectClass.OnTakeDamage(dmg),
+                nameof(ft.effectClass.OnTakeDamage)
+            );
+        }
     }
 }

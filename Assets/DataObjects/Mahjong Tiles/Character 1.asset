@@ -15,4 +15,4 @@ MonoBehaviour:
   suit: 3
   rank: 1
   damageValue: 0
-  faceSprite: {fileID: 0}
+  faceSprite: {fileID: 21300000, guid: 6be262a91751349478a3d5fa1cf941f2, type: 3}

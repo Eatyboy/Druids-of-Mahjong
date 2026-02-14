@@ -1,59 +1,60 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public abstract class TileObject : MonoBehaviour
 {
-    public RectTransform rt;
+    public RectTransform rt { get; private set; }
+    [SerializeField] protected Image tileBackImage;
+    [SerializeField] protected Image tileFaceImage;
+    [SerializeField] protected TextMeshProUGUI tmpElement;
+    [SerializeField] protected TextMeshProUGUI label;
 
     public Tile tileData;
-    public Image tileBackImage;
-    public Image tileFaceImage;
-    public GameObject selectedOverlay;
 
-    public bool isSelected = false;
-
-    [SerializeField] private TextMeshProUGUI tmpElement;
-
-    private void Awake()
+    protected virtual void Awake()
     {
         rt = GetComponent<RectTransform>();
-        isSelected = false;
-        selectedOverlay.SetActive(false);
     }
 
-    public void Initialize(Tile tile)
+    public virtual void Initialize(Tile tile)
     {
         tileData = tile;
-        tmpElement.text = tile.rank.ToString() + " of " + tile.suit.ToString();
-    }
-
-    public void ToggleSelected()
-    {
-        isSelected = !isSelected;
-        if (isSelected)
+        if (tileData.baseTileData.faceSprite == null )
         {
-            PlayerHand.instance.SelectTile(this);
+            tmpElement.text = tile.rank.ToString() + " of " + tile.suit.ToString();
+            tileFaceImage.enabled = false;
+            label.enabled = false;
         }
         else
         {
-            PlayerHand.instance.DeselectTile(this);
+            tmpElement.enabled = false;
+            tileFaceImage.sprite = tileData.baseTileData.faceSprite;
+            label.text = tile.baseTileData.suit switch
+            {
+                TileSuit.None => "X",
+                TileSuit.Bamboo => tile.rank.ToString(),
+                TileSuit.Dot => tile.rank.ToString(),
+                TileSuit.Character => tile.rank.ToString(),
+                TileSuit.Wind => tile.rank switch
+                {
+                    1 => "N",
+                    2 => "E",
+                    3 => "S",
+                    4 => "W",
+                    _ => "X"
+                },
+                TileSuit.Dragon => tile.rank switch
+                {
+                    1 => "F",
+                    2 => "C",
+                    3 => "B",
+                    _ => "X"
+                },
+                _ => "X"
+            };
         }
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        ToggleSelected();
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        selectedOverlay.SetActive(true);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        selectedOverlay.SetActive(false);
     }
 }

@@ -6,6 +6,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 {
     public FlowerTileData data;
     public RectTransform rectTransform;
+    public FlowerTileEffect effectClass;
 
     [SerializeField] private Image image;
 
@@ -16,12 +17,18 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         rectTransform = GetComponent<RectTransform>();
     }
 
-    public void Initialize(FlowerTileData data, FlowerTileInfoController infoController)
+    public void Initialize(FlowerTileInfoController infoController)
     {
         this.infoController = infoController;
 
-        this.data = data;
         image.sprite = data.sprite;
+        CombatManager.instance.EnqueueAction(() => 
+            effectClass.OnInitialize(
+                PlayerHand.instance.GetPlayerHandTileData(), 
+                PlayerHand.instance.GetSelectedTileData()
+            ), 
+            nameof(effectClass.OnInitialize)
+        );
     }
 
     public void OnPointerEnter(PointerEventData eventData)
