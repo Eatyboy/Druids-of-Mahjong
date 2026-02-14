@@ -51,6 +51,10 @@ MonoBehaviour:
   qiOnDeath: 100
   attackDamage: 1
   tilePrefab: {fileID: -5554519734976896734, guid: 9390c9f1d269185479189fb3dd12642d, type: 3}
+  tileSplineContainer: {fileID: 7095649246737928557}
+  drawSpline: {fileID: 5956299872426434773}
+  attackSpline: {fileID: 8113515735466349967}
+  parrySpline: {fileID: 5677481224923456440}
   attackTileOffset: {x: 180, y: 120}
   attackDuration: 1
   isTurnActive: 0
@@ -87,6 +91,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1753284135662193703}
+  - {fileID: 7095649246737928557}
   m_Father: {fileID: 7302320415515243593}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -397,3 +402,138 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 256c3ff2eefdd0844b2be6d91a981625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HealthBarUI
+--- !u!1001 &8394765742913365712
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1129555520386448015}
+    m_Modifications:
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8870259293585156819, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+      propertyPath: m_Name
+      value: EnemyTileSplines
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+--- !u!114 &5677481224923456440 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4200246434349122920, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+  m_PrefabInstance: {fileID: 8394765742913365712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Splines::UnityEngine.Splines.SplineContainer
+--- !u!114 &5956299872426434773 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2749788258599077381, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+  m_PrefabInstance: {fileID: 8394765742913365712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Splines::UnityEngine.Splines.SplineContainer
+--- !u!224 &7095649246737928557 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1655351668653242301, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+  m_PrefabInstance: {fileID: 8394765742913365712}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8113515735466349967 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 295211612539433823, guid: bc029fdd1a1f0944e9194678cc1f1c6e, type: 3}
+  m_PrefabInstance: {fileID: 8394765742913365712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Splines::UnityEngine.Splines.SplineContainer

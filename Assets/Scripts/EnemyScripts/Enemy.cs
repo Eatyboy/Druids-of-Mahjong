@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -12,6 +13,10 @@ public class Enemy : MonoBehaviour, IDamageable
     public int attackDamage = 1;
 
     [SerializeField] private EnemyTileObject tilePrefab;
+    [SerializeField] private RectTransform tileSplineContainer;
+    [SerializeField] private SplineContainer drawSpline;
+    [SerializeField] private SplineContainer attackSpline;
+    [SerializeField] private SplineContainer parrySpline;
     [SerializeField] private Vector2 attackTileOffset;
     [SerializeField] private float attackDuration = 2.0f;
 
@@ -35,7 +40,8 @@ public class Enemy : MonoBehaviour, IDamageable
     public IEnumerator EnemyAttack(Tile intendedTile)
     {
         EnemyTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
-        attackTile.Initialize(intendedTile, (Vector2)Camera.main.WorldToScreenPoint(transform.position), attackTileOffset);
+        attackTile.Initialize(intendedTile, tileSplineContainer.anchoredPosition, 
+            drawSpline.Spline, attackSpline.Spline, parrySpline.Spline);
 
         yield return attackTile.PlayDrawAnimation();
 

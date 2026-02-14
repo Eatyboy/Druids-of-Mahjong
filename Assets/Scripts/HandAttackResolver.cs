@@ -36,6 +36,7 @@ public static class HandAttackResolver
 
         int honorBonus = GetHonorDamageBonus(hand);
         int modifierBonus = GetTileModifierBonus(hand);
+
         int finalDamage = Math.Max(0, baseDamage + honorBonus + modifierBonus);
 
         ctx.baseDamage = baseDamage;

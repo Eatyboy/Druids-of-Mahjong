@@ -64,4 +64,9 @@ public static class Utils
 
         return raw;
     }
+
+    public static float ExpEaseIn(float t)
+    {
+        return t == 0.0f ? 0.0f : Mathf.Pow(2.0f, 10.0f * t - 10.0f);
+    }
 }
