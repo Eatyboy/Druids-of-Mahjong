@@ -211,7 +211,7 @@ public class PlayerHand : MonoBehaviour
 
             Vector3 startPos = tileObj.transform.localPosition;
             Vector3 endPos = new Vector3(startPos.x, startPos.y + 30f, startPos.z); // Should be enemy pos or center screen
-            UnityEngine.Debug.Log(endPos);
+            //UnityEngine.Debug.Log(endPos);
 
             while (elapsedTime < playDuration)
             {

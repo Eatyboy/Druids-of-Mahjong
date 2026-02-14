@@ -17,10 +17,12 @@ public class CombatManager : MonoBehaviour
 {
     public static CombatManager instance;
 
-    public GameState gameState;
+    [SerializeField] private RoundEndUI roundEndUI;
+
     public CombatState combatState;
     public Queue<(Func<IEnumerator> action, string actionName)> actionQueue = new();
     public bool isPlayerTurnNext;
+    private int qiDroppedThisRound = 0;
 
     private void Awake()
     {
@@ -30,8 +32,8 @@ public class CombatManager : MonoBehaviour
 
     public void StartCombat()
     {
-        gameState = GameState.InCombat;
         combatState = CombatState.PreBattle;
+        qiDroppedThisRound = 0;
 
         StartCoroutine(CombatLoop());
     }
@@ -87,21 +89,26 @@ public class CombatManager : MonoBehaviour
         else if (combatState == CombatState.Defeat) PlayerDefeat();
     }
 
+    public void QiDropped(int amount)
+    {
+        qiDroppedThisRound += amount;
+    }
 
     public void PlayerVictory()
     {
         Destroy(EnemyManager.instance.currentEnemy.gameObject);
         EnemyManager.instance.currentEnemy = null;
 
-        // TEMP: Remove later
-        Debug.Log("Victory!");
+        roundEndUI.gameObject.SetActive(true);
+
+        roundEndUI.Initialize(qiDroppedThisRound);
     }
 
     public void PlayerDefeat()
     {
         combatState = CombatState.Defeat;
         
-        Debug.Log("Defeat!");
+        GameManager.instance.QuitToTileScreen();
     }
 
     public void EnqueueAction(Func<IEnumerator> action, string actionName = null)

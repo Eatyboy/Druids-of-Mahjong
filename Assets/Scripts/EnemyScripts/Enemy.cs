@@ -106,6 +106,7 @@ public class Enemy : MonoBehaviour, IDamageable
     protected virtual void OnDeath()
     {
         Player.instance.AddQi(qiOnDeath);
+        CombatManager.instance.QiDropped(qiOnDeath);
     }
 
     public IEnumerator EnemyTakeDamage(int damageToTake)
