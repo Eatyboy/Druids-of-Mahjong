@@ -17,7 +17,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private GameObject castSpellButton;
     [SerializeField] private TextMeshProUGUI discardsText;
     [SerializeField] private TextMeshProUGUI castSpellText;
-    [SerializeField] private TileObject tileObjectPrefab;
+    [SerializeField] private PlayerTileObject tileObjectPrefab;
     [SerializeField] private float maxHorizontalTileOffset;
 
     [Header("Hand/Tiles")]
@@ -33,8 +33,8 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private float discardDuration = 0.25f;
     [SerializeField] private float playDuration = 0.25f;
 
-    public List<TileObject> currentHand;
-    public List<TileObject> selectedTiles;
+    public List<PlayerTileObject> currentHand;
+    public List<PlayerTileObject> selectedTiles;
     public List<FlowerTile> flowerTiles;
     public int currentHandSize = 14;
     public int maxDiscards;
@@ -62,7 +62,7 @@ public class PlayerHand : MonoBehaviour
     {
         yield return new WaitForSeconds(drawDuration);
 
-        TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
+        PlayerTileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
         newTileObj.rt.position = tileDrawOrigin.position;
         newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
         newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
@@ -127,7 +127,7 @@ public class PlayerHand : MonoBehaviour
     public IEnumerator DiscardTiles(bool drawWhenDone = false)
     {
         float duration = discardDuration;
-        foreach (TileObject tileObj in selectedTiles)
+        foreach (PlayerTileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
             yield return DiscardAnim(tileObj.transform);
@@ -156,7 +156,7 @@ public class PlayerHand : MonoBehaviour
 
     }
 
-    public void SelectTile(TileObject tile)
+    public void SelectTile(PlayerTileObject tile)
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
@@ -166,7 +166,7 @@ public class PlayerHand : MonoBehaviour
         castSpellButton.SetActive(true);
     }
 
-    public void DeselectTile(TileObject tile)
+    public void DeselectTile(PlayerTileObject tile)
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
@@ -183,7 +183,7 @@ public class PlayerHand : MonoBehaviour
     public List<Tile> GetSelectedTileData()
     {
         List<Tile> list = new List<Tile>();
-        foreach (TileObject t in selectedTiles)
+        foreach (PlayerTileObject t in selectedTiles)
             list.Add(t.tileData);
         return list;
     }
@@ -191,7 +191,7 @@ public class PlayerHand : MonoBehaviour
     public List<Tile> GetPlayerHandTileData()
     {
         List<Tile> list = new List<Tile>();
-        foreach (TileObject t in currentHand)
+        foreach (PlayerTileObject t in currentHand)
             list.Add(t.tileData);
         return list;
     }
@@ -205,7 +205,7 @@ public class PlayerHand : MonoBehaviour
     // Called by Player.Attack()
     public IEnumerator PlayHandAnim()
     {
-        foreach (TileObject tileObj in selectedTiles)
+        foreach (PlayerTileObject tileObj in selectedTiles)
         {
             float elapsedTime = 0f;
 
@@ -236,7 +236,7 @@ public class PlayerHand : MonoBehaviour
     // clear
     public void ClearTiles()
     {
-        foreach (TileObject t in currentHand)
+        foreach (PlayerTileObject t in currentHand)
         {
             Destroy(t.gameObject);
         }
@@ -244,7 +244,7 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator SortTilesInHand()
     {
-        foreach (TileObject tile in selectedTiles)
+        foreach (PlayerTileObject tile in selectedTiles)
         {
             tile.isSelected = false;
             tile.ResetToInitialPosition();
@@ -254,7 +254,7 @@ public class PlayerHand : MonoBehaviour
         selectedTiles.Clear();
         castSpellButton.SetActive(false);
 
-        TileObject[] sortedTiles = currentHand
+        PlayerTileObject[] sortedTiles = currentHand
             .OrderBy(t => t.tileData.suit)
             .ThenBy(t =>  t.tileData.rank)
             .ToArray();
@@ -273,7 +273,7 @@ public class PlayerHand : MonoBehaviour
     // {
     //     List<Tile> optimalHand = new();
     //     int optimalHandValue = 0;
-    //     foreach (TileObject stObj in selectedTiles)
+    //     foreach (PlayerTileObject stObj in selectedTiles)
     //     {
     //         Tile st = stObj.tileData;
     //         List<Tile> testHandStraight = new();
@@ -284,7 +284,7 @@ public class PlayerHand : MonoBehaviour
     //         int tripletValue = 1;
 
     //         // find best combination for selected tile; straight or triplet
-    //         foreach (TileObject htObj in currentHand)
+    //         foreach (PlayerTileObject htObj in currentHand)
     //         {
     //             Tile ht = htObj.tileData;
     //             if (st.Equals(ht)) continue;

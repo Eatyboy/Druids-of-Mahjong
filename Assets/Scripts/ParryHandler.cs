@@ -20,18 +20,18 @@ public class ParryHandler : MonoBehaviour
         public Enemy enemy { get; private set; }
         public MahjongHandTypes parryHandType { get; private set; }
         public List<Tile> parryHand { get; private set; }
-        public List<TileObject> parryTileObjects { get; private set; }
-        public TileObject enemyAttackTile { get; private set; }
+        public List<PlayerTileObject> parryPlayerTileObjects { get; private set; }
+        public EnemyTileObject enemyAttackTile { get; private set; }
         public ParryPopup popup { get; private set; }
 
         public ParryContext(Enemy enemy, MahjongHandTypes parryHandType, List<Tile> parryHand, 
-                            List<TileObject> parryTileObjects, TileObject enemyAttackTile)
+                            List<PlayerTileObject> parryPlayerTileObjects, EnemyTileObject enemyAttackTile)
         {
             resolved = false;
             wasParried = false;
             this.parryHandType = parryHandType;
             this.parryHand = parryHand;
-            this.parryTileObjects = parryTileObjects;
+            this.parryPlayerTileObjects = parryPlayerTileObjects;
             this.enemy = enemy;
             this.enemyAttackTile = enemyAttackTile;
         }
@@ -71,7 +71,7 @@ public class ParryHandler : MonoBehaviour
         isParryWindowOpen = true;
         parryPopup.gameObject.SetActive(true);
         parryPopup.Open(activeContext.enemyAttackTile.rt.position);
-        foreach (TileObject tileObject in activeContext.parryTileObjects)
+        foreach (PlayerTileObject tileObject in activeContext.parryPlayerTileObjects)
         {
             tileObject.SetHighlighted(true);
         }
@@ -101,7 +101,7 @@ public class ParryHandler : MonoBehaviour
         }
 
         parryPopup.gameObject.SetActive(false);
-        foreach (TileObject tileObject in activeContext.parryTileObjects)
+        foreach (PlayerTileObject tileObject in activeContext.parryPlayerTileObjects)
         {
             if (tileObject != null && tileObject.gameObject != null)
             {

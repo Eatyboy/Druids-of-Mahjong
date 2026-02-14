@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public int qiOnDeath = 100;
     public int attackDamage = 1;
 
-    [SerializeField] private TileObject tilePrefab;
+    [SerializeField] private EnemyTileObject tilePrefab;
     [SerializeField] private Vector2 attackTileOffset;
     [SerializeField] private float attackDuration = 2.0f;
 
@@ -34,9 +34,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyAttack(Tile intendedTile)
     {
-        TileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
-        attackTile.Initialize(intendedTile);
-        attackTile.rt.position = (Vector2)Camera.main.WorldToScreenPoint(transform.position) + attackTileOffset;
+        EnemyTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);
+        attackTile.Initialize(intendedTile, (Vector2)Camera.main.WorldToScreenPoint(transform.position), attackTileOffset);
+
+        yield return attackTile.PlayDrawAnimation();
 
         ParryHandler.ParryContext parryContext;
         List<Tile> expandedPlayerHand = PlayerHand.instance.currentHand
@@ -55,7 +56,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
         if (canParry)
         {
-            List<TileObject> parryTileObjects = new();
+            List<PlayerTileObject> parryTileObjects = new();
             foreach (Tile tile in parryHand.tiles)
             {
                 var obj = PlayerHand.instance.currentHand.FirstOrDefault(t => t.tileData == tile);
@@ -73,18 +74,21 @@ public class Enemy : MonoBehaviour, IDamageable
 
         yield return (canParry)
             ? new WaitUntil(() => parryContext.resolved)
-            : new WaitForSeconds(2.0f);
-
-		Destroy(attackTile.gameObject);
+            : new WaitForSeconds(attackDuration);
 
         if (parryContext.wasParried)
         {
+            yield return attackTile.PlayParriedAnimation();
         }
         else
         {
+            yield return attackTile.PlayAttackAnimation();
+
             CombatManager.instance.EnqueueAction(() => Player.instance.PlayerTakeDamage(attackDamage), nameof(Player.instance.PlayerTakeDamage));
             FlowerTileManager.instance.ActivateFlowerTilesOnTakeDamage(-attackDamage);
         }
+
+        Destroy(attackTile.gameObject);
     }
 
     public virtual void MakeAttackDecision()
