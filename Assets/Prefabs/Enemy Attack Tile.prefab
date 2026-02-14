@@ -712,25 +712,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a312a36ccc05ac146899599739a07059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAttackTileObject
-  rt: {fileID: 5506315906219190688}
+  tileBackImage: {fileID: 4495465964345379541}
+  tileFaceImage: {fileID: 6254987052866011254}
+  tmpElement: {fileID: 3180697656826321031}
+  label: {fileID: 4964634870202446201}
   tileData:
     baseTileData: {fileID: 0}
     suit: 0
     rank: 0
     damageValue: 0
     faceSprite: {fileID: 0}
-  tileBackImage: {fileID: 4495465964345379541}
-  tileFaceImage: {fileID: 6254987052866011254}
   animationFPS: 30
   isInAnimation: 0
-  drawAnimationDuration: 0.75
-  attackAnimationDuration: 1
-  parriedAnimationDuration: 1
+  drawAnimationDuration: 0.3
+  attackAnimationDuration: 0.7
+  parriedAnimationDuration: 0.7
   idleOffset: {x: 0, y: 0}
   initialScale: {x: 0, y: 0}
   initialPosition: {x: 0, y: 0}
-  tmpElement: {fileID: 3180697656826321031}
-  label: {fileID: 4964634870202446201}
 --- !u!1 &8907859501017444317
 GameObject:
   m_ObjectHideFlags: 0

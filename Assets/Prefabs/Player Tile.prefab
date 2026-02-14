@@ -222,9 +222,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2249478434206133274}
   - component: {fileID: 5159225414404837597}
-  - component: {fileID: 8667527576963648452}
+  - component: {fileID: 5721611104455207211}
   m_Layer: 5
-  m_Name: Tile
+  m_Name: Player Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -259,7 +259,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2691850687957884732}
   m_CullTransparentMesh: 1
---- !u!114 &8667527576963648452
+--- !u!114 &5721611104455207211
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -268,23 +268,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 2691850687957884732}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc7cf1027dbbb4f428c64890f08404f8, type: 3}
+  m_Script: {fileID: 11500000, guid: 492d1491abc155140964ccf0e4324084, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TileObject
-  rt: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerTileObject
+  tileBackImage: {fileID: 3691997538104428453}
+  tileFaceImage: {fileID: 3024682858390980838}
+  tmpElement: {fileID: 4513411678859413458}
+  label: {fileID: 283592298313616798}
   tileData:
     baseTileData: {fileID: 0}
     suit: 0
     rank: 0
     damageValue: 0
     faceSprite: {fileID: 0}
-  tileBackImage: {fileID: 3691997538104428453}
-  tileFaceImage: {fileID: 3024682858390980838}
   selectedOverlay: {fileID: 2937066682176154215}
   highlightedOverlay: {fileID: 2362616536341259258}
   isSelected: 0
-  tmpElement: {fileID: 4513411678859413458}
-  label: {fileID: 283592298313616798}
+  selectionOffsetY: 20
+  selectionAnimDuration: 0.2
 --- !u!1 &2937066682176154215
 GameObject:
   m_ObjectHideFlags: 0

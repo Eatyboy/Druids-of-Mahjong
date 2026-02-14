@@ -5,14 +5,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System;
 
-public class EnemyAttackTileObject : MonoBehaviour
+public class EnemyTileObject : TileObject
 {
-    public RectTransform rt;
-
-    public Tile tileData;
-    public Image tileBackImage;
-    public Image tileFaceImage;
-
     [Header("Procedural Animation")]
     [SerializeField] private int animationFPS;
     public bool isInAnimation;
@@ -27,52 +21,16 @@ public class EnemyAttackTileObject : MonoBehaviour
     private Vector2[] attackBezierPoints;
     private Vector2[] parriedBezierPoints;
 
-    [SerializeField] private TextMeshProUGUI tmpElement;
-    [SerializeField] private TextMeshProUGUI label;
-
-    private void Awake()
+    protected override void Awake()
     {
-        rt = GetComponent<RectTransform>();
+        base.Awake();
+
         isInAnimation = false;
     }
 
     public void Initialize(Tile tile, Vector2 initPos, Vector2 offset)
     {
-        tileData = tile;
-        if (tileData.baseTileData.faceSprite == null )
-        {
-            tmpElement.text = tile.rank.ToString() + " of " + tile.suit.ToString();
-            tileFaceImage.enabled = false;
-            label.enabled = false;
-        }
-        else
-        {
-            tmpElement.enabled = false;
-            tileFaceImage.sprite = tileData.baseTileData.faceSprite;
-            label.text = tile.baseTileData.suit switch
-            {
-                TileSuit.None => "X",
-                TileSuit.Bamboo => tile.rank.ToString(),
-                TileSuit.Dot => tile.rank.ToString(),
-                TileSuit.Character => tile.rank.ToString(),
-                TileSuit.Wind => tile.rank switch
-                {
-                    1 => "N",
-                    2 => "E",
-                    3 => "S",
-                    4 => "W",
-                    _ => "X"
-                },
-                TileSuit.Dragon => tile.rank switch
-                {
-                    1 => "G",
-                    2 => "R",
-                    3 => "W",
-                    _ => "X"
-                },
-                _ => "X"
-            };
-        }
+        base.Initialize(tile);
 
         idleOffset = offset;
         initialPosition = initPos;

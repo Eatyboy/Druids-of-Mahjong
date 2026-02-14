@@ -17,7 +17,7 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private GameObject castSpellButton;
     [SerializeField] private TextMeshProUGUI discardsText;
     [SerializeField] private TextMeshProUGUI castSpellText;
-    [SerializeField] private TileObject tileObjectPrefab;
+    [SerializeField] private PlayerTileObject tileObjectPrefab;
     [SerializeField] private float maxHorizontalTileOffset;
 
     [Header("Hand/Tiles")]
@@ -29,8 +29,12 @@ public class PlayerHand : MonoBehaviour
     [SerializeField] private float drawDuration = 0.03f;
     [SerializeField] private float sortDelay = 0.4f;
 
-    public List<TileObject> currentHand;
-    public List<TileObject> selectedTiles;
+    [Header("Animation Parameters")]
+    [SerializeField] private float discardDuration = 0.25f;
+    [SerializeField] private float playDuration = 0.25f;
+
+    public List<PlayerTileObject> currentHand;
+    public List<PlayerTileObject> selectedTiles;
     public List<FlowerTile> flowerTiles;
     public int currentHandSize = 14;
     public int maxDiscards;
@@ -58,7 +62,7 @@ public class PlayerHand : MonoBehaviour
     {
         yield return new WaitForSeconds(drawDuration);
 
-        TileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
+        PlayerTileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
         newTileObj.rt.position = tileDrawOrigin.position;
         newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
         newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
@@ -89,17 +93,51 @@ public class PlayerHand : MonoBehaviour
         StartCoroutine(DiscardTiles(drawWhenDone: true));
     }
 
+    public IEnumerator DiscardAnim(Transform target, float punchAngle = -45f)
+    {
+        float startRotation = target.eulerAngles.z;
+        float targetRotation = startRotation + punchAngle;
+
+        Vector3 startPos = target.position;
+        Vector3 discardPos = discardsText.gameObject.transform.position;
+
+        float elapsedTime = 0f;
+        float durDecrement = 0.05f;
+        float minDuration = 0.1f;
+
+        while (elapsedTime < discardDuration)
+        {
+            float t = elapsedTime / discardDuration;
+
+            // Punch curve: goes up then back down
+            float punchStrength = Mathf.Sin(t * Mathf.PI); // 0 -> 1 -> 0
+
+            float currentAngle = Mathf.Lerp(startRotation, targetRotation, punchStrength);
+            target.eulerAngles = new Vector3(0, 0, currentAngle);   // Punch Rotation Effect
+            target.position = Vector3.Lerp(startPos, discardPos, t);// Sends Tile to Discard Pile
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        target.eulerAngles = new Vector3(0, 0, startRotation);
+        discardDuration = Mathf.Max(minDuration, discardDuration - durDecrement);
+    }
+
     public IEnumerator DiscardTiles(bool drawWhenDone = false)
     {
-        foreach (TileObject tileObj in selectedTiles)
+        float duration = discardDuration;
+        foreach (PlayerTileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
+            yield return DiscardAnim(tileObj.transform);
 
             TilesManager.instance.discardPile.Add(tileObj.tileData);
             currentHand.Remove(tileObj);
             Destroy(tileObj.gameObject);
         }
         selectedTiles.Clear();
+        discardDuration = duration;
 
         if (!drawWhenDone) yield break;
 
@@ -118,23 +156,21 @@ public class PlayerHand : MonoBehaviour
 
     }
 
-    public void SelectTile(TileObject tile)
+    public void SelectTile(PlayerTileObject tile)
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Add(tile);
-        tile.rt.anchoredPosition = tile.rt.anchoredPosition + tileSelectedOffset;
         UpdateCurrentHandType();
 
         castSpellButton.SetActive(true);
     }
 
-    public void DeselectTile(TileObject tile)
+    public void DeselectTile(PlayerTileObject tile)
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         selectedTiles.Remove(tile);
-        tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
         UpdateCurrentHandType();
 
         if (selectedTiles.Count == 0)
@@ -147,7 +183,7 @@ public class PlayerHand : MonoBehaviour
     public List<Tile> GetSelectedTileData()
     {
         List<Tile> list = new List<Tile>();
-        foreach (TileObject t in selectedTiles)
+        foreach (PlayerTileObject t in selectedTiles)
             list.Add(t.tileData);
         return list;
     }
@@ -155,7 +191,7 @@ public class PlayerHand : MonoBehaviour
     public List<Tile> GetPlayerHandTileData()
     {
         List<Tile> list = new List<Tile>();
-        foreach (TileObject t in currentHand)
+        foreach (PlayerTileObject t in currentHand)
             list.Add(t.tileData);
         return list;
     }
@@ -166,14 +202,33 @@ public class PlayerHand : MonoBehaviour
         castSpellText.text = $"Cast {(currentHandType == MahjongHandTypes.None ? "Nothing" : currentHandType)}";
     }
 
+    // Called by Player.Attack()
+    public IEnumerator PlayHandAnim()
+    {
+        foreach (PlayerTileObject tileObj in selectedTiles)
+        {
+            float elapsedTime = 0f;
+
+            Vector3 startPos = tileObj.transform.localPosition;
+            Vector3 endPos = new Vector3(startPos.x, startPos.y + 30f, startPos.z); // Should be enemy pos or center screen
+            UnityEngine.Debug.Log(endPos);
+
+            while (elapsedTime < playDuration)
+            {
+                tileObj.transform.localPosition = Vector3.Lerp(startPos, endPos, elapsedTime / playDuration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+        yield return DiscardTiles(drawWhenDone: false);
+    }
+
     public void PlaySelectedHand()
     {
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
         castSpellButton.SetActive(false);
-
-        StartCoroutine(DiscardTiles(drawWhenDone: false));
         
         isTurnActive = false;
     }
@@ -181,7 +236,7 @@ public class PlayerHand : MonoBehaviour
     // clear
     public void ClearTiles()
     {
-        foreach (TileObject t in currentHand)
+        foreach (PlayerTileObject t in currentHand)
         {
             Destroy(t.gameObject);
         }
@@ -189,18 +244,17 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator SortTilesInHand()
     {
-        // TEMP
-        foreach (TileObject tile in selectedTiles)
+        foreach (PlayerTileObject tile in selectedTiles)
         {
             tile.isSelected = false;
-            tile.rt.anchoredPosition = tile.rt.anchoredPosition - tileSelectedOffset;
-            currentHandType = MahjongHandTypes.None;
-            castSpellText.text = $"Cast Nothing";
+            tile.ResetToInitialPosition();
         }
+        currentHandType = MahjongHandTypes.None;
+        castSpellText.text = $"Cast Nothing";
         selectedTiles.Clear();
         castSpellButton.SetActive(false);
 
-        TileObject[] sortedTiles = currentHand
+        PlayerTileObject[] sortedTiles = currentHand
             .OrderBy(t => t.tileData.suit)
             .ThenBy(t =>  t.tileData.rank)
             .ToArray();
@@ -211,8 +265,6 @@ public class PlayerHand : MonoBehaviour
         {
             sortedTiles[i].transform.SetSiblingIndex(i);
         }
-
-        yield break;
     }
 
     // O(n)
@@ -221,7 +273,7 @@ public class PlayerHand : MonoBehaviour
     // {
     //     List<Tile> optimalHand = new();
     //     int optimalHandValue = 0;
-    //     foreach (TileObject stObj in selectedTiles)
+    //     foreach (PlayerTileObject stObj in selectedTiles)
     //     {
     //         Tile st = stObj.tileData;
     //         List<Tile> testHandStraight = new();
@@ -232,7 +284,7 @@ public class PlayerHand : MonoBehaviour
     //         int tripletValue = 1;
 
     //         // find best combination for selected tile; straight or triplet
-    //         foreach (TileObject htObj in currentHand)
+    //         foreach (PlayerTileObject htObj in currentHand)
     //         {
     //             Tile ht = htObj.tileData;
     //             if (st.Equals(ht)) continue;
