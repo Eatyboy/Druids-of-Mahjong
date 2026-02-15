@@ -16,6 +16,7 @@ public class PopupPreset : ScriptableObject
     public AnimationCurve opacityCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
     [Header("Visual")]
+    public Sprite sprite;
     public Gradient colorOverLifetime;
     public float startScale = 1f;
 }

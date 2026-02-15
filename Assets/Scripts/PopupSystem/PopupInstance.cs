@@ -13,11 +13,11 @@ public class PopupInstance : MonoBehaviour
     private Vector3 startPos;
     private Transform followTarget;
 
-    public void Initialize(PopupPreset preset, string value, Sprite sprite = null, Transform follow = null)
+    public void Initialize(PopupPreset preset, string value, Transform follow = null)
     {
         this.preset = preset;
         text.text = value;
-        image.sprite = sprite;
+        image.sprite = preset.sprite;
 
         followTarget = follow;
         startPos = transform.position + preset.startOffset;

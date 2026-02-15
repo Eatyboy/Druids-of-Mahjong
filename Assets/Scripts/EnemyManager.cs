@@ -15,6 +15,8 @@ public class EnemyManager : MonoBehaviour
     // list of possible enemies that can spawn
     public WeightedEnemyPrefab[] spawnableEnemies;
     public Transform enemySpawn;
+    public PopupPreset enemyDamagePopupPreset;
+    public PopupPreset qiDropPopupPreset;
     public Enemy currentEnemy;
 
     private void Awake()

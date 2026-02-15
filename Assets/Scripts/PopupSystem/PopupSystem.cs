@@ -27,12 +27,12 @@ public class PopupSystem : MonoBehaviour
         );
     }
 
-    public void OpenPopup(PopupPreset preset, string value, Sprite sprite, Vector3 worldPos, Transform follow = null)
+    public void OpenPopup(PopupPreset preset, Vector3 worldPos, string value, Transform follow = null)
     {
         var popup = _pool.Get();
 
         popup.transform.position = worldPos;
-        popup.Initialize(preset, value, sprite, follow);
+        popup.Initialize(preset, value, follow);
     }
 
     private PopupInstance CreatePopup()

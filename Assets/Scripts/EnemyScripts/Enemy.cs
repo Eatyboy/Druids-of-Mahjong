@@ -20,8 +20,11 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private Vector2 attackTileOffset;
     [SerializeField] private float attackDuration = 2.0f;
 
+    [SerializeField] private float deathAnimationDuration = 2.0f;
+
     public bool isTurnActive = false;
 
+    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private HealthBarUI healthBar;
 
     protected void Start()
@@ -103,19 +106,34 @@ public class Enemy : MonoBehaviour, IDamageable
         CombatManager.instance.EnqueueAction(() => EnemyAttack(intendedTile), nameof(EnemyAttack));
     }
 
-    protected virtual void OnDeath()
+    public IEnumerator EnemyDeath()
     {
+        float elapsedTime = 0.0f;
+        while (elapsedTime < deathAnimationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / deathAnimationDuration;
+
+            spriteRenderer.color = new(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 1.0f - t);
+
+            yield return null;
+        }
+
         Player.instance.AddQi(qiOnDeath);
         CombatManager.instance.QiDropped(qiOnDeath);
+        PopupSystem.instance.OpenPopup(EnemyManager.instance.qiDropPopupPreset, transform.position, qiOnDeath.ToString());
+
+        yield break;
     }
 
     public IEnumerator EnemyTakeDamage(int damageToTake)
     {
         currentHP -= damageToTake;
         healthBar.SetHealth(currentHP);
+        PopupSystem.instance.OpenPopup(EnemyManager.instance.enemyDamagePopupPreset, transform.position, damageToTake.ToString());
 
         if (currentHP <= 0) { 
-            OnDeath(); 
+            CombatManager.instance.EnqueueAction(() => EnemyDeath(), nameof(EnemyDeath));
         }
 
         yield break;

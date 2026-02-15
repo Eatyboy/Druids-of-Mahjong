@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9aa15915270a8a46aec29bbc0ea2ada, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CombatManager
-  gameState: 0
+  roundEndUI: {fileID: 0}
   combatState: 0
   isPlayerTurnNext: 0
 --- !u!114 &1666349130600298449
@@ -64,4 +64,6 @@ MonoBehaviour:
   - enemyPrefab: {fileID: -6853596958071401160, guid: eed6e5c837ac46a4ea242b0ae508dc7b, type: 3}
     spawnWeight: 10
   enemySpawn: {fileID: 0}
+  enemyDamagePopupPreset: {fileID: 11400000, guid: fed3bfd54caace145b0d3e095a4a549b, type: 2}
+  qiDropPopupPreset: {fileID: 11400000, guid: f21c38a4a53a5a2418c27eab9eb30e3b, type: 2}
   currentEnemy: {fileID: 0}

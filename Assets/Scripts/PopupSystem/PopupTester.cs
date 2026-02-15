@@ -12,9 +12,8 @@ public class PopupTester : MonoBehaviour
         {
             PopupSystem.instance.OpenPopup(
                 testPreset,
-                Random.Range(10, 99).ToString(),
-                testSprite,
                 transform.position,
+                Random.Range(10, 99).ToString(),
                 transform
             );
         }
