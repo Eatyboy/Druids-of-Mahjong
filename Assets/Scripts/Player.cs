@@ -10,9 +10,6 @@ public class Player : MonoBehaviour
     public static Player instance;
     private InputSystem_Actions ctrl;
 
-    public float health, maxHealth;
-    public int qi = 0;
-
     [SerializeField] private HealthBarUI healthBar;
     [SerializeField] private QiCounter qiCounter;
     public ParryHandler parryHandler;
@@ -30,13 +27,9 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        qi = 0;
-        maxHealth = baseMaxHealth;
-        health = maxHealth;
-
-        healthBar.SetMaxHealth(maxHealth);
-        healthBar.SetHealth(health);
-        qiCounter.SetQi(qi);
+        healthBar.SetMaxHealth(GameManager.playerData.maxHealth);
+        healthBar.SetHealth(GameManager.playerData.health);
+        qiCounter.SetQi(GameManager.playerData.qi);
     }
 
     private void OnEnable()
@@ -92,6 +85,7 @@ public class Player : MonoBehaviour
         FlowerTileManager.instance.ActivateFlowerTilesOnIntraAttack(context);
         CombatManager.instance.EnqueueAction(() => GetModifiedAttackDamage(context), nameof(GetModifiedAttackDamage));
         FlowerTileManager.instance.ActivateFlowerTilesOnPostAttack(context);
+        CombatManager.instance.EnqueueAction(() => PlayerHand.instance.PlayHandAnim(), nameof(PlayerHand.instance.PlayHandAnim)); // Resolve Player Combat Animations Here
         CombatManager.instance.EnqueueAction(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage), nameof(EnemyManager.instance.currentEnemy.EnemyTakeDamage));
 
         yield break;
@@ -109,19 +103,18 @@ public class Player : MonoBehaviour
         yield break;
     }
 
-    public void ChangeHealth(float healthChange) {
-        health += healthChange;
-        health = Mathf.Clamp(health, 0, maxHealth);
+    public void ChangeHealth(int healthChange) {
+        GameManager.playerData.health += healthChange;
+        GameManager.playerData.health = Mathf.Clamp(GameManager.playerData.health, 0, GameManager.playerData.maxHealth);
 
-        healthBar.SetHealth(health);
+        healthBar.SetHealth(GameManager.playerData.health);
     }
 
     public void AddQi(int qiChange)
     {
-        qi += qiChange;
-        qiCounter.SetQi(qi);
+        GameManager.playerData.qi += qiChange;
+        qiCounter.SetQi(GameManager.playerData.qi);
     }
-
 
     public void Parry(InputAction.CallbackContext ctx)
     {

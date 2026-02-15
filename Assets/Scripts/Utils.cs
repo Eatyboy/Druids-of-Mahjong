@@ -26,6 +26,18 @@ public static class Utils
         }
     } 
 
+    public static Vector2 PointOnQuadraticBezierCurve2D(float t, Vector2 p1, Vector2 p2, Vector2 p3, float timeRange = 1.0f)
+    {
+        float newT = t / timeRange;
+        return ((1.0f - (newT * newT)) * p1) + (2.0f * (1 - newT) * newT * p2) + ((newT * newT) * p3);
+    }
+
+    public static Vector2 SlopeOnQuadraticBezierCurve2D(float t, Vector2 p1, Vector2 p2, Vector2 p3, float timeRange = 1.0f)
+    {
+        float newT = t / timeRange;
+        return (2.0f * (1 - newT) * (p2 - p1)) + (2.0f * newT * (p3 - p2));
+    }
+
     public static void QuitGame()
     {
         #if UNITY_EDITOR
@@ -51,5 +63,10 @@ public static class Utils
             return raw.Substring(start + 1, end - start - 1);
 
         return raw;
+    }
+
+    public static float ExpEaseIn(float t)
+    {
+        return t == 0.0f ? 0.0f : Mathf.Pow(2.0f, 10.0f * t - 10.0f);
     }
 }

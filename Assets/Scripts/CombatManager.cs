@@ -17,10 +17,12 @@ public class CombatManager : MonoBehaviour
 {
     public static CombatManager instance;
 
-    public GameState gameState;
+    [SerializeField] private RoundEndUI roundEndUI;
+
     public CombatState combatState;
     public Queue<(Func<IEnumerator> action, string actionName)> actionQueue = new();
     public bool isPlayerTurnNext;
+    private int qiDroppedThisRound = 0;
 
     private void Awake()
     {
@@ -28,10 +30,15 @@ public class CombatManager : MonoBehaviour
         else instance = this;
     }
 
+    private void Start()
+    {
+        StartCombat();
+    }
+
     public void StartCombat()
     {
-        gameState = GameState.InCombat;
         combatState = CombatState.PreBattle;
+        qiDroppedThisRound = 0;
 
         StartCoroutine(CombatLoop());
     }
@@ -51,6 +58,7 @@ public class CombatManager : MonoBehaviour
                 case CombatState.PlayerTurn:
                     yield return PlayerHand.instance.DrawUntilFullHand();
                     PlayerHand.instance.isTurnActive = true;
+                    FlowerTileManager.instance.ActivateFlowerTilesOnTurnStart();
                     yield return new WaitUntil(() => !PlayerHand.instance.isTurnActive);
 
                     isPlayerTurnNext = false;
@@ -70,7 +78,7 @@ public class CombatManager : MonoBehaviour
                         yield return actionQueue.Dequeue().action.Invoke();
                     }
 
-                    if (Player.instance.health <= 0) combatState = CombatState.Defeat;
+                    if (GameManager.playerData.health <= 0) combatState = CombatState.Defeat;
                     else if (EnemyManager.instance.currentEnemy.currentHP <= 0) combatState = CombatState.Victory;
                     else if (isPlayerTurnNext) combatState = CombatState.PlayerTurn;
                     else combatState = CombatState.EnemyTurn;
@@ -86,21 +94,26 @@ public class CombatManager : MonoBehaviour
         else if (combatState == CombatState.Defeat) PlayerDefeat();
     }
 
+    public void QiDropped(int amount)
+    {
+        qiDroppedThisRound += amount;
+    }
 
     public void PlayerVictory()
     {
         Destroy(EnemyManager.instance.currentEnemy.gameObject);
         EnemyManager.instance.currentEnemy = null;
 
-        // TEMP: Remove later
-        Debug.Log("Victory!");
+        roundEndUI.gameObject.SetActive(true);
+
+        roundEndUI.Initialize(qiDroppedThisRound);
     }
 
     public void PlayerDefeat()
     {
         combatState = CombatState.Defeat;
         
-        Debug.Log("Defeat!");
+        GameManager.instance.QuitToTitleScreen();
     }
 
     public void EnqueueAction(Func<IEnumerator> action, string actionName = null)

@@ -451,7 +451,7 @@ MonoBehaviour:
   castSpellButton: {fileID: 839780300117348308}
   discardsText: {fileID: 7773178014231852060}
   castSpellText: {fileID: 8942121139727816710}
-  tileObjectPrefab: {fileID: 8667527576963648452, guid: 1acf5fca96135b444aea16b239bc8ee3, type: 3}
+  tileObjectPrefab: {fileID: 5721611104455207211, guid: 1acf5fca96135b444aea16b239bc8ee3, type: 3}
   maxHorizontalTileOffset: 0
   defaultHandSize: 14
   defaultMaxDiscards: 3
@@ -459,6 +459,9 @@ MonoBehaviour:
   tileSelectedOffset: {x: 0, y: 20}
   tileDrawOrigin: {fileID: 1202290320287159980}
   drawDuration: 0.05
+  sortDelay: 0.4
+  discardDuration: 0.25
+  playDuration: 0.25
   currentHand: []
   selectedTiles: []
   flowerTiles: []
