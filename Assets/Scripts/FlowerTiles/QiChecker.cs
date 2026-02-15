@@ -11,9 +11,9 @@ public class QiChecker : FlowerTileEffect
 
     private readonly float qiMult = 1.0f; // Qi multiplier
 
-    public override IEnumerator OnPostAttack(Player.PlayerAttackContext ctx)
+    public override IEnumerator OnIntraAttack(Player.PlayerAttackContext ctx)
     {
-        qi = Player.GetQi();
+        qi = GameManager.playerData.qi;
 
         ctx.addedDamageModifier += qi * qiMult;
 
