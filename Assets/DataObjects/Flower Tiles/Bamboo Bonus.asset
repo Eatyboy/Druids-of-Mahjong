@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Bamboo Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 1
+  flowerTile: 2
   tileName: Bamboo Bonus
   sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
   description: +1 added damage for each bamboo tile played

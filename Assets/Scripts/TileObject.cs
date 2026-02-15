@@ -1,32 +1,25 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public abstract class TileObject : MonoBehaviour
 {
-    public RectTransform rt;
+    public RectTransform rt { get; private set; }
+    [SerializeField] protected Image tileBackImage;
+    [SerializeField] protected Image tileFaceImage;
+    [SerializeField] protected TextMeshProUGUI tmpElement;
+    [SerializeField] protected TextMeshProUGUI label;
 
     public Tile tileData;
-    public Image tileBackImage;
-    public Image tileFaceImage;
-    public GameObject selectedOverlay;
-    public GameObject highlightedOverlay;
 
-    public bool isSelected = false;
-
-    [SerializeField] private TextMeshProUGUI tmpElement;
-    [SerializeField] private TextMeshProUGUI label;
-
-    private void Awake()
+    protected virtual void Awake()
     {
         rt = GetComponent<RectTransform>();
-        isSelected = false;
-        selectedOverlay.SetActive(false);
-        highlightedOverlay.SetActive(false);
     }
 
-    public void Initialize(Tile tile)
+    public virtual void Initialize(Tile tile)
     {
         tileData = tile;
         if (tileData.baseTileData.faceSprite == null )
@@ -55,46 +48,13 @@ public class TileObject : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
                 },
                 TileSuit.Dragon => tile.rank switch
                 {
-                    1 => "G",
-                    2 => "R",
-                    3 => "W",
+                    1 => "F",
+                    2 => "C",
+                    3 => "B",
                     _ => "X"
                 },
                 _ => "X"
             };
         }
-    }
-
-    public void ToggleSelected()
-    {
-        isSelected = !isSelected;
-        if (isSelected)
-        {
-            PlayerHand.instance.SelectTile(this);
-        }
-        else
-        {
-            PlayerHand.instance.DeselectTile(this);
-        }
-    }
-
-    public void SetHighlighted(bool isHighlighted)
-    {
-        highlightedOverlay.SetActive(isHighlighted);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        ToggleSelected();
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        selectedOverlay.SetActive(true);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        selectedOverlay.SetActive(false);
     }
 }
