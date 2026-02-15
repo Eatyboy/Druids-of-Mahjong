@@ -1,25 +1,40 @@
 using UnityEngine;
 using TMPro;
+using System;
+using System.Collections.Generic;
 
 public class QiTree : MonoBehaviour
 {
-    public TextMeshProUGUI qiText;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private TextMeshProUGUI qiText;
+
+    public int qiCost = 100;
+    public int flowerTileOptionCount = 3;
+
+    private void Start()
     {
-        qiText.text = "Qi: " + Player.instance.qi;
+        UpdateQiText(GameManager.playerData.qi);
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void OnFlowerClick()
     {
-        
+        if (GameManager.playerData.qi >= qiCost)
+        {
+            GameManager.playerData.qi -= qiCost;
+            UpdateQiText(GameManager.playerData.qi);
+
+            List<FlowerTileType> flowerTileOptions = new(flowerTileOptionCount);
+            for (int i = 0; i < flowerTileOptionCount; i++)
+            {
+                flowerTileOptions.Add(Utils.GetRandomEnumValue<FlowerTileType>());
+            }
+            GameManager.playerData.flowerTiles.Add(flowerTileOptions[0]);
+        }
     }
 
-    public void onFlowerClick()
+    private void UpdateQiText(int qi)
     {
-        Player.instance.qi -= 1;
-        qiText.text = "Qi: " + Player.instance.qi;
+        qiText.text = "Qi: " + qi;
     }
 }
 

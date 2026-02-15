@@ -16,6 +16,23 @@ public static class Utils
         return list[Random.Range(0, list.Count)];
     }
 
+    public static T GetRandomItemInArray<T>(T[] array) where T : class
+    {
+        return array[Random.Range(0, array.Length)];
+    }
+
+    public static T GetRandomItemInArray<T>(Array array) where T : class
+    {
+        return (T)array.GetValue(Random.Range(0, array.Length));
+    }
+
+    public static T GetRandomEnumValue<T>() where T : struct, Enum
+    {
+        Array values = Enum.GetValues(typeof(T));
+        int randomIndex = Random.Range(0, values.Length);
+        return (T)values.GetValue(randomIndex);
+    }
+
     public static void ShuffleList<T>(List<T> list)
     {
         int n = list.Count;

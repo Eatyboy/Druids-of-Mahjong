@@ -890,7 +890,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 721845118}
         m_TargetAssemblyTypeName: QiTree, Assembly-CSharp
-        m_MethodName: onFlowerClick
+        m_MethodName: OnFlowerClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -951,7 +951,6 @@ GameObject:
   - component: {fileID: 721845115}
   - component: {fileID: 721845114}
   - component: {fileID: 721845118}
-  - component: {fileID: 721845119}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1061,25 +1060,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QiTree
   qiText: {fileID: 1207077070}
---- !u!114 &721845119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 721845113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 50715a4ef00dd0e4ca788e1ef0f98504, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
-  health: 0
-  maxHealth: 0
-  qi: 0
-  healthBar: {fileID: 0}
-  qiCounter: {fileID: 0}
-  parryHandler: {fileID: 0}
-  baseMaxHealth: 10
+  qiCost: 100
+  flowerTileOptionCount: 3
 --- !u!1 &803435032
 GameObject:
   m_ObjectHideFlags: 0
@@ -1598,7 +1580,6 @@ GameObject:
   - component: {fileID: 1207077069}
   - component: {fileID: 1207077071}
   - component: {fileID: 1207077070}
-  - component: {fileID: 1207077072}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1725,19 +1706,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1207077068}
   m_CullTransparentMesh: 1
---- !u!114 &1207077072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1207077068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e492e2a6fb1e6424fade85de86f2916a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::QiTree
-  qiText: {fileID: 0}
 --- !u!1 &1592110994
 GameObject:
   m_ObjectHideFlags: 0
