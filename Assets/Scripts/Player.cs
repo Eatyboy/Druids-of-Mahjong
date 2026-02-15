@@ -1,25 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
 
 public class Player : MonoBehaviour
 {
     public static Player instance;
     private InputSystem_Actions ctrl;
 
-    public float health, maxHealth;
-    public static int qi = 0;
-
     [SerializeField] private HealthBarUI healthBar;
     [SerializeField] private QiCounter qiCounter;
+    public ParryHandler parryHandler;
 
     [SerializeField] private float baseMaxHealth = 10.0f;
-    [SerializeField] private float baseParryWindow = 3.0f;
-
-    public bool isParryWindowOpen = false;
 
     private void Awake()
     {
@@ -32,13 +27,9 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        qi = 1000;
-        maxHealth = baseMaxHealth;
-        health = maxHealth;
-
-        healthBar.SetMaxHealth(maxHealth);
-        healthBar.SetHealth(health);
-        qiCounter.SetQi(qi);
+        healthBar.SetMaxHealth(GameManager.playerData.maxHealth);
+        healthBar.SetHealth(GameManager.playerData.health);
+        qiCounter.SetQi(GameManager.playerData.qi);
     }
 
     private void OnEnable()
@@ -50,7 +41,7 @@ public class Player : MonoBehaviour
     private void OnDisable()
     {
         ctrl.Player.Parry.performed -= Parry;
-        ctrl.Enable();
+        ctrl.Disable();
     }
 
     // Update is called once per frame
@@ -94,6 +85,7 @@ public class Player : MonoBehaviour
         FlowerTileManager.instance.ActivateFlowerTilesOnIntraAttack(context);
         CombatManager.instance.EnqueueAction(() => GetModifiedAttackDamage(context), nameof(GetModifiedAttackDamage));
         FlowerTileManager.instance.ActivateFlowerTilesOnPostAttack(context);
+        CombatManager.instance.EnqueueAction(() => PlayerHand.instance.PlayHandAnim(), nameof(PlayerHand.instance.PlayHandAnim)); // Resolve Player Combat Animations Here
         CombatManager.instance.EnqueueAction(() => EnemyManager.instance.currentEnemy.EnemyTakeDamage((int)context.damage), nameof(EnemyManager.instance.currentEnemy.EnemyTakeDamage));
 
         yield break;
@@ -111,32 +103,23 @@ public class Player : MonoBehaviour
         yield break;
     }
 
-    public void ChangeHealth(float healthChange) {
-        health += healthChange;
-        health = Mathf.Clamp(health, 0, maxHealth);
+    public void ChangeHealth(int healthChange) {
+        GameManager.playerData.health += healthChange;
+        GameManager.playerData.health = Mathf.Clamp(GameManager.playerData.health, 0, GameManager.playerData.maxHealth);
 
-        healthBar.SetHealth(health);
+        healthBar.SetHealth(GameManager.playerData.health);
     }
 
     public void AddQi(int qiChange)
     {
-        qi += qiChange;
-        qiCounter.SetQi(qi);
-    }
-
-    public static int GetQi(){
-        return qi;
+        GameManager.playerData.qi += qiChange;
+        qiCounter.SetQi(GameManager.playerData.qi);
     }
 
     public void Parry(InputAction.CallbackContext ctx)
     {
-        if (!isParryWindowOpen) return;
+        if (!parryHandler.isParryWindowOpen) return;
 
-        CombatManager.instance.EnqueueAction(() => DoParry(), nameof(DoParry));
-    }
-
-    private IEnumerator DoParry()
-    {
-        yield break;
+        StartCoroutine(parryHandler.DoParry());
     }
 }

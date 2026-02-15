@@ -9,7 +9,6 @@ public class TilesManager : MonoBehaviour
     [SerializeField] private int defaultDuplicateCount = 4;
 
     public List<MahjongTile> baseTileDataList;
-    public List<Tile> deck;
     public List<Tile> discardPile;
 
     private void Awake()
@@ -20,16 +19,10 @@ public class TilesManager : MonoBehaviour
 
     public void Start()
     {
-        foreach (MahjongTile tile in baseTileDataList)
+        if (GameManager.playerData.deck == null)
         {
-            if (tile.suit == TileSuit.Dragon) continue;
-            for (int i = 0; i < defaultDuplicateCount; i++)
-            {
-                // generate random tile should be removed later - Aiden
-                deck.Add(GenerateRandomTile());
-            }
+            InitializeDeck();
         }
-        ShuffleDeck();
 
         // force sets
         // Tile a = GenerateRandomTile();
@@ -59,16 +52,33 @@ public class TilesManager : MonoBehaviour
         // deck.Add(baseTileDataList[2]);
     }
 
+    private void InitializeDeck()
+    {
+        GameManager.playerData.deck = new();
+
+        foreach (MahjongTile tile in baseTileDataList)
+        {
+            if (tile.suit == TileSuit.Dragon) continue;
+            for (int i = 0; i < defaultDuplicateCount; i++)
+            {
+                // generate random tile should be removed later - Aiden
+                GameManager.playerData.deck.Add(GenerateRandomTile());
+            }
+        }
+
+        ShuffleDeck();
+    }
+
     public void ShuffleDeck()
     {
-        Utils.ShuffleList(deck);
+        Utils.ShuffleList(GameManager.playerData.deck);
     }
 
     public Tile DrawFromDeck()
     {
-        int topIndex = deck.Count - 1;
-        Tile drawnTile = deck[topIndex];
-        deck.RemoveAt(topIndex);
+        int topIndex = GameManager.playerData.deck.Count - 1;
+        Tile drawnTile = GameManager.playerData.deck[topIndex];
+        GameManager.playerData.deck.RemoveAt(topIndex);
         return drawnTile;
     }
     

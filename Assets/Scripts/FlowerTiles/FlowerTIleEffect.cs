@@ -17,4 +17,5 @@ public abstract class FlowerTileEffect : MonoBehaviour
     public virtual IEnumerator OnIncomingAttack(int possibleDamage) { yield break; }
     public virtual IEnumerator OnTakeDamage(int damageTaken) { yield break; }
     public virtual IEnumerator OnDiscard() { yield break; }
+    public virtual IEnumerator OnTurnStart() { yield break; }
 }

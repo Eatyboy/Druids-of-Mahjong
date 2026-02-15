@@ -524,10 +524,12 @@ MonoBehaviour:
   flowerTileContainer: {fileID: 5524739587606367786}
   infoController: {fileID: 894232820659142902}
   flowerTilePrefabs:
+  - {fileID: 1178443655085754192, guid: e32eea2e48fa36b498672f00b552e50d, type: 3}
   - {fileID: 7581977867385633767, guid: 1f95da7c591ead54f918203eb5aca19f, type: 3}
   - {fileID: 5816744120301345768, guid: 3ea112225dcda1743b20c2e6f28a7fa1, type: 3}
   - {fileID: 8588305647248941263, guid: 4426a385006b73b4b9ed4f25dffe7dfa, type: 3}
-  - {fileID: 8588305647248941263, guid: 66c497ad907a54ce8b489fb12e55d255, type: 3}
+  - {fileID: 2144131998783067814, guid: 1a1ee25863bd54940a27e3eab040515c, type: 3}
+  - {fileID: 2314684586185883377, guid: 9ec62a74b6f8648efaa5c7b1def7e346, type: 3}
   playerFlowerTiles: []
 --- !u!114 &894232820659142902
 MonoBehaviour:
