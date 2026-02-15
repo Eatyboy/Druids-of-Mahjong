@@ -4,49 +4,57 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum GameState
-{
-    TitleScreen,
-    InMap,
-    InCombat,
-    AtTree,
-}
+//public enum GameState
+//{
+//    TitleScreen,
+//    InMap,
+//    InCombat,
+//    AtTree,
+//}
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public GameState gameState = GameState.TitleScreen;
+    //public GameState gameState = GameState.TitleScreen;
+    private PlayerData _playerData = null;
+    public static PlayerData playerData => instance._playerData;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     void Start()
     {
+#if UNITY_EDITOR
+        _playerData = new PlayerData();
+#else
+        _playerData = SaveSystem.LoadData();
+#endif
     }
 
-    public async void QuitToTileScreen()
+    public async void QuitToTitleScreen()
     {
-        await SceneManager.LoadSceneAsync("TitleScreen", LoadSceneMode.Single);
+        await SceneManager.LoadSceneAsync(Bootstrapper.titleScreenSceneName, LoadSceneMode.Single);
 
-        gameState = GameState.TitleScreen;
+        //gameState = GameState.TitleScreen;
     }
 
     public async void GoToCombat()
     {
-        await SceneManager.LoadSceneAsync("Combat", LoadSceneMode.Single);
+        await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
 
-        gameState = GameState.InCombat;
-        CombatManager.instance.StartCombat();
+        //gameState = GameState.InCombat;
     }
 
     public async void GoToTree()
     {
-        await SceneManager.LoadSceneAsync("UpgradeTree", LoadSceneMode.Single);
-        gameState = GameState.AtTree;
+        await SceneManager.LoadSceneAsync(Bootstrapper.treeScreenSceneName, LoadSceneMode.Single);
+        //gameState = GameState.AtTree;
     }
 
     public void Update()

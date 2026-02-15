@@ -74,7 +74,7 @@ public class PlayerHand : MonoBehaviour
     {
         while (currentHand.Count < currentHandSize)
         {
-            if (TilesManager.instance.deck.Count == 0) yield break;
+            if (GameManager.playerData.deck.Count == 0) yield break;
             if (currentHand.Count >= currentHandSize) yield break;
 
             yield return DrawTile();

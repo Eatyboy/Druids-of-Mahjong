@@ -20,7 +20,10 @@ public class FlowerTileManager : MonoBehaviour
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+    }
 
+    private void Start()
+    {
         foreach (FlowerTile flowerTile in flowerTilePrefabs)
         {
             if (flowerTile == null)
@@ -38,6 +41,18 @@ public class FlowerTileManager : MonoBehaviour
             else
             {
                 flowerTileMap.Add(flowerTile.data.flowerTile, flowerTile);
+            }
+        }
+
+        foreach (FlowerTileType ft in GameManager.playerData.flowerTiles)
+        {
+            if (flowerTileMap.TryGetValue(ft, out FlowerTile flowerTile))
+            {
+                playerFlowerTiles.Add(flowerTile);
+            }
+            else
+            {
+                Debug.LogError($"Failed to add {ft} to player's flower tiles");
             }
         }
     }
