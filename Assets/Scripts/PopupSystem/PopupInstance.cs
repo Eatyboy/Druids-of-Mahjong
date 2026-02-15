@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PopupInstance : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private Image image;
     [SerializeField] private CanvasGroup canvasGroup;
 
     private PopupPreset preset;
@@ -12,10 +13,11 @@ public class PopupInstance : MonoBehaviour
     private Vector3 startPos;
     private Transform followTarget;
 
-    public void Initialize(PopupPreset preset, string value, Transform follow = null)
+    public void Initialize(PopupPreset preset, string value, Sprite sprite = null, Transform follow = null)
     {
         this.preset = preset;
         text.text = value;
+        image.sprite = sprite;
 
         followTarget = follow;
         startPos = transform.position + preset.startOffset;
@@ -31,7 +33,7 @@ public class PopupInstance : MonoBehaviour
 
         if (t >= 1f)
         {
-            PopupSystem.Instance.Release(this);
+            PopupSystem.pool.Release(this);
             return;
         }
 
