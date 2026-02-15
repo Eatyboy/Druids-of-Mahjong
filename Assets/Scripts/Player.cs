@@ -116,7 +116,6 @@ public class Player : MonoBehaviour
         qiCounter.SetQi(GameManager.playerData.qi);
     }
 
-
     public void Parry(InputAction.CallbackContext ctx)
     {
         if (!parryHandler.isParryWindowOpen) return;
