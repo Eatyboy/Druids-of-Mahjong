@@ -407,6 +407,14 @@ PrefabInstance:
       propertyPath: testData
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: flowerTilePrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4172963276954569604, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
+      propertyPath: 'flowerTilePrefabs.Array.data[6]'
+      value: 
+      objectReference: {fileID: 2314684586185883377, guid: 9ec62a74b6f8648efaa5c7b1def7e346, type: 3}
     - target: {fileID: 4708300199319202511, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -509,7 +517,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8958652500308186116, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 24
+      value: 23.999939
       objectReference: {fileID: 0}
     - target: {fileID: 8958652500308186116, guid: 9276907508f54bb49b72178bbfe6864c, type: 3}
       propertyPath: m_AnchoredPosition.y
