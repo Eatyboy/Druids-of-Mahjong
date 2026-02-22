@@ -20,6 +20,7 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private FlowerTile[] upgradeOptions;
 
     [SerializeField] private bool hasPurchasedTile;
+    public ShopTileInfoController shopInfoController;
 
 
     private void Awake()
@@ -91,6 +92,7 @@ public class QiTreeManager : MonoBehaviour
         {
             // check for duplicates in the future
             FlowerTile randomFlowerTile = FlowerTileManager.instance.GetRandomFlowerTile();
+            randomFlowerTile.Initialize(shopInfoController);
             buyOptions[i].Initialize(randomFlowerTile);
 
             upgradeOptions[i] = randomFlowerTile;

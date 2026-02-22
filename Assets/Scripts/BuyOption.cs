@@ -8,6 +8,7 @@ public class BuyOption : MonoBehaviour
     [SerializeField] private RectTransform tileRT;
     [SerializeField] private RectTransform rt;
     [SerializeField] private int index;
+    public bool hasPurchased;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
     public void Initialize(FlowerTile flowerTile)
@@ -25,15 +26,15 @@ public class BuyOption : MonoBehaviour
         tile.GetComponent<RectTransform>().anchoredPosition = new(0.0f, 0.0f);
         tile.UpdateImage();
 
-        // initialize without CombatManager (might have unintended consequences)
-        tile.infoController = FlowerTileManager.instance.infoController;
+        hasPurchased = false;
     }
 
     public void Purchase(int index)
     {
         if (QiTreeManager.instance.TryPurchase(tile, index))
         {
-            // Destroy(this);
+            hasPurchased = true;
+            Destroy(tile.gameObject);
             return;
         }
         else

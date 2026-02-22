@@ -28,11 +28,13 @@ public class FlowerTileInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (controller == null) return; 
         controller.PointerEntered();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (controller == null) return; 
         controller.PointerExited();
     }
 }
