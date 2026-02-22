@@ -10,6 +10,7 @@ public enum FlowerTileType
     EightFourBonus, //Multiply damgage positively for each 8 and negatively for each 4
     RandomWindBonus, //Multiply damage positively for each wind tile that matches the current round's wind
     QiBonus, //Give bonus damage according to amount of qi
+    UniqueDragonBonus, // Multiply damage for each unique type of dragon tile in hand
 }
 
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]
