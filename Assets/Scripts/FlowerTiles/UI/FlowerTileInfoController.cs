@@ -3,19 +3,19 @@ using UnityEngine;
 
 public class FlowerTileInfoController : MonoBehaviour
 {
-    [SerializeField] private FlowerTileInfo flowerTileInfo;
+    [SerializeField] protected FlowerTileInfo flowerTileInfo;
 
-    [SerializeField] private Vector2 offset;
-    private int hoverCount = 0;
+    [SerializeField] protected Vector2 offset;
+    protected int hoverCount = 0;
 
     public FlowerTile currentFlowerTile;
 
-    private void Awake()
+    protected void Awake()
     {
         flowerTileInfo.Close();
     }
 
-    public void PointerEntered()
+    public virtual void PointerEntered()
     {
         hoverCount++;
         flowerTileInfo.Open(currentFlowerTile.data, currentFlowerTile.rectTransform.anchoredPosition + offset);
@@ -27,7 +27,7 @@ public class FlowerTileInfoController : MonoBehaviour
         CancelInvoke(nameof(CheckClose));
         Invoke(nameof(CheckClose), 0.01f);
     }
-    private void CheckClose()
+    protected void CheckClose()
     {
         if (hoverCount <= 0)
         {

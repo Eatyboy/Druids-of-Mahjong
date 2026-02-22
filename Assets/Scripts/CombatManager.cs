@@ -28,6 +28,8 @@ public class CombatManager : MonoBehaviour
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -53,6 +55,7 @@ public class CombatManager : MonoBehaviour
                     yield return EnemyManager.instance.SpawnEnemy();
 
                     combatState = CombatState.PlayerTurn;
+                    FlowerTileManager.instance.InitializeFlowerTiles(FlowerTileManager.instance.infoController);
                     break;
 
                 case CombatState.PlayerTurn:
