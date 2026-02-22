@@ -9,7 +9,7 @@ public class FlowerTileManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private RectTransform flowerTileContainer;
-    [SerializeField] private FlowerTileInfoController infoController;
+    public FlowerTileInfoController infoController;
     [SerializeField] private List<FlowerTile> flowerTilePrefabs;
     private Dictionary<FlowerTileType, FlowerTile> flowerTileMap = new();
 
@@ -20,6 +20,9 @@ public class FlowerTileManager : MonoBehaviour
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        // canvas
+        DontDestroyOnLoad(gameObject.transform.parent);
     }
 
     private void Start()
@@ -74,6 +77,14 @@ public class FlowerTileManager : MonoBehaviour
         if (Keyboard.current.fKey.wasReleasedThisFrame)
         {
             AddFlowerTile(Utils.GetRandomItemInList(flowerTilePrefabs));
+        }
+    }
+
+    public void InitializeFlowerTiles(FlowerTileInfoController infoController)
+    {
+        foreach (FlowerTile ft in playerFlowerTiles)
+        {
+            ft.Initialize(infoController);
         }
     }
 
@@ -140,5 +151,16 @@ public class FlowerTileManager : MonoBehaviour
                 nameof(ft.effectClass.OnTurnStart)
             );
         }
+    }
+
+    // kinda makes the whole private thing pointless, can revise if needed
+    public List<FlowerTile> GetAllFlowerTiles()
+    {
+        return flowerTilePrefabs;
+    } 
+
+    public FlowerTile GetRandomFlowerTile()
+    {
+        return Utils.GetRandomItemInList(flowerTilePrefabs);
     }
 }

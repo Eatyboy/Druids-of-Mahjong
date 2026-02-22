@@ -12,16 +12,23 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public FlowerTileInfoController infoController;
 
+    // need this to differentiate between flower tiles already initialized and those not (f key vs bought) to prevent stacking
+    public bool initialized;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
+        initialized = false;
     }
 
     public void Initialize(FlowerTileInfoController infoController)
     {
         this.infoController = infoController;
+        UpdateImage();
 
-        image.sprite = data.sprite;
+        // can be null if not in combat scene; will be checked for initialization again in GameManager pre-battle state
+        if (initialized || CombatManager.instance == null) return;
+
         CombatManager.instance.EnqueueAction(() => 
             effectClass.OnInitialize(
                 PlayerHand.instance.GetPlayerHandTileData(), 
@@ -29,6 +36,13 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             ), 
             nameof(effectClass.OnInitialize)
         );
+
+        initialized = true;
+    }
+
+    public void UpdateImage()
+    {
+        image.sprite = data.sprite;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
