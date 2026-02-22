@@ -34,15 +34,15 @@ public class RandomWindChecker : FlowerTileEffect
     }
     public override IEnumerator OnIntraAttack(Player.PlayerAttackContext attackContext)
     {
-        float multiplier = 1.0f;
+        float multiplier = 1f;
         foreach (Tile tile in attackContext.selectedHand)
         {
             if (tile.suit == TileSuit.Wind && tile.rank == currentWind)
             {
-                multiplier += 1.5f;
+                multiplier *= 1.5f;
             }
         }
-        attackContext.damage *= multiplier;
+        attackContext.increasedDamageModifier *= multiplier;
         yield break;
     }
 }
