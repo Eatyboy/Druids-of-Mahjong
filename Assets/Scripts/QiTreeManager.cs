@@ -17,7 +17,6 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private GameObject buyOptionsObject;
     [SerializeField] private BuyOption[] buyOptions; 
     [SerializeField] private GameObject inventoryFlowerTilesObject;
-    [SerializeField] private FlowerTile[] upgradeOptions;
 
     [SerializeField] private bool hasPurchasedTile;
     public ShopTileInfoController shopInfoController;
@@ -73,7 +72,7 @@ public class QiTreeManager : MonoBehaviour
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
 
-        FlowerTileManager.instance.AddFlowerTile(upgradeOptions[index]);
+        FlowerTileManager.instance.AddFlowerTile(tile);
         hasPurchasedTile = true;
 
         return true;
@@ -94,8 +93,6 @@ public class QiTreeManager : MonoBehaviour
             FlowerTile randomFlowerTile = FlowerTileManager.instance.GetRandomFlowerTile();
             randomFlowerTile.Initialize(shopInfoController);
             buyOptions[i].Initialize(randomFlowerTile);
-
-            upgradeOptions[i] = randomFlowerTile;
         }
 
     }

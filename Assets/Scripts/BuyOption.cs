@@ -4,7 +4,7 @@ using System.Numerics;
 
 public class BuyOption : MonoBehaviour
 {
-    [SerializeField] private FlowerTile tile;
+    public FlowerTile tile;
     [SerializeField] private RectTransform tileRT;
     [SerializeField] private RectTransform rt;
     [SerializeField] private int index;
