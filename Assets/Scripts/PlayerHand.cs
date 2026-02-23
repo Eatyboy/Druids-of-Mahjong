@@ -61,13 +61,7 @@ public class PlayerHand : MonoBehaviour
     public IEnumerator DrawTile()
     {
         yield return new WaitForSeconds(drawDuration);
-
-        PlayerTileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
-        newTileObj.rt.position = tileDrawOrigin.position;
-        newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
-        newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
-        newTileObj.transform.SetAsFirstSibling();
-        currentHand.Add(newTileObj);
+        AddTile(TilesManager.instance.DrawFromDeck());
     }
 
     public IEnumerator DrawUntilFullHand()
@@ -146,7 +140,7 @@ public class PlayerHand : MonoBehaviour
         yield return DrawUntilFullHand();
     }
 
-    // Straight up add a tile to the hand, not drawing from deck
+    // Add a tile to the hand
     public void AddTile(Tile tile)
     {
         if (tile == null) return;

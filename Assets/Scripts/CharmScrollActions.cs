@@ -6,11 +6,7 @@ using UnityEngine;
 // Basic charm scroll functionality
 public static class CharmScrollActions
 {
-    /// <summary>
-    /// Permanently remove the given tile objects from the player hand.
-    /// Removes from currentHand and selectedTiles, then destroys the GameObjects.
-    /// Tiles are not returned to the deck.
-    /// </summary>
+    // Permanently remove the given tile objects from the player hand
     public static void RemoveTilesFromHand(IEnumerable<PlayerTileObject> tileObjects)
     {
         if (PlayerHand.instance == null) return;
@@ -24,10 +20,7 @@ public static class CharmScrollActions
         }
     }
 
-    /// <summary>
-    /// Add a copy of each given tile object to the player hand.
-    /// Each copy is a new Tile(baseTileData) and a new PlayerTileObject.
-    /// </summary>
+    // Add a copy of each given tile object to the player hand
     public static void AddCopiesToHand(IEnumerable<PlayerTileObject> tileObjects)
     {
         if (PlayerHand.instance == null) return;
@@ -40,9 +33,7 @@ public static class CharmScrollActions
         }
     }
 
-    /// <summary>
-    /// Create a new Tile instance with the same base data as the given tile object (no shared reference).
-    /// </summary>
+    // Create a new Tile instance with the same base data as the given tile object
     public static Tile CopyTile(PlayerTileObject source)
     {
         if (source?.tileData?.baseTileData == null) return null;
