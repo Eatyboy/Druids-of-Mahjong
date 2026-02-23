@@ -146,9 +146,17 @@ public class PlayerHand : MonoBehaviour
         yield return DrawUntilFullHand();
     }
 
+    // Straight up add a tile to the hand, not drawing from deck
     public void AddTile(Tile tile)
     {
+        if (tile == null) return;
 
+        PlayerTileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
+        newTileObj.rt.position = tileDrawOrigin.position;
+        newTileObj.Initialize(tile);
+        newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
+        newTileObj.transform.SetAsFirstSibling();
+        currentHand.Add(newTileObj);
     }
 
     public void RemoveTile(Tile tile)
