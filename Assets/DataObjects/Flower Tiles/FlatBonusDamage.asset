@@ -16,3 +16,12 @@ MonoBehaviour:
   tileName: Bonus Flower
   sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
   description: +2 added damage to attacks
+  effectConfig:
+    rid: 4727995076836327680
+  references:
+    version: 2
+    RefIds:
+    - rid: 4727995076836327680
+      type: {class: FlatDamageBonusConfig, ns: , asm: Assembly-CSharp}
+      data:
+        flatDamageBonus: 2
