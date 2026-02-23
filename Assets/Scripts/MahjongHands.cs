@@ -324,7 +324,15 @@ public class MahjongHands
         if (!t.All(x => IsNumberedSuit(x.suit))) return false;
         if (t[0].suit != t[1].suit || t[1].suit != t[2].suit) return false;
         var r = t.Select(x => x.rank).OrderBy(v => v).ToList();
-        return r[0] >= 1 && r[0] <= 7 && r[0] + 1 == r[1] && r[1] + 1 == r[2];
+        if (FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.SkipOneInRun))
+        {
+            return r[0] >= 1 && r[0] <= 7 && (r[0] + 1 == r[1] || r[0] + 2 == r[1]) && (r[1] + 1 == r[2] || r[1] + 2 == r[2]);
+        }
+        else
+        {
+            return r[0] >= 1 && r[0] <= 7 && r[0] + 1 == r[1] && r[1] + 1 == r[2];
+        }
+        
     }
 
     static bool IsNineRun(List<Tile> t)
@@ -334,8 +342,16 @@ public class MahjongHands
         var suit = t[0].suit;
         if (!t.All(x => x.suit == suit)) return false;
         var r = t.Select(x => x.rank).OrderBy(v => v).ToList();
-        for (int i = 0; i < 9; i++)
-            if (r[i] != i + 1) return false;
+        if (FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.SkipOneInRun))
+        {
+            for (int i = 0; i < 9; i++)
+                if (r[i] != i + 1 && r[i] != i + 2) return false;
+        }
+        else
+        {
+            for (int i = 0; i < 9; i++)
+                if (r[i] != i + 1) return false;
+        }
         return true;
     }
 
