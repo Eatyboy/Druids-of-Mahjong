@@ -12,6 +12,7 @@ public enum FlowerTileType
     QiBonus, //Give bonus damage according to amount of qi
     UniqueDragonBonus, // Multiply damage for each unique type of dragon tile in hand
     TileCountBonus, // Added damage per tile played 
+    Copier, //Copy the effect of the tile to its left.
 }
 
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]
