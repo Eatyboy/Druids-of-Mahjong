@@ -27,6 +27,7 @@ public class FlowerTileInfoController : MonoBehaviour
         CancelInvoke(nameof(CheckClose));
         Invoke(nameof(CheckClose), 0.01f);
     }
+    
     protected void CheckClose()
     {
         if (hoverCount <= 0)

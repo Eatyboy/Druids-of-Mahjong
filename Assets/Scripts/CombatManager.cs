@@ -53,7 +53,6 @@ public class CombatManager : MonoBehaviour
                     yield return EnemyManager.instance.SpawnEnemy();
 
                     combatState = CombatState.PlayerTurn;
-                    //FlowerTileManager.instance.InitializeFlowerTiles(FlowerTileManager.instance.infoController);
                     break;
 
                 case CombatState.PlayerTurn:

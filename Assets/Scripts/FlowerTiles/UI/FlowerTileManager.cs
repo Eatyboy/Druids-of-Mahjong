@@ -43,6 +43,12 @@ public class FlowerTileManager : MonoBehaviour
                 flowerTileMap.Add(flowerTile.flowerTile, flowerTile);
             }
         }
+
+        // DEBUG: not 100% sure if this is the way to do it
+        foreach (FlowerTileInstance fti in playerFlowerTiles)
+        {
+            fti.effect.OnInitialize(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData());
+        }
     }
 
     public bool IsFlowerTileActive(FlowerTileType flowerTileType)

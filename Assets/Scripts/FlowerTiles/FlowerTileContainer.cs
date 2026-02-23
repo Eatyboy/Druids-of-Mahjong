@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class FlowerTileContainer : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class FlowerTileContainer : MonoBehaviour
         else instance = this;
     }
 
+    private void OnEnable()
+    {
+        StartCoroutine(DelayedRefreshPlayerFlowerTiles(0.1f));
+    }
+
     public void AddFlowerTile(FlowerTileInstance flowerTileInstance)
     {
         FlowerTile addedFlowerTile = Instantiate(flowerTilePrefab, flowerTileContainer);
@@ -32,6 +38,22 @@ public class FlowerTileContainer : MonoBehaviour
         {
             FlowerTileInstance fti = FlowerTileManager.instance.GetRandomFlowerTile();
             GameManager.playerData.flowerTiles.Add(fti);
+            AddFlowerTile(fti);
+        }
+    }
+
+    IEnumerator DelayedRefreshPlayerFlowerTiles(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+
+        foreach (FlowerTile ft in flowerTileObjects)
+        {
+            Destroy(ft.gameObject);
+        }
+        flowerTileObjects.Clear();
+
+        foreach (FlowerTileInstance fti in GameManager.playerData.flowerTiles)
+        {
             AddFlowerTile(fti);
         }
     }
