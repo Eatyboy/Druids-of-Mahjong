@@ -10,6 +10,12 @@ public class CharmScrollTestButton : MonoBehaviour
     {
         if (PlayerHand.instance == null) return;
 
-        CharmScrollActions.RemoveTilesFromHand(PlayerHand.instance.selectedTiles);
+        CharmScrollActions.RemoveTilesFromHand(PlayerHand.instance, PlayerHand.instance.selectedTiles);
+    }
+    public void CopySelectedTiles()
+    {
+        if (PlayerHand.instance == null) return;
+
+        CharmScrollActions.AddCopiesToHand(PlayerHand.instance, PlayerHand.instance.selectedTiles);
     }
 }
