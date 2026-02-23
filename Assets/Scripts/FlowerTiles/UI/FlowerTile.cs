@@ -4,9 +4,8 @@ using UnityEngine.UI;
 
 public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public FlowerTileData data;
+    public FlowerTileInstance instance;
     public RectTransform rectTransform;
-    public FlowerTileEffect effectClass;
 
     [SerializeField] private Image image;
 
@@ -21,20 +20,21 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         initialized = false;
     }
 
-    public void Initialize(FlowerTileInfoController infoController)
+    public void Initialize(FlowerTileInstance flowerTileInstance, FlowerTileInfoController infoController)
     {
+        this.instance = flowerTileInstance;
         this.infoController = infoController;
         UpdateImage();
 
         // can be null if not in combat scene; will be checked for initialization again in GameManager pre-battle state
         if (initialized || CombatManager.instance == null) return;
 
-        CombatManager.instance.EnqueueAction(() => 
-            effectClass.OnInitialize(
-                PlayerHand.instance.GetPlayerHandTileData(), 
+        CombatManager.instance.EnqueueAction(() =>
+            flowerTileInstance.effect.OnInitialize(
+                PlayerHand.instance.GetPlayerHandTileData(),
                 PlayerHand.instance.GetSelectedTileData()
-            ), 
-            nameof(effectClass.OnInitialize)
+            ),
+            nameof(flowerTileInstance.effect.OnInitialize)
         );
 
         initialized = true;
@@ -42,7 +42,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void UpdateImage()
     {
-        image.sprite = data.sprite;
+        image.sprite = instance.data.sprite;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
