@@ -87,4 +87,18 @@ public class TilesManager : MonoBehaviour
     {
         return new(Utils.GetRandomItemInList(baseTileDataList));
     }
+
+    /// <summary>
+    /// Returns the first MahjongTile in baseTileDataList with the given suit and rank, or null.
+    /// Used e.g. to resolve face sprite when a tile's suit is changed (charm scrolls).
+    /// </summary>
+    public MahjongTile GetBaseTileData(TileSuit suit, int rank)
+    {
+        if (baseTileDataList == null) return null;
+        foreach (MahjongTile t in baseTileDataList)
+        {
+            if (t.suit == suit && t.rank == rank) return t;
+        }
+        return null;
+    }
 }
