@@ -41,4 +41,15 @@ public static class CharmScrollActions
         if (source?.tileData?.baseTileData == null) return null;
         return new Tile(source.tileData.baseTileData);
     }
+
+    public static void SwitchTileSuit(HandBase hand, IEnumerable<PlayerTileObject> tileObjects, TileSuit newSuit)
+    {
+        if (hand == null) return;
+
+        foreach (PlayerTileObject obj in tileObjects ?? Array.Empty<PlayerTileObject>())
+        {
+            if (obj?.tileData == null) continue;
+            obj.tileData.suit = newSuit;
+        }
+    }
 }
