@@ -38,7 +38,7 @@ public class QiTreeManager : MonoBehaviour
     {
         yield return new WaitForSeconds(sec);
 
-        upgradeOptions = new FlowerTile[3];
+        //upgradeOptions = new FlowerTile[3];
         buyOptions = buyOptionsObject.GetComponentsInChildren<BuyOption>();
         hasPurchasedTile = false;
 
@@ -72,7 +72,7 @@ public class QiTreeManager : MonoBehaviour
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
 
-        FlowerTileManager.instance.AddFlowerTile(tile);
+        //FlowerTileManager.instance.AddFlowerTile(tile);
         hasPurchasedTile = true;
 
         return true;
@@ -86,13 +86,13 @@ public class QiTreeManager : MonoBehaviour
 
     private void UpdateShop()
     {
-        Array.Clear(upgradeOptions, 0, 3);
+        //Array.Clear(upgradeOptions, 0, 3);
         for (int i = 0; i < 3; i++)
         {
             // check for duplicates in the future
-            FlowerTile randomFlowerTile = FlowerTileManager.instance.GetRandomFlowerTile();
-            randomFlowerTile.Initialize(shopInfoController);
-            buyOptions[i].Initialize(randomFlowerTile);
+            //FlowerTileInstance randomFlowerTile = FlowerTileManager.instance.GetRandomFlowerTile();
+            //randomFlowerTile.Initialize(shopInfoController);
+            //buyOptions[i].Initialize(randomFlowerTile);
         }
 
     }

@@ -17,3 +17,11 @@ MonoBehaviour:
   sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
   description: Multiply damage by x1.5 for every 8 tile played and x0.75 for every
     4 tile played
+  effectConfig:
+    rid: 4727995076836327679
+  references:
+    version: 2
+    RefIds:
+    - rid: 4727995076836327679
+      type: {class: EightFourCheckerConfig, ns: , asm: Assembly-CSharp}
+      data: 

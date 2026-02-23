@@ -9,6 +9,6 @@ public class ShopTileInfoController : FlowerTileInfoController
         hoverCount++;
         Vector2 pos = RectTransformUtility.CalculateRelativeRectTransformBounds(canvas.transform, currentFlowerTile.transform).center;
         Vector2 screenOffset = new(0.5f * Screen.width, -0.5f * Screen.height);
-        flowerTileInfo.Open(currentFlowerTile.data, pos + screenOffset + offset);
+        flowerTileInfo.Open(currentFlowerTile.instance.data, pos + screenOffset + offset);
     }
 }
