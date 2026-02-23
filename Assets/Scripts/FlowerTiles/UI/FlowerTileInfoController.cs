@@ -18,7 +18,7 @@ public class FlowerTileInfoController : MonoBehaviour
     public virtual void PointerEntered()
     {
         hoverCount++;
-        flowerTileInfo.Open(currentFlowerTile.data, currentFlowerTile.rectTransform.anchoredPosition + offset);
+        flowerTileInfo.Open(currentFlowerTile.instance.data, currentFlowerTile.rectTransform.anchoredPosition + offset);
     }
 
     public void PointerExited()

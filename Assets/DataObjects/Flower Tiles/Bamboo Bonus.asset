@@ -16,3 +16,13 @@ MonoBehaviour:
   tileName: Bamboo Bonus
   sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
   description: +1 added damage for each bamboo tile played
+  effectConfig:
+    rid: 4727995076836327676
+  references:
+    version: 2
+    RefIds:
+    - rid: 4727995076836327676
+      type: {class: SuitCheckerConfig, ns: , asm: Assembly-CSharp}
+      data:
+        suit: 1
+        damage: 1

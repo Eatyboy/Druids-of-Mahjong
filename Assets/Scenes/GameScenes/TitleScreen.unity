@@ -629,7 +629,7 @@ MonoBehaviour:
   m_text: Druids of
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5fc0b717b311e0f4bb318890782d9ed7, type: 2}
-  m_sharedMaterial: {fileID: 8743319104107090315, guid: 5fc0b717b311e0f4bb318890782d9ed7, type: 2}
+  m_sharedMaterial: {fileID: -8466706264344533911, guid: 5fc0b717b311e0f4bb318890782d9ed7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -716,8 +716,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1177564808}
   - component: {fileID: 1177564807}
-  - component: {fileID: 1177564806}
   - component: {fileID: 1177564809}
+  - component: {fileID: 1177564810}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -725,14 +725,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1177564806
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1177564805}
-  m_Enabled: 1
 --- !u!20 &1177564807
 Camera:
   m_ObjectHideFlags: 0
@@ -843,6 +835,20 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &1177564810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177564805}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &1192211967
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,7 +909,7 @@ MonoBehaviour:
   m_text: MAHJ   NG
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
-  m_sharedMaterial: {fileID: 1972118621434194946, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
+  m_sharedMaterial: {fileID: -6516049618119335530, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1040,7 +1046,7 @@ MonoBehaviour:
   m_text: Glossary
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
-  m_sharedMaterial: {fileID: 1972118621434194946, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
+  m_sharedMaterial: {fileID: -6516049618119335530, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1391,7 +1397,7 @@ MonoBehaviour:
 '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
-  m_sharedMaterial: {fileID: 1972118621434194946, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
+  m_sharedMaterial: {fileID: -6516049618119335530, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1643,7 +1649,7 @@ MonoBehaviour:
   m_text: New Game
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
-  m_sharedMaterial: {fileID: 1972118621434194946, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
+  m_sharedMaterial: {fileID: -6516049618119335530, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1780,7 +1786,7 @@ MonoBehaviour:
   m_text: Settings
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
-  m_sharedMaterial: {fileID: 1972118621434194946, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
+  m_sharedMaterial: {fileID: -6516049618119335530, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
