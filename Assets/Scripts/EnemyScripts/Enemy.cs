@@ -40,6 +40,14 @@ public class Enemy : MonoBehaviour, IDamageable
         healthBar.SetHealth(currentHP);
     }
 
+    public void SetHealth(int health)
+    {
+        currentHP = health;
+        maxHP = health;
+        healthBar.SetMaxHealth(maxHP);
+        healthBar.SetHealth(currentHP);
+    }
+
     public IEnumerator EnemyAttack(Tile intendedTile)
     {
         EnemyTileObject attackTile = Instantiate(tilePrefab, UIManager.instance.transform);

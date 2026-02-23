@@ -38,7 +38,6 @@ public class QiTreeManager : MonoBehaviour
     {
         yield return new WaitForSeconds(sec);
 
-        //upgradeOptions = new FlowerTile[3];
         buyOptions = buyOptionsObject.GetComponentsInChildren<BuyOption>();
         hasPurchasedTile = false;
 
@@ -86,7 +85,6 @@ public class QiTreeManager : MonoBehaviour
 
     private void UpdateShop()
     {
-        //Array.Clear(upgradeOptions, 0, 3);
         for (int i = 0; i < 3; i++)
         {
             // check for duplicates in the future
