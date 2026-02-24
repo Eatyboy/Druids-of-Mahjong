@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 using System.Linq;
+using System.Threading.Tasks;
 
 public enum MahjongHandTypes
 {
@@ -10,6 +11,7 @@ public enum MahjongHandTypes
     Set, // 3 of a kind
     Run, // 3 in a sequence
     Quad, // 4 of a kind
+    TwoPairs, // 2 distinct pairs
     ThreePairs, // 3 distinct pairs
     SetAndRun, // A distinct set and run
     TwoRuns, // 2 distinct runs
@@ -24,42 +26,47 @@ public enum MahjongHandTypes
 public class MahjongHands
 {
     // elements 0-4: pairs, sets, three runs, quads, nine runs
-    public static List<(MahjongHandTypes type, List<Tile> tiles)> GetAllHandCombinations(List<Tile> tiles)
+    public static async Task<List<(MahjongHandTypes type, List<Tile> tiles)>> GetAllHandCombinationsAsync(List<Tile> tiles, Tile required = null)
     {
-        List<(MahjongHandTypes type, List<Tile> tiles)> result = new();
-        if (tiles == null || tiles.Count == 0) return result;
-
-        // Bitmask approach to iterate over all possible subsets of tiles
-        int subsetCount = 1 << tiles.Count;
-        for (int mask = 0; mask < subsetCount; mask++)
+        return await Task.Run(() =>
         {
-            List<Tile> subset = new();
-            for (int i = 0; i < tiles.Count; i++)
+            List<(MahjongHandTypes type, List<Tile> tiles)> result = new();
+            if (tiles == null || tiles.Count == 0) return result;
+
+            // Bitmask approach to iterate over all possible subsets of tiles
+            int subsetCount = 1 << tiles.Count;
+            for (int mask = 0; mask < subsetCount; mask++)
             {
-                if ((mask & (1 << i)) != 0)
+                List<Tile> subset = new();
+                for (int i = 0; i < tiles.Count; i++)
                 {
-                    subset.Add(tiles[i]);
+                    if ((mask & (1 << i)) != 0)
+                    {
+                        subset.Add(tiles[i]);
+                    }
+                }
+
+                if (required != null && !subset.Contains(required)) continue;
+
+                MahjongHandTypes handType = GetMahjongHand(subset);
+                if (handType != MahjongHandTypes.None)
+                {
+                    result.Add((handType, subset));
                 }
             }
 
-            MahjongHandTypes handType = GetMahjongHand(subset);
-            if (handType != MahjongHandTypes.None)
-            {
-                result.Add((handType, subset));
-            }
-        }
-
-        return result
-            .OrderByDescending(hand => hand.type)
-            .ThenByDescending(hand => hand.tiles.Count)
-            .ToList();
+            return result
+                .OrderByDescending(hand => hand.type)
+                .ThenByDescending(hand => hand.tiles.Count)
+                .ToList();
+        });
     }
 
-    public static (MahjongHandTypes type, List<Tile> tiles) GetOptimalHand(List<Tile> tiles)
+    public static async Task<(MahjongHandTypes type, List<Tile> tiles)> GetOptimalHandAsync(List<Tile> tiles, Tile required = null)
     {
         if (tiles == null || tiles.Count == 0) return (MahjongHandTypes.None, null);
 
-        var allHands = GetAllHandCombinations(tiles);
+        var allHands = await GetAllHandCombinationsAsync(tiles, required);
         if (allHands.Count == 0) return (MahjongHandTypes.None, null);
 
         return allHands.First();
@@ -230,6 +237,7 @@ public class MahjongHands
         { MahjongHandTypes.Set, 4 },
         { MahjongHandTypes.Run, 4 },
         { MahjongHandTypes.Quad, 8 },
+        { MahjongHandTypes.TwoPairs, 6 },
         { MahjongHandTypes.ThreePairs, 8 },
         { MahjongHandTypes.SetAndRun, 8 },
         { MahjongHandTypes.TwoRuns, 8 },
@@ -275,8 +283,11 @@ public class MahjongHands
             if (IsThreePairs(valid)) return MahjongHandTypes.ThreePairs;
         }
 
-        if (n == 4 && IsQuad(valid))
-            return MahjongHandTypes.Quad;
+        if (n == 4)
+        {
+            if (IsQuad(valid)) return MahjongHandTypes.Quad;
+            if (IsTwoPairs(valid)) return MahjongHandTypes.TwoPairs;
+        }
 
         if (n == 3)
         {
@@ -337,6 +348,13 @@ public class MahjongHands
         for (int i = 0; i < 9; i++)
             if (r[i] != i + 1) return false;
         return true;
+    }
+
+    static bool IsTwoPairs(List<Tile> t)
+    {
+        if (t.Count != 4) return false;
+        var groups = t.GroupBy(x => (x.suit, x.rank)).ToList();
+        return groups.Count == 2 && groups.All(g => g.Count() == 2);
     }
 
     static bool IsThreePairs(List<Tile> t)
