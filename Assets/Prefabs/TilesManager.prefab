@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6480022318695467199}
   - component: {fileID: 3760491860428605717}
+  - component: {fileID: 7781862357217987016}
   m_Layer: 0
   m_Name: TilesManager
   m_TagString: Untagged
@@ -80,4 +81,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2c9b501381b074c43a56e187a609845a, type: 2}
   - {fileID: 11400000, guid: 9b65aa02362206f4680f85315fe241ab, type: 2}
   - {fileID: 11400000, guid: c4717bfe7298672409ac3220d989e03d, type: 2}
-  deck: []
+  discardPile: []
+--- !u!114 &7781862357217987016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1238476286542933506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cef84e2797cc869419206491eef9530d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MahjongParryTester
