@@ -59,20 +59,49 @@ public class ParryHandler : MonoBehaviour
 
     public void OpenParryWindow(ParryContext ctx)
     {
-        if (activeContext != null) return;
+        if (ctx == null)
+        {
+            Debug.LogError("Tried to open parry window with a null parry context");
+            return;
+        }
+
+        if (activeContext != null)
+        {
+            Debug.LogError("Tried to open parry window while another is still active");
+            return;
+        }
+
+        if (parryPopup == null)
+        {
+            Debug.LogError("Missing ParryPopup reference");
+            ctx.Resolve(false);
+            return;
+        }
 
         activeContext = ctx;
-
         activeParryWindow = StartCoroutine(ParryWindow());
     }
 
     private IEnumerator ParryWindow()
     {
+        if (activeContext.parryPlayerTileObjects == null || activeContext.parryPlayerTileObjects.Count == 0)
+        {
+            Debug.LogError("ParryWindow started with no valid parry tiles in the player's hand");
+            activeContext.Resolve(false);
+            yield break;
+        }
+
         isParryWindowOpen = true;
         parryPopup.gameObject.SetActive(true);
         parryPopup.Open(activeContext.enemyAttackTile.rt.position);
         foreach (PlayerTileObject tileObject in activeContext.parryPlayerTileObjects)
         {
+            if (tileObject == null)
+            {
+                Debug.LogError("Null tileObject inside parry list.");
+                continue;
+            }
+
             tileObject.SetHighlighted(true);
         }
 
@@ -87,12 +116,16 @@ public class ParryHandler : MonoBehaviour
 
         CloseParryWindow();
         activeContext.Resolve(false);
-        //activeContext = null;
+        activeContext = null;
     }
 
     private void CloseParryWindow()
     {
-        if (activeContext == null || activeContext.resolved) return;
+        if (activeContext == null)
+        {
+            Debug.LogWarning("CloseParryWindow called with no active parry context");
+            return;
+        }
 
         if (activeParryWindow != null)
         {
@@ -139,20 +172,24 @@ public class ParryHandler : MonoBehaviour
         {
             CloseParryWindow();
             activeContext.Resolve(false);
-            //activeContext = null;
+            activeContext = null;
             yield break;
         }
 
         CloseParryWindow();
 
-        yield return new WaitForSeconds(0.5f); // Animation time
+        foreach (PlayerTileObject tileObj in activeContext.parryPlayerTileObjects)
+        {
+            yield return PlayerHand.instance.DiscardTile(tileObj);
+        }
 
         int handBaseDamage = HandAttackResolver.GetBaseParryDamage(activeContext);
         int parryDamage = Mathf.FloorToInt((float)handBaseDamage * parryDamageMultiplier);
-        CombatManager.instance.EnqueueAction(() => activeContext.enemy.EnemyTakeDamage(parryDamage), nameof(activeContext.enemy.EnemyTakeDamage));
+        Enemy enemy = activeContext.enemy;
+        CombatManager.instance.EnqueueAction(() => enemy.EnemyTakeDamage(parryDamage), nameof(enemy.EnemyTakeDamage));
         Debug.Log($"{parryType}!");
-        //activeContext = null;
         activeContext.Resolve(true);
+        activeContext = null;
 
         yield break;
     }

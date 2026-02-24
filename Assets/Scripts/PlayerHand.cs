@@ -124,17 +124,21 @@ public class PlayerHand : MonoBehaviour
         discardDuration = Mathf.Max(minDuration, discardDuration - durDecrement);
     }
 
+    public IEnumerator DiscardTile(PlayerTileObject tileObj)
+    {
+        yield return DiscardAnim(tileObj.transform);
+        TilesManager.instance.discardPile.Add(tileObj.tileData);
+        currentHand.Remove(tileObj);
+        Destroy(tileObj.gameObject);
+    }
+
     public IEnumerator DiscardTiles(bool drawWhenDone = false)
     {
         float duration = discardDuration;
         foreach (PlayerTileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
-            yield return DiscardAnim(tileObj.transform);
-
-            TilesManager.instance.discardPile.Add(tileObj.tileData);
-            currentHand.Remove(tileObj);
-            Destroy(tileObj.gameObject);
+            yield return DiscardTile(tileObj);
         }
         selectedTiles.Clear();
         discardDuration = duration;

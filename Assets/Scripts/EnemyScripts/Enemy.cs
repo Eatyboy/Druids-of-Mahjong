@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -57,30 +58,30 @@ public class Enemy : MonoBehaviour, IDamageable
         yield return attackTile.PlayDrawAnimation();
 
         ParryHandler.ParryContext parryContext;
-        List<Tile> expandedPlayerHand = PlayerHand.instance.currentHand
-            .Select(obj => obj.tileData)
-            .Concat(new[] { attackTile.tileData })
-            .ToList();
-        (MahjongHandTypes type, List<Tile> tiles) parryHand = MahjongHands
-            .GetAllHandCombinations(expandedPlayerHand)
-            .Where(hand => hand.tiles.Contains(intendedTile))
-            .OrderByDescending(hand => hand.type)
-            .FirstOrDefault();
-        bool canParry = parryHand.type != MahjongHandTypes.None
-            && parryHand.type != MahjongHandTypes.Pair
-            && parryHand.type != MahjongHandTypes.ThreePairs
-            && parryHand.type != MahjongHandTypes.AllPairs;
+        var augmentedPlayerHand = PlayerHand.instance.GetPlayerHandTileData().Append(attackTile.tileData).ToList();
+        var optimalHandTask = MahjongHands.GetOptimalHandAsync(augmentedPlayerHand, attackTile.tileData);
+        yield return new WaitUntil(() => optimalHandTask.IsCompleted);
+        if (optimalHandTask.IsFaulted)
+        {
+            Debug.LogError("Failed to get the optimal hand for parry");
+            yield break;
+        }
+        var (type, tiles) = optimalHandTask.Result;
+        bool canParry = type != MahjongHandTypes.None
+            && type != MahjongHandTypes.Pair
+            && type != MahjongHandTypes.ThreePairs
+            && type != MahjongHandTypes.AllPairs;
 
         if (canParry)
         {
             List<PlayerTileObject> parryTileObjects = new();
-            foreach (Tile tile in parryHand.tiles)
+            foreach (Tile tile in tiles)
             {
                 var obj = PlayerHand.instance.currentHand.FirstOrDefault(t => t.tileData == tile);
                 if (obj != null)
                     parryTileObjects.Add(obj);
             }
-            parryContext = new(this, parryHand.type, parryHand.tiles, parryTileObjects, attackTile);
+            parryContext = new(this, type, tiles, parryTileObjects, attackTile);
             Player.instance.parryHandler.OpenParryWindow(parryContext);
         }
         else
