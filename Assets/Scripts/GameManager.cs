@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 //public enum GameState
@@ -19,6 +20,10 @@ public class GameManager : MonoBehaviour
     //public GameState gameState = GameState.TitleScreen;
     private PlayerData _playerData = null;
     public static PlayerData playerData => instance._playerData;
+
+    // Enemy Data
+    public float hpScale = 1.0f; 
+    public float hpScaleRate = 1.5f;
 
     private void Awake()
     {
@@ -59,7 +64,7 @@ public class GameManager : MonoBehaviour
 
     public void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Keyboard.current.escapeKey.wasReleasedThisFrame)
         {
             Utils.QuitGame();
         }
