@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Unique Dragon Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 8
-  tileName: Unique Dragon Bonus
-  sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
+  flowerTile: 9
+  tileName: Snapdragon
+  sprite: {fileID: 21300000, guid: b630a84de45edc24d947c573f085719c, type: 3}
   description: Multiply damage by x2 for each unique type of Dragon tile in played
     hand
   effectConfig:

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Tile Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 9
-  tileName: Tile Count Bonus
-  sprite: {fileID: 0}
+  flowerTile: 10
+  tileName: Tilemaster
+  sprite: {fileID: 21300000, guid: b630a84de45edc24d947c573f085719c, type: 3}
   description: +1 added damage for amount of tiles selected
   effectConfig:
     rid: 4727995076836327683

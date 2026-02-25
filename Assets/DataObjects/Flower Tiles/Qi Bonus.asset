@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
   flowerTile: 7
   tileName: Qi Bonus
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 24ed0a4114bb96b4e971a7ded7450284, type: 3}
   description: +1 added damage for qi accumulated
   effectConfig:
     rid: 4727995076836327681
