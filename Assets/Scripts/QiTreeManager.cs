@@ -162,8 +162,10 @@ public class QiTreeManager : MonoBehaviour
     public void SwitchUI()
     {
         uiSwitch = !uiSwitch;
-        flowerTileUI.SetActive(!uiSwitch);
-        charmScrollUI.SetActive(uiSwitch);
+        if (flowerTileUI != null) flowerTileUI.SetActive(!uiSwitch);
+        if (charmScrollUI != null) charmScrollUI.SetActive(uiSwitch);
+        if (ScrollHand.instance != null)
+            ScrollHand.instance.gameObject.SetActive(uiSwitch);
     }
 }
 
