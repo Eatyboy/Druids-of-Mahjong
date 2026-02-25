@@ -23,6 +23,7 @@ public class CombatManager : MonoBehaviour
     public Queue<(Func<IEnumerator> action, string actionName)> actionQueue = new();
     public bool isPlayerTurnNext;
     private int qiDroppedThisRound = 0;
+    private string currentAction = "None";
 
     private void Awake()
     {
@@ -53,7 +54,6 @@ public class CombatManager : MonoBehaviour
                     yield return EnemyManager.instance.SpawnEnemy();
 
                     combatState = CombatState.PlayerTurn;
-                    //FlowerTileManager.instance.InitializeFlowerTiles(FlowerTileManager.instance.infoController);
                     break;
 
                 case CombatState.PlayerTurn:
@@ -76,7 +76,9 @@ public class CombatManager : MonoBehaviour
                 case CombatState.TurnResolution:
                     while (actionQueue.Count > 0)
                     {
-                        yield return actionQueue.Dequeue().action.Invoke();
+                        var action = actionQueue.Dequeue();
+                        currentAction = action.actionName;
+                        yield return action.action.Invoke();
                     }
 
                     if (GameManager.playerData.health <= 0) combatState = CombatState.Defeat;
@@ -106,6 +108,7 @@ public class CombatManager : MonoBehaviour
         EnemyManager.instance.currentEnemy = null;
 
         roundEndUI.gameObject.SetActive(true);
+        GameManager.instance.hpScale *= GameManager.instance.hpScaleRate;
 
         roundEndUI.Initialize(qiDroppedThisRound);
     }
@@ -113,7 +116,9 @@ public class CombatManager : MonoBehaviour
     public void PlayerDefeat()
     {
         combatState = CombatState.Defeat;
-        
+
+        GameManager.instance.hpScale = 1.0f;
+
         GameManager.instance.QuitToTitleScreen();
     }
 

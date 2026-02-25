@@ -53,6 +53,7 @@ public class EnemyManager : MonoBehaviour
         //Enemy's center is at spawn's center
         Enemy spawnedEnemy = Instantiate(GetWeightedRandomEnemy());
         spawnedEnemy.transform.position = enemySpawn.transform.position;
+        spawnedEnemy.SetHealth((int)(spawnedEnemy.maxHP * GameManager.instance.hpScale));
 
         currentEnemy = spawnedEnemy;
     }
