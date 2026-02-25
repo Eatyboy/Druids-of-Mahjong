@@ -854,7 +854,10 @@ MonoBehaviour:
   fTile: {fileID: 0}
   fTileRT: {fileID: 0}
   cScroll: {fileID: 0}
+  scrollDefinition: {fileID: 0}
   csRT: {fileID: 0}
+  scrollNameText: {fileID: 0}
+  scrollDescriptionText: {fileID: 0}
   rt: {fileID: 0}
   index: 0
   hasPurchased: 0
@@ -1616,7 +1619,10 @@ MonoBehaviour:
   fTile: {fileID: 0}
   fTileRT: {fileID: 0}
   cScroll: {fileID: 0}
+  scrollDefinition: {fileID: 0}
   csRT: {fileID: 0}
+  scrollNameText: {fileID: 0}
+  scrollDescriptionText: {fileID: 0}
   rt: {fileID: 0}
   index: 1
   hasPurchased: 0
@@ -2321,6 +2327,8 @@ MonoBehaviour:
   ftContainer: {fileID: 0}
   shopInfoController: {fileID: 0}
   ftPrefab: {fileID: 0}
+  scrollBuyOptionsContainer: {fileID: 0}
+  scrollDefinitions: []
   flowerTileUI: {fileID: 0}
   charmScrollUI: {fileID: 0}
 --- !u!1 &734077650
@@ -2797,7 +2805,10 @@ MonoBehaviour:
   fTile: {fileID: 0}
   fTileRT: {fileID: 0}
   cScroll: {fileID: 0}
+  scrollDefinition: {fileID: 0}
   csRT: {fileID: 0}
+  scrollNameText: {fileID: 0}
+  scrollDescriptionText: {fileID: 0}
   rt: {fileID: 0}
   index: 1
   hasPurchased: 0
@@ -3170,7 +3181,10 @@ MonoBehaviour:
   fTile: {fileID: 0}
   fTileRT: {fileID: 0}
   cScroll: {fileID: 0}
+  scrollDefinition: {fileID: 0}
   csRT: {fileID: 0}
+  scrollNameText: {fileID: 0}
+  scrollDescriptionText: {fileID: 0}
   rt: {fileID: 0}
   index: 2
   hasPurchased: 0
@@ -3461,7 +3475,10 @@ MonoBehaviour:
   fTile: {fileID: 0}
   fTileRT: {fileID: 0}
   cScroll: {fileID: 0}
+  scrollDefinition: {fileID: 0}
   csRT: {fileID: 0}
+  scrollNameText: {fileID: 0}
+  scrollDescriptionText: {fileID: 0}
   rt: {fileID: 0}
   index: 0
   hasPurchased: 0
@@ -4489,7 +4506,10 @@ MonoBehaviour:
   fTile: {fileID: 0}
   fTileRT: {fileID: 0}
   cScroll: {fileID: 0}
+  scrollDefinition: {fileID: 0}
   csRT: {fileID: 0}
+  scrollNameText: {fileID: 0}
+  scrollDescriptionText: {fileID: 0}
   rt: {fileID: 0}
   index: 2
   hasPurchased: 0
@@ -5146,6 +5166,15 @@ MonoBehaviour:
   ftContainer: {fileID: 1953581189}
   shopInfoController: {fileID: 426298004}
   ftPrefab: {fileID: 2586444533356537900, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
+  scrollBuyOptionsContainer: {fileID: 1236034640}
+  scrollDefinitions:
+  - {fileID: 11400000, guid: 05c513788e30172469309bcef5e9d682, type: 2}
+  - {fileID: 11400000, guid: 2ea6d98870cc3814188e40497ba12e62, type: 2}
+  - {fileID: 11400000, guid: c6a1bbbbf5a362143b47517eee5955e4, type: 2}
+  - {fileID: 11400000, guid: 2a8c02d7214efaf459ddd7a6e7911846, type: 2}
+  - {fileID: 11400000, guid: 36c88771d76b12c49ad4c7876c3a4f79, type: 2}
+  - {fileID: 11400000, guid: d1d80daa4cc1d414b8cbbdd7ecd3c52e, type: 2}
+  - {fileID: 11400000, guid: 9de498491a17dc64dad61e8f42504186, type: 2}
   flowerTileUI: {fileID: 840936822}
   charmScrollUI: {fileID: 1394748440}
 --- !u!1 &2028590265

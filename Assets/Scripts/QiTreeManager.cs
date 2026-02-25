@@ -24,6 +24,10 @@ public class QiTreeManager : MonoBehaviour
     public ShopTileInfoController shopInfoController;
     [SerializeField] private FlowerTile ftPrefab;
 
+    [Header("Charm Scrolls (Scrolls under CharmScrollsUI)")]
+    [SerializeField] private GameObject scrollBuyOptionsContainer;
+    [SerializeField] private List<CharmScrollDefinition> scrollDefinitions = new List<CharmScrollDefinition>();
+
     [Header("Menus")]
     [SerializeField] private GameObject flowerTileUI;
     [SerializeField] private GameObject charmScrollUI;
@@ -51,6 +55,7 @@ public class QiTreeManager : MonoBehaviour
         hasPurchasedCharmScroll = false;
 
         UpdateShop();
+        UpdateScrollShop();
         UpdateUI();
 
         yield return null;
@@ -88,17 +93,43 @@ public class QiTreeManager : MonoBehaviour
         return true;
     }
 
-    // edit this to your liking
+    public bool TryPurchaseCharmScroll(CharmScrollDefinition definition, int index)
+    {
+        if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) return false;
+
+        GameManager.playerData.qi -= qiCost;
+        UpdateQiText(GameManager.playerData.qi);
+        hasPurchasedCharmScroll = true;
+        return true;
+    }
+
     public bool TryPurchaseCharmScroll(CharmScroll scroll, int index)
     {
         if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) return false;
 
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
-
-        // charm scroll stuff probably goes here?
-
+        hasPurchasedCharmScroll = true;
         return true;
+    }
+
+    /// <summary>Returns a random charm scroll definition from the list. Reuses same pattern as flower tiles.</summary>
+    public CharmScrollDefinition GetRandomCharmScrollDefinition()
+    {
+        if (scrollDefinitions == null || scrollDefinitions.Count == 0) return null;
+        return Utils.GetRandomItemInList(scrollDefinitions);
+    }
+
+    private void UpdateScrollShop()
+    {
+        if (scrollBuyOptionsContainer == null || scrollDefinitions == null || scrollDefinitions.Count == 0) return;
+
+        BuyOption[] scrollOptions = scrollBuyOptionsContainer.GetComponentsInChildren<BuyOption>();
+        for (int i = 0; i < scrollOptions.Length; i++)
+        {
+            CharmScrollDefinition def = GetRandomCharmScrollDefinition();
+            if (def != null) scrollOptions[i].Initialize(def);
+        }
     }
 
     public void UpdateQiText(int qi)
