@@ -18,10 +18,16 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private BuyOption[] buyOptions; 
     [SerializeField] private GameObject inventoryFlowerTilesObject;
 
-    [SerializeField] private bool hasPurchasedTile;
+    [SerializeField] private bool hasPurchasedFlowerTile;
+    [SerializeField] private bool hasPurchasedCharmScroll;
     public FlowerTileContainer ftContainer;
     public ShopTileInfoController shopInfoController;
     [SerializeField] private FlowerTile ftPrefab;
+
+    [Header("Menus")]
+    [SerializeField] private GameObject flowerTileUI;
+    [SerializeField] private GameObject charmScrollUI;
+    private bool uiSwitch;
 
     private void Awake()
     {
@@ -33,6 +39,7 @@ public class QiTreeManager : MonoBehaviour
     {
         // race condition
         StartCoroutine(DelayedEnable(0.1f));
+        uiSwitch = false;
     }
 
     IEnumerator DelayedEnable(float sec)
@@ -40,7 +47,8 @@ public class QiTreeManager : MonoBehaviour
         yield return new WaitForSeconds(sec);
 
         buyOptions = buyOptionsObject.GetComponentsInChildren<BuyOption>();
-        hasPurchasedTile = false;
+        hasPurchasedFlowerTile = false;
+        hasPurchasedCharmScroll = false;
 
         UpdateShop();
         UpdateUI();
@@ -65,9 +73,9 @@ public class QiTreeManager : MonoBehaviour
     //     }
     // }
 
-    public bool TryPurchase(FlowerTile tile, int index)
+    public bool TryPurchaseFlowerTile(FlowerTile tile, int index)
     {
-        if (GameManager.playerData.qi < qiCost || hasPurchasedTile) return false;
+        if (GameManager.playerData.qi < qiCost || hasPurchasedFlowerTile) return false;
 
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
@@ -75,7 +83,20 @@ public class QiTreeManager : MonoBehaviour
         GameManager.playerData.flowerTiles.Add(tile.instance);
         ftContainer.AddFlowerTile(tile.instance);
         shopInfoController.ForceClose();
-        hasPurchasedTile = true;
+        hasPurchasedFlowerTile = true;
+
+        return true;
+    }
+
+    // edit this to your liking
+    public bool TryPurchaseCharmScroll(CharmScroll scroll, int index)
+    {
+        if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) return false;
+
+        GameManager.playerData.qi -= qiCost;
+        UpdateQiText(GameManager.playerData.qi);
+
+        // charm scroll stuff probably goes here?
 
         return true;
     }
@@ -104,12 +125,14 @@ public class QiTreeManager : MonoBehaviour
     public void UpdateUI()
     {
         UpdateQiText(GameManager.playerData.qi);
-        UpdateFlowerTilesInventory();
+        // UpdateFlowerTilesInventory();
     }
 
-    public void UpdateFlowerTilesInventory()
+    public void SwitchUI()
     {
-
+        uiSwitch = !uiSwitch;
+        flowerTileUI.SetActive(!uiSwitch);
+        charmScrollUI.SetActive(uiSwitch);
     }
 }
 
