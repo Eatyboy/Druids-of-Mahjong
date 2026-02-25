@@ -1,14 +1,15 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class RandomWindCheckerConfig : FlowerTileEffectConfig
 {
-    public System.Int32 currentWind;
+    public float damageMultiplier = 1.5f;
 
     public override FlowerTileEffect CreateInstance()
     {
         var rt = new RandomWindChecker();
-        rt.currentWind = currentWind;
+        rt.damageMultiplier = damageMultiplier;
         return rt;
     }
 }

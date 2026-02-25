@@ -1,14 +1,15 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class QiCheckerConfig : FlowerTileEffectConfig
 {
-    public System.Int32 qi;
+    public float qiMult = 1.0f;
 
     public override FlowerTileEffect CreateInstance()
     {
         var rt = new QiChecker();
-        rt.qi = qi;
+        rt.qiMult = qiMult;
         return rt;
     }
 }

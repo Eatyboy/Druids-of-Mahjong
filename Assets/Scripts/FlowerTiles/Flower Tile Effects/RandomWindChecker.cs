@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class RandomWindChecker : FlowerTileEffect
 {
+    [Configurable] public float damageMultiplier = 1.5f;
+
     public int currentWind = 1;
     private readonly Dictionary<int, string> windDirections = new()
     {
@@ -44,7 +46,7 @@ public class RandomWindChecker : FlowerTileEffect
         {
             if (tile.suit == TileSuit.Wind && tile.rank == currentWind)
             {
-                multiplier *= 1.5f;
+                multiplier *= damageMultiplier;
             }
         }
         attackContext.increasedDamageModifier *= multiplier;
