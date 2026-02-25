@@ -19,8 +19,9 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private GameObject inventoryFlowerTilesObject;
 
     [SerializeField] private bool hasPurchasedTile;
+    public FlowerTileContainer ftContainer;
     public ShopTileInfoController shopInfoController;
-
+    [SerializeField] private FlowerTile ftPrefab;
 
     private void Awake()
     {
@@ -71,7 +72,9 @@ public class QiTreeManager : MonoBehaviour
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
 
-        //FlowerTileManager.instance.AddFlowerTile(tile);
+        GameManager.playerData.flowerTiles.Add(tile.instance);
+        ftContainer.AddFlowerTile(tile.instance);
+        shopInfoController.ForceClose();
         hasPurchasedTile = true;
 
         return true;
@@ -85,12 +88,15 @@ public class QiTreeManager : MonoBehaviour
 
     private void UpdateShop()
     {
+        // use this when charm scrolls are added
+        int numFlowers = UnityEngine.Random.Range(0, 4);
+        int numScrolls = 3 - numFlowers;
         for (int i = 0; i < 3; i++)
         {
-            // check for duplicates in the future
-            //FlowerTileInstance randomFlowerTile = FlowerTileManager.instance.GetRandomFlowerTile();
-            //randomFlowerTile.Initialize(shopInfoController);
-            //buyOptions[i].Initialize(randomFlowerTile);
+            FlowerTileInstance fti = FlowerTileManager.instance.GetRandomFlowerTile();
+            FlowerTile addedFlowerTile = Instantiate(ftPrefab);
+            addedFlowerTile.Initialize(fti, shopInfoController);
+            buyOptions[i].Initialize(addedFlowerTile);
         }
 
     }
