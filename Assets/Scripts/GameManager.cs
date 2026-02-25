@@ -21,6 +21,10 @@ public class GameManager : MonoBehaviour
     private PlayerData _playerData = null;
     public static PlayerData playerData => instance._playerData;
 
+    // Enemy Data
+    public float hpScale = 1.0f; 
+    public float hpScaleRate = 1.5f;
+
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);

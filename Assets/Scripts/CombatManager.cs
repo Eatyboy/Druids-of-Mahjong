@@ -108,6 +108,7 @@ public class CombatManager : MonoBehaviour
         EnemyManager.instance.currentEnemy = null;
 
         roundEndUI.gameObject.SetActive(true);
+        GameManager.instance.hpScale *= GameManager.instance.hpScaleRate;
 
         roundEndUI.Initialize(qiDroppedThisRound);
     }
@@ -115,7 +116,9 @@ public class CombatManager : MonoBehaviour
     public void PlayerDefeat()
     {
         combatState = CombatState.Defeat;
-        
+
+        GameManager.instance.hpScale = 1.0f;
+
         GameManager.instance.QuitToTitleScreen();
     }
 

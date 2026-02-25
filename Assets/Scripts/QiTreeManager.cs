@@ -39,7 +39,6 @@ public class QiTreeManager : MonoBehaviour
     {
         yield return new WaitForSeconds(sec);
 
-        //upgradeOptions = new FlowerTile[3];
         buyOptions = buyOptionsObject.GetComponentsInChildren<BuyOption>();
         hasPurchasedTile = false;
 
