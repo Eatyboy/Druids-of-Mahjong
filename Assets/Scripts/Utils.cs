@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -85,5 +86,42 @@ public static class Utils
     public static float ExpEaseIn(float t)
     {
         return t == 0.0f ? 0.0f : Mathf.Pow(2.0f, 10.0f * t - 10.0f);
+    }
+
+    public static bool AreDisjoint<T>(IEnumerable<T> a, IEnumerable<T> b)
+    {
+        var set = new HashSet<T>(a);
+        return !b.Any(set.Contains);
+    }
+    public static List<List<T>> GetAllKCombinations<T>(List<List<T>> items, int k)
+    {
+        var result = new List<List<T>>();
+        int n = items.Count;
+        if (k > n) return result;
+
+        int[] indices = new int[k];
+        for (int i = 0; i < k; i++) indices[i] = i;
+
+        while (true)
+        {
+            var combo = new List<T>(k);
+            for (int i = 0; i < k; i++)
+            {
+                combo.AddRange(items[indices[i]]);
+            }
+            result.Add(combo);
+
+            int t;
+            for (t = k - 1; t >= 0 && indices[t] == n - k + t; t--);
+            if (t < 0) break;
+
+            indices[t]++;
+            for (int i = t + 1; i < k; i++)
+            {
+                indices[i] = indices[i - 1] + 1;
+            }
+        }
+
+        return result;
     }
 }
