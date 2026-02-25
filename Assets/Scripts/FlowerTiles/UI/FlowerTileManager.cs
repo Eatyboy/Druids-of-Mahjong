@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class FlowerTileManager : MonoBehaviour
 {
@@ -64,6 +63,31 @@ public class FlowerTileManager : MonoBehaviour
     {
         foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            Copier copier = ft.effect as Copier;
+
+            if (copier != null)
+            {
+                copier.ClearCopiedEffect();
+
+                break;
+            }
+        }
+
+        for (int i = 0; i < playerFlowerTiles.Count; i++)
+        {
+            FlowerTileInstance ft = playerFlowerTiles[i];
+
+            Copier copier = ft.data.flowerTile == FlowerTileType.Copier ? ft.effect as Copier : null;
+            
+            if (copier != null && i > 0 && playerFlowerTiles[i - 1].effect != null)
+            {
+                FlowerTileInstance prev = playerFlowerTiles[i - 1];
+                
+                FlowerTileEffect copiedEffect = prev.data.effectConfig.CreateInstance();
+
+                copier.AddCopiedEffect(copiedEffect);
+            }
+
             CombatManager.instance.EnqueueAction(
                 () => ft.effect.OnPreAttack(attackContext),
                 nameof(ft.effect.OnPreAttack)

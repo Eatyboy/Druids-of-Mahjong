@@ -12,7 +12,8 @@ public enum FlowerTileType
     QiBonus, //Give bonus damage according to amount of qi
     TileBonus, //Give bonus damage according to amount of tiles selected
     UniqueDragonBonus, // Multiply damage for each unique type of dragon tile in hand
-    TileCountBonus, // Added damage per tile played
+    TileCountBonus, // Added damage per tile played 
+    Copier, //Copy the effect of the tile to its left.
     SkipOneInRun, // Can skip 1 number in runs of tiles
 }
 
