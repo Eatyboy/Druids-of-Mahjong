@@ -164,8 +164,23 @@ public class QiTreeManager : MonoBehaviour
         uiSwitch = !uiSwitch;
         if (flowerTileUI != null) flowerTileUI.SetActive(!uiSwitch);
         if (charmScrollUI != null) charmScrollUI.SetActive(uiSwitch);
+        if (uiSwitch)
+            StartCoroutine(ShowScrollHandAndPopulateTiles());
+        else if (ScrollHand.instance != null)
+            ScrollHand.instance.gameObject.SetActive(false);
+    }
+
+    private IEnumerator ShowScrollHandAndPopulateTiles()
+    {
+        yield return null;
         if (ScrollHand.instance != null)
-            ScrollHand.instance.gameObject.SetActive(uiSwitch);
+        {
+            ScrollHand.instance.gameObject.SetActive(true);
+            ScrollHand.instance.ClearTiles();
+            if (TilesManager.instance != null)
+                TilesManager.instance.EnsureDeckInitialized();
+            yield return ScrollHand.instance.DrawUntilFullHand();
+        }
     }
 }
 
