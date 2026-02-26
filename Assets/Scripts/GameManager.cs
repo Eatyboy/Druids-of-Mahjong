@@ -55,14 +55,22 @@ public class GameManager : MonoBehaviour
     {
         if (TilesManager.instance != null)
             TilesManager.instance.ReturnScrollHandToDeck();
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
+
+        AudioManager.instance.PlayMusic(AudioManager.instance.combatMusic);
 
         //gameState = GameState.InCombat;
     }
 
     public async void GoToTree()
     {
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.treeScreenSceneName, LoadSceneMode.Single);
+
+        AudioManager.instance.PlayMusic(AudioManager.instance.treeMusic);
         //gameState = GameState.AtTree;
     }
 

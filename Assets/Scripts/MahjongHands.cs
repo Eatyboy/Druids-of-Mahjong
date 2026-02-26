@@ -308,22 +308,35 @@ public class MahjongHands
 
     static bool SameTile(Tile a, Tile b) => a.suit == b.suit && a.rank == b.rank;
 
+    // Returns true if all tiles in the list count as "matching" for pair/set/quad.
+    // With MixedSets flower tile and all numbered suits, only rank must match; otherwise exact tile (suit + rank) match.
+    static bool AllTilesMatchForSet(List<Tile> t)
+    {
+        if (t == null || t.Count == 0) return false;
+        bool useRankOnly = FlowerTileManager.instance != null
+            && FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.MixedSets)
+            && t.All(x => IsNumberedSuit(x.suit));
+        if (useRankOnly)
+            return t.All(x => x.rank == t[0].rank);
+        return t.All(x => SameTile(x, t[0]));
+    }
+
     static bool IsPair(List<Tile> t)
     {
         if (t.Count != 2) return false;
-        return SameTile(t[0], t[1]);
+        return AllTilesMatchForSet(t);
     }
 
     static bool IsSet(List<Tile> t)
     {
         if (t.Count != 3) return false;
-        return SameTile(t[0], t[1]) && SameTile(t[1], t[2]);
+        return AllTilesMatchForSet(t);
     }
 
     static bool IsQuad(List<Tile> t)
     {
         if (t.Count != 4) return false;
-        return t.All(x => SameTile(x, t[0]));
+        return AllTilesMatchForSet(t);
     }
 
     static bool IsNumberedSuit(TileSuit s) =>
@@ -332,6 +345,13 @@ public class MahjongHands
     static bool IsRun(List<Tile> t)
     {
         if (t.Count != 3) return false;
+        // WindRuns: 3 winds of different ranks count as a run
+        if (FlowerTileManager.instance != null && FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.WindRuns)
+            && t.All(x => x.suit == TileSuit.Wind))
+        {
+            var windRanks = t.Select(x => x.rank).Distinct().ToList();
+            if (windRanks.Count == 3) return true;
+        }
         if (!t.All(x => IsNumberedSuit(x.suit))) return false;
         if (t[0].suit != t[1].suit || t[1].suit != t[2].suit) return false;
         var r = t.Select(x => x.rank).OrderBy(v => v).ToList();

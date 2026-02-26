@@ -139,6 +139,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyTakeDamage(int damageToTake)
     {
+        if (damageToTake == 0) yield break;
+
         currentHP -= damageToTake;
         healthBar.SetHealth(currentHP);
         AudioManager.instance.PlayOneShot(AudioManager.instance.enemyHurt);
