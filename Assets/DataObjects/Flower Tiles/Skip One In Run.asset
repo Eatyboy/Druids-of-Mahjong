@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Skip One In Run
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 12
+  flowerTile: 13
   tileName: Trickster
   sprite: {fileID: 21300000, guid: e19257091e9a04a458104c5aea91ca36, type: 3}
   description: Allows you to create runs with gaps of 1

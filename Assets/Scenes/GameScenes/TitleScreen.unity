@@ -132,6 +132,7 @@ GameObject:
   - component: {fileID: 122125457}
   - component: {fileID: 122125456}
   - component: {fileID: 122125459}
+  - component: {fileID: 122125460}
   m_Layer: 5
   m_Name: New Game
   m_TagString: Untagged
@@ -268,6 +269,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &122125460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122125454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &384754616
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,6 +369,7 @@ GameObject:
   - component: {fileID: 625514477}
   - component: {fileID: 625514476}
   - component: {fileID: 625514479}
+  - component: {fileID: 625514480}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -480,6 +494,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &625514480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625514474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &801241162
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,6 +519,7 @@ GameObject:
   - component: {fileID: 801241165}
   - component: {fileID: 801241164}
   - component: {fileID: 801241167}
+  - component: {fileID: 801241168}
   m_Layer: 5
   m_Name: Glossary
   m_TagString: Untagged
@@ -617,6 +644,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &801241168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 801241162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &873950614
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,6 +1302,7 @@ GameObject:
   - component: {fileID: 1527093054}
   - component: {fileID: 1527093053}
   - component: {fileID: 1527093056}
+  - component: {fileID: 1527093057}
   m_Layer: 5
   m_Name: Quit
   m_TagString: Untagged
@@ -1399,6 +1439,18 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &1527093057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1527093051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &1630000807
 GameObject:
   m_ObjectHideFlags: 0

@@ -101,6 +101,7 @@ public class PlayerTileObject : TileObject, IPointerClickHandler, IPointerEnterH
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        AudioManager.instance.PlayOneShot(AudioManager.instance.tileClack);
         ToggleSelected();
     }
 
