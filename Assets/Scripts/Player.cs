@@ -111,6 +111,16 @@ public class Player : MonoBehaviour
         healthBar.SetHealth(GameManager.playerData.health);
     }
 
+    // Refreshes the health bar from current playerData
+    public void RefreshHealthBar()
+    {
+        if (healthBar != null && GameManager.playerData != null)
+        {
+            healthBar.SetMaxHealth(GameManager.playerData.maxHealth);
+            healthBar.SetHealth(GameManager.playerData.health);
+        }
+    }
+
     public void AddQi(int qiChange)
     {
         GameManager.playerData.qi += qiChange;

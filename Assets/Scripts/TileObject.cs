@@ -22,39 +22,77 @@ public abstract class TileObject : MonoBehaviour
     public virtual void Initialize(Tile tile)
     {
         tileData = tile;
-        if (tileData.baseTileData.faceSprite == null )
+        ApplyDisplayFromTileData();
+    }
+
+    // Updates the visible label and face sprite from current tileData (suit, rank).
+    public virtual void RefreshDisplay()
+    {
+        if (tileData == null) return;
+        ApplyDisplayFromTileData();
+    }
+
+    private void ApplyDisplayFromTileData()
+    {
+        Tile t = tileData;
+        Sprite sprite = t.faceSprite ?? t.baseTileData?.faceSprite;
+        if (TilesManager.instance != null)
         {
-            tmpElement.text = tile.rank.ToString() + " of " + tile.suit.ToString();
-            tileFaceImage.enabled = false;
-            label.enabled = false;
+            MahjongTile baseForSuit = TilesManager.instance.GetBaseTileData(t.suit, t.rank);
+            if (baseForSuit != null && baseForSuit.faceSprite != null)
+            {
+                sprite = baseForSuit.faceSprite;
+                t.faceSprite = baseForSuit.faceSprite;
+            }
+        }
+
+        if (sprite == null)
+        {
+            if (tmpElement != null) tmpElement.text = t.rank.ToString() + " of " + t.suit.ToString();
+            if (tileFaceImage != null) tileFaceImage.enabled = false;
+            if (label != null) label.enabled = false;
+            if (tmpElement != null) tmpElement.enabled = true;
         }
         else
         {
-            tmpElement.enabled = false;
-            tileFaceImage.sprite = tileData.baseTileData.faceSprite;
-            label.text = tile.baseTileData.suit switch
+            if (tmpElement != null) tmpElement.enabled = false;
+            if (tileFaceImage != null)
             {
-                TileSuit.None => "X",
-                TileSuit.Bamboo => tile.rank.ToString(),
-                TileSuit.Dot => tile.rank.ToString(),
-                TileSuit.Character => tile.rank.ToString(),
-                TileSuit.Wind => tile.rank switch
-                {
-                    1 => "N",
-                    2 => "E",
-                    3 => "S",
-                    4 => "W",
-                    _ => "X"
-                },
-                TileSuit.Dragon => tile.rank switch
-                {
-                    1 => "F",
-                    2 => "C",
-                    3 => "B",
-                    _ => "X"
-                },
-                _ => "X"
-            };
+                tileFaceImage.sprite = sprite;
+                tileFaceImage.enabled = true;
+            }
+            if (label != null)
+            {
+                label.enabled = true;
+                label.text = GetLabelTextForSuitRank(t.suit, t.rank);
+            }
         }
+    }
+
+    private static string GetLabelTextForSuitRank(TileSuit suit, int rank)
+    {
+        return suit switch
+        {
+            TileSuit.None => "X",
+            TileSuit.Bamboo => rank.ToString(),
+            TileSuit.Dot => rank.ToString(),
+            TileSuit.Character => rank.ToString(),
+            TileSuit.Wind => rank switch
+            {
+                1 => "N",
+                2 => "E",
+                3 => "S",
+                4 => "W",
+                _ => "X"
+            },
+            TileSuit.Dragon => rank switch
+            {
+                1 => "F",
+                2 => "C",
+                3 => "B",
+                _ => "X"
+            },
+            _ => "X"
+        };
     }
 }

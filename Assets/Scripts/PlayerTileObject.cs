@@ -28,17 +28,26 @@ public class PlayerTileObject : TileObject, IPointerClickHandler, IPointerEnterH
         highlightedOverlay.SetActive(false);
     }
 
+    /// <summary>
+    /// The hand this tile belongs to, resolved from the tile's parent hierarchy (e.g. PlayerHand or ScrollHand).
+    /// Falls back to PlayerHand.instance if not under a HandBase.
+    /// </summary>
+    private HandBase GetHandFromHierarchy()
+    {
+        var hand = GetComponentInParent<HandBase>();
+        return hand != null ? hand : PlayerHand.instance;
+    }
+
     public void ToggleSelected()
     {
+        HandBase hand = GetHandFromHierarchy();
+        if (hand == null) return;
+
         isSelected = !isSelected;
         if (isSelected)
-        {
-            PlayerHand.instance.SelectTile(this);
-        }
+            hand.SelectTile(this);
         else
-        {
-            PlayerHand.instance.DeselectTile(this);
-        }
+            hand.DeselectTile(this);
         AnimateToSelected(isSelected);
     }
 
