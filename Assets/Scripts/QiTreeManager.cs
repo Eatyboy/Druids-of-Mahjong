@@ -43,6 +43,11 @@ public class QiTreeManager : MonoBehaviour
         else instance = this;
     }
 
+    private void Start()
+    {
+        AudioManager.instance.PlayMusic(AudioManager.instance.treeMusic);
+    }
+
     private void OnEnable()
     {
         HideUnsuccessfulBuyPrompt();
@@ -155,9 +160,6 @@ public class QiTreeManager : MonoBehaviour
 
     private void UpdateShop()
     {
-        // use this when charm scrolls are added
-        int numFlowers = UnityEngine.Random.Range(0, 4);
-        int numScrolls = 3 - numFlowers;
         for (int i = 0; i < 3; i++)
         {
             FlowerTileInstance fti = FlowerTileManager.instance.GetRandomFlowerTile();

@@ -44,6 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65538d299adedbf43ba1ea43787c6d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  titleScreenMusic:
+    Guid:
+      Data1: 411888087
+      Data2: 1242238695
+      Data3: 241312701
+      Data4: 834287839
+    Path: event:/Music/TitleTheme
   combatMusic:
     Guid:
       Data1: 1701434607

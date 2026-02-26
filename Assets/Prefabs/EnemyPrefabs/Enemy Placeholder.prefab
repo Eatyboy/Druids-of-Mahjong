@@ -57,8 +57,11 @@ MonoBehaviour:
   parrySpline: {fileID: 5677481224923456440}
   attackTileOffset: {x: 180, y: 120}
   attackDuration: 1
+  idleAnimationOffset: {x: 0, y: 0.15}
+  idleAnimationCycleDuration: 2
   deathAnimationDuration: 2
   isTurnActive: 0
+  isAlive: 0
   spriteRenderer: {fileID: 8505119651650178784}
   healthBar: {fileID: 2800644182473904679}
 --- !u!1 &1295183610769638684
