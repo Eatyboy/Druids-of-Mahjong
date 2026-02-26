@@ -58,6 +58,18 @@ public class PlayerHand : MonoBehaviour
         foreach (Transform tileObj in tileContainer) Destroy(tileObj.gameObject);
     }
 
+    private void Update()
+    {
+        if (selectedTiles.Count == 0)
+        {
+            castSpellButton.SetActive(false);
+        }
+        else
+        {
+            castSpellButton.SetActive(true);
+        }
+    }
+
     public IEnumerator DrawTile()
     {
         yield return new WaitForSeconds(drawDuration);
@@ -183,11 +195,6 @@ public class PlayerHand : MonoBehaviour
 
         selectedTiles.Remove(tile);
         UpdateCurrentHandType();
-
-        if (selectedTiles.Count == 0)
-        {
-            castSpellButton.SetActive(false);
-        }
     }
 
     // made these two functions public. if its an issue, let me know and ill revert it -aiden
@@ -239,7 +246,6 @@ public class PlayerHand : MonoBehaviour
         if (CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
-        castSpellButton.SetActive(false);
         
         isTurnActive = false;
     }
