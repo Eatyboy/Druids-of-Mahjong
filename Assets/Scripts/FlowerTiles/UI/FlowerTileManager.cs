@@ -76,6 +76,7 @@ public class FlowerTileManager : MonoBehaviour
         for (int i = 0; i < playerFlowerTiles.Count; i++)
         {
             FlowerTileInstance ft = playerFlowerTiles[i];
+            if (ft.effect == null) continue;
 
             Copier copier = ft.data.flowerTile == FlowerTileType.Copier ? ft.effect as Copier : null;
             
@@ -99,6 +100,7 @@ public class FlowerTileManager : MonoBehaviour
     {
         foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
                 () => ft.effect.OnIntraAttack(attackContext),
                 nameof(ft.effect.OnIntraAttack)
@@ -109,6 +111,7 @@ public class FlowerTileManager : MonoBehaviour
     {
         foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
                 () => ft.effect.OnPostAttack(attackContext),
                 nameof(ft.effect.OnPostAttack)
@@ -120,6 +123,7 @@ public class FlowerTileManager : MonoBehaviour
     {
         foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
                 () => ft.effect.OnIncomingAttack(dmg),
                 nameof(ft.effect.OnIncomingAttack)
@@ -131,6 +135,7 @@ public class FlowerTileManager : MonoBehaviour
     {
         foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
                 () => ft.effect.OnTakeDamage(dmg),
                 nameof(ft.effect.OnTakeDamage)
@@ -142,6 +147,7 @@ public class FlowerTileManager : MonoBehaviour
     {
         foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
                 () => ft.effect.OnTurnStart(),
                 nameof(ft.effect.OnTurnStart)
