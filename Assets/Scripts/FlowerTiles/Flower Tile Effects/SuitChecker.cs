@@ -2,9 +2,9 @@ using System.Collections;
 
 public class SuitChecker : FlowerTileEffect
 {
-    public TileSuit suit;
+    [Configurable] public TileSuit suit;
 
-    public int damage;
+    [Configurable] public int damage;
 
     public override IEnumerator OnIntraAttack(Player.PlayerAttackContext ctx)
     {

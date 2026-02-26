@@ -3,6 +3,8 @@ using System.Collections;
 
 public class UniqueDragonChecker : FlowerTileEffect
 {
+    [Configurable] public float damageMultiplier = 2.0f;
+
     public override IEnumerator OnIntraAttack(Player.PlayerAttackContext attackContext)
     {
         float multiplier = 1.0f;
@@ -14,7 +16,7 @@ public class UniqueDragonChecker : FlowerTileEffect
                 int dragonType = tile.rank;
                 if (!seenDragons[dragonType]) {
                     seenDragons[dragonType] = true;
-                    multiplier *= 2.0f;
+                    multiplier *= damageMultiplier;
                 }
             }
         }

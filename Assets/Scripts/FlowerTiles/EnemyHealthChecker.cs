@@ -8,7 +8,7 @@ using System.Linq;
 public class EnemyHealthChecker : FlowerTileEffect
 {
 
-    public float healthMult = 1.5f; // Damage multiplier
+    [Configurable] public float healthMult = 1.5f; // Damage multiplier
 
     public override IEnumerator OnPostAttack(Player.PlayerAttackContext ctx)
     {

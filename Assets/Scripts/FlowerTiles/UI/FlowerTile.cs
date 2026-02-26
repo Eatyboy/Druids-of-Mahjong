@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
+    private static IEnumerator NoOpCoroutine() { yield break; }
     public FlowerTileInstance instance;
     public RectTransform rectTransform;
 
@@ -68,10 +69,14 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         if (initialized || CombatManager.instance == null) return;
 
         CombatManager.instance.EnqueueAction(() =>
-            flowerTileInstance.effect.OnInitialize(
+        {
+            if (flowerTileInstance?.effect == null || PlayerHand.instance == null)
+                return NoOpCoroutine();
+            return flowerTileInstance.effect.OnInitialize(
                 PlayerHand.instance.GetPlayerHandTileData(),
                 PlayerHand.instance.GetSelectedTileData()
-            ),
+            );
+        },
             nameof(flowerTileInstance.effect.OnInitialize)
         );
 

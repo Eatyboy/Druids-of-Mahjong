@@ -62,6 +62,7 @@ GameObject:
   - component: {fileID: 2947631416838102734}
   - component: {fileID: 483188133105541943}
   - component: {fileID: 7010315053988108911}
+  - component: {fileID: 7207759082277056073}
   m_Layer: 5
   m_Name: CastButton
   m_TagString: Untagged
@@ -117,7 +118,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 6884133537336317467, guid: f131364651659844ea9c7d2bad5b1eb1, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -126,7 +127,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 32
 --- !u!114 &7010315053988108911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,6 +184,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &7207759082277056073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839780300117348308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &2276464277889139181
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +264,7 @@ MonoBehaviour:
   m_text: Cast Mahjong Hand
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: -6516049618119335530, guid: 65d35e97a9a2a434ba53b3c38951d046, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -317,7 +330,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &3081441185370104652
@@ -569,13 +582,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 405747859789400526, guid: a00507acc9b2ab64aa477c76fc68a71d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7338681490312322190}
   m_SourcePrefab: {fileID: 100100000, guid: a00507acc9b2ab64aa477c76fc68a71d, type: 3}
 --- !u!224 &2327792055614411754 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5702971130859672486, guid: a00507acc9b2ab64aa477c76fc68a71d, type: 3}
   m_PrefabInstance: {fileID: 8027944021444608076}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7694818924033083778 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 405747859789400526, guid: a00507acc9b2ab64aa477c76fc68a71d, type: 3}
+  m_PrefabInstance: {fileID: 8027944021444608076}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7338681490312322190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7694818924033083778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!114 &7773178014231852060 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 339771864644006992, guid: a00507acc9b2ab64aa477c76fc68a71d, type: 3}

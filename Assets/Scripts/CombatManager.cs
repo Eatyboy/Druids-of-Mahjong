@@ -33,6 +33,7 @@ public class CombatManager : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.instance.PlayMusic(AudioManager.instance.combatMusic);
         StartCombat();
     }
 
@@ -104,6 +105,8 @@ public class CombatManager : MonoBehaviour
 
     public void PlayerVictory()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnPlayerHandAndDiscardToDeck();
         Destroy(EnemyManager.instance.currentEnemy.gameObject);
         EnemyManager.instance.currentEnemy = null;
 
@@ -115,7 +118,9 @@ public class CombatManager : MonoBehaviour
 
     public void PlayerDefeat()
     {
+        AudioManager.instance.StopMusic();
         combatState = CombatState.Defeat;
+        AudioManager.instance.PlayOneShot(AudioManager.instance.gameOver);
 
         GameManager.instance.hpScale = 1.0f;
 

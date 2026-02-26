@@ -1,9 +1,10 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class FlatDamageBonusConfig : FlowerTileEffectConfig
 {
-    public System.Int32 flatDamageBonus;
+    public int flatDamageBonus = 1;
 
     public override FlowerTileEffect CreateInstance()
     {

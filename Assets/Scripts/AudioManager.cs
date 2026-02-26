@@ -6,13 +6,27 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; }
+    public static AudioManager instance { get; private set; }
     public EventInstance musicEventInstance;
     public EventInstance ambienceEventInstance;
 
     [Header("Music")]
+    public EventReference titleScreenMusic;
+    public EventReference combatMusic;
+    public EventReference treeMusic;
 
     [Header("SFX")]
+    public EventReference tileClack;
+    public EventReference tileShuffle;
+    public EventReference uiHover;
+    public EventReference uiClick;
+    public EventReference whoosh;
+    public EventReference playerHurt;
+    public EventReference enemyHurt;
+    public EventReference gameOver;
+    public EventReference enemyDeath;
+    public EventReference qiOrb;
+    public EventReference treeChannel;
 
     [Header("Ambience")]
 
@@ -34,8 +48,8 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this) Destroy(this);
-        else Instance = this;
+        if (instance != null && instance != this) Destroy(this);
+        else instance = this;
 
         DontDestroyOnLoad(gameObject);
 

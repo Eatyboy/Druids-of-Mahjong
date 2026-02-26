@@ -44,6 +44,10 @@ public class GameManager : MonoBehaviour
 
     public async void QuitToTitleScreen()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnScrollHandToDeck();
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.titleScreenSceneName, LoadSceneMode.Single);
 
         //gameState = GameState.TitleScreen;
@@ -51,6 +55,10 @@ public class GameManager : MonoBehaviour
 
     public async void GoToCombat()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnScrollHandToDeck();
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
 
         //gameState = GameState.InCombat;
@@ -58,6 +66,8 @@ public class GameManager : MonoBehaviour
 
     public async void GoToTree()
     {
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.treeScreenSceneName, LoadSceneMode.Single);
         //gameState = GameState.AtTree;
     }

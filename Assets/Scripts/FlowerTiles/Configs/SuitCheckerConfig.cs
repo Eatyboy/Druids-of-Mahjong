@@ -1,10 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SuitCheckerConfig : FlowerTileEffectConfig
 {
-    public TileSuit suit;
-    public System.Int32 damage;
+    public TileSuit suit = TileSuit.None;
+    public int damage = 0;
 
     public override FlowerTileEffect CreateInstance()
     {
