@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,8 +37,14 @@ public class TilesManager : MonoBehaviour
             InitializeDeck();
     }
 
+    IEnumerator Delay(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+    }
+
     private void InitializeDeck()
     {
+        StartCoroutine(Delay(0.1f));
         if (GameManager.playerData == null) { UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: GameManager.playerData is null."); return; }
         GameManager.playerData.deck = new List<Tile>();
 
