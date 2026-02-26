@@ -16,6 +16,11 @@ public enum FlowerTileType
     TileCountBonus, // Added damage per tile played 
     Copier, //Copy the effect of the tile to its left.
     SkipOneInRun, // Can skip 1 number in runs of tiles
+    MixedSets, // Sets, pairs, and runs do not need to be of the same suit
+    WindRuns, // Can make runs of 3 different wind tiles
+    MagicSquare, // +15 damage if the ranks of the tiles in the hand add up to 15
+    PermanentDiscard, // If exactly 1 tile is discarded, it is permanently removed from the deck
+    Vampirism, // The player heals a certain percentage of the damage dealt to the enemy
 }
 
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]

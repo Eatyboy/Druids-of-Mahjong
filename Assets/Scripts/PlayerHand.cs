@@ -91,7 +91,7 @@ public class PlayerHand : MonoBehaviour
         currentDiscards--;
         discardsText.text = $"{currentDiscards}/{maxDiscards}";
 
-        StartCoroutine(DiscardTiles(drawWhenDone: true));
+        StartCoroutine(DiscardTiles(drawWhenDone: true, fromDiscardButton: true));
     }
 
     public IEnumerator DiscardAnim(Transform target, float punchAngle = -45f)
@@ -125,21 +125,27 @@ public class PlayerHand : MonoBehaviour
         discardDuration = Mathf.Max(minDuration, discardDuration - durDecrement);
     }
 
-    public IEnumerator DiscardTile(PlayerTileObject tileObj)
+    public IEnumerator DiscardTile(PlayerTileObject tileObj, bool addToDiscardPile = true)
     {
         yield return DiscardAnim(tileObj.transform);
-        TilesManager.instance.discardPile.Add(tileObj.tileData);
+        if (addToDiscardPile)
+            TilesManager.instance.discardPile.Add(tileObj.tileData);
         currentHand.Remove(tileObj);
         Destroy(tileObj.gameObject);
     }
 
-    public IEnumerator DiscardTiles(bool drawWhenDone = false)
+    public IEnumerator DiscardTiles(bool drawWhenDone = false, bool fromDiscardButton = false)
     {
         float duration = discardDuration;
+        bool permanentDiscardSingle = fromDiscardButton
+            && FlowerTileManager.instance != null
+            && FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.PermanentDiscard)
+            && selectedTiles.Count == 1;
+
         foreach (PlayerTileObject tileObj in selectedTiles)
         {
             yield return new WaitForSeconds(drawDuration);
-            yield return DiscardTile(tileObj);
+            yield return DiscardTile(tileObj, addToDiscardPile: !permanentDiscardSingle);
         }
         selectedTiles.Clear();
         discardDuration = duration;
