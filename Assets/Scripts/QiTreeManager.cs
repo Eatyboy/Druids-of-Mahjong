@@ -14,9 +14,12 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI costText;
 
     public int qiCost = 100;
+
+    [Header("Flower Tiles")]
     [SerializeField] private GameObject buyOptionsObject;
     [SerializeField] private BuyOption[] buyOptions; 
     [SerializeField] private GameObject inventoryFlowerTilesObject;
+    [SerializeField] private GameObject unsuccessfulBuyPromptObject;
 
     [SerializeField] private bool hasPurchasedFlowerTile;
     [SerializeField] private bool hasPurchasedCharmScroll;
@@ -41,6 +44,7 @@ public class QiTreeManager : MonoBehaviour
 
     private void OnEnable()
     {
+        HideUnsuccessfulBuyPrompt();
         // race condition
         StartCoroutine(DelayedEnable(0.1f));
         uiSwitch = false;
@@ -80,7 +84,11 @@ public class QiTreeManager : MonoBehaviour
 
     public bool TryPurchaseFlowerTile(FlowerTile tile, int index)
     {
-        if (GameManager.playerData.qi < qiCost || hasPurchasedFlowerTile) return false;
+        if (GameManager.playerData.qi < qiCost || hasPurchasedFlowerTile) 
+        {
+            ShowUnsuccessfulBuyPrompt();
+            return false;
+        }
 
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
@@ -90,16 +98,23 @@ public class QiTreeManager : MonoBehaviour
         shopInfoController.ForceClose();
         hasPurchasedFlowerTile = true;
 
+        HideUnsuccessfulBuyPrompt();
         return true;
     }
 
     public bool TryPurchaseCharmScroll(CharmScrollDefinition definition, int index)
     {
-        if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) return false;
+        if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) 
+        {
+            ShowUnsuccessfulBuyPrompt();
+            return false;
+        }
 
         GameManager.playerData.qi -= qiCost;
         UpdateQiText(GameManager.playerData.qi);
         hasPurchasedCharmScroll = true;
+
+        HideUnsuccessfulBuyPrompt();
         return true;
     }
 
@@ -200,6 +215,16 @@ public class QiTreeManager : MonoBehaviour
             ScrollHand.instance.ClearTiles();
             yield return ScrollHand.instance.DrawUntilFullHand();
         }
+    }
+
+    public void ShowUnsuccessfulBuyPrompt()
+    {
+        unsuccessfulBuyPromptObject.SetActive(true);
+    }
+
+    public void HideUnsuccessfulBuyPrompt()
+    {
+        unsuccessfulBuyPromptObject.SetActive(false);
     }
 }
 

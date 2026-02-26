@@ -103,7 +103,6 @@ public class BuyOption : MonoBehaviour
                 hasPurchased = true;
                 return;
             }
-            UnityEngine.Debug.Log("Didnt buy. Either you're broke or greedy");
             return;
         }
         if (cScroll != null && fTile == null)
@@ -113,7 +112,6 @@ public class BuyOption : MonoBehaviour
                 hasPurchased = true;
                 return;
             }
-            UnityEngine.Debug.Log("Didnt buy. Either you're broke or greedy");
             return;
         }
         if (cScroll == null && fTile != null)
@@ -124,7 +122,6 @@ public class BuyOption : MonoBehaviour
                 Destroy(fTile.gameObject);
                 return;
             }
-            UnityEngine.Debug.Log("Didnt buy. Either you're broke or greedy");
         }
     }
 }
