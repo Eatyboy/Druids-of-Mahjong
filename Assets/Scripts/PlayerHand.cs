@@ -50,33 +50,6 @@ public class PlayerHand : HandBase
             castSpellButton.SetActive(true);
         }
     }
-
-    public IEnumerator DrawTile()
-    {
-        yield return new WaitForSeconds(drawDuration);
-
-        PlayerTileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
-        newTileObj.rt.position = tileDrawOrigin.position;
-        newTileObj.Initialize(TilesManager.instance.DrawFromDeck());
-        newTileObj.name = $"{newTileObj.tileData.rank} of {newTileObj.tileData.suit}";
-        newTileObj.transform.SetAsFirstSibling();
-        currentHand.Add(newTileObj);
-    }
-
-    public IEnumerator DrawUntilFullHand()
-    {
-        AudioManager.instance.PlayOneShot(AudioManager.instance.tileShuffle);
-        while (currentHand.Count < currentHandSize)
-        {
-            if (GameManager.playerData.deck.Count == 0) yield break;
-            if (currentHand.Count >= currentHandSize) yield break;
-
-            yield return DrawTile();
-        }
-
-        yield return SortTilesInHand();
-    }
-
     public void DiscardButton()
     {
         if (currentDiscards <= 0 || selectedTiles.Count == 0) return;
@@ -161,15 +134,6 @@ public class PlayerHand : HandBase
 
         base.DeselectTile(tile);
         UpdateCurrentHandType();
-    }
-
-    // made these two functions public. if its an issue, let me know and ill revert it -aiden
-    public List<Tile> GetSelectedTileData()
-    {
-        List<Tile> list = new List<Tile>();
-        foreach (PlayerTileObject t in selectedTiles)
-            list.Add(t.tileData);
-        return list;
     }
 
     public List<Tile> GetPlayerHandTileData() => GetHandTileData();
