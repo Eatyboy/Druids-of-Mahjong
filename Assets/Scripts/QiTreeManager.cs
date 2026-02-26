@@ -13,6 +13,7 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI qiText;
     [SerializeField] private TextMeshProUGUI costText;
 
+    [Tooltip("Qi cost to open a tab (flower or scroll).")]
     public int qiCost = 100;
 
     [Header("Flower Tiles")]
@@ -33,23 +34,29 @@ public class QiTreeManager : MonoBehaviour
     [SerializeField] private List<CharmScrollDefinition> scrollDefinitions = new List<CharmScrollDefinition>();
 
     [Header("Menus")]
+    [SerializeField] private GameObject neutralHubObject;
+    [Tooltip("If hub is not set, these three buttons are shown/hidden for neutral mode.")]
+    [SerializeField] private GameObject openFlowerTabButton;
+    [SerializeField] private GameObject openScrollTabButton;
+    [SerializeField] private GameObject leaveButton;
     [SerializeField] private GameObject flowerTileUI;
     [SerializeField] private GameObject charmScrollUI;
-    private bool uiSwitch;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        // Hide tab menus and scroll hand immediately so they never flash on scene load (DelayedEnable will set neutral state later)
+        if (flowerTileUI != null) flowerTileUI.SetActive(false);
+        if (charmScrollUI != null) charmScrollUI.SetActive(false);
+        if (ScrollHand.instance != null) ScrollHand.instance.gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
         HideUnsuccessfulBuyPrompt();
-        // race condition
         StartCoroutine(DelayedEnable(0.1f));
-        uiSwitch = false;
-        SwitchToFlowerTileShop();
     }
 
     IEnumerator DelayedEnable(float sec)
@@ -58,12 +65,27 @@ public class QiTreeManager : MonoBehaviour
 
         hasPurchasedFlowerTile = false;
         hasPurchasedCharmScroll = false;
-
-        UpdateShop();
-        UpdateScrollShop();
         UpdateUI();
 
-        yield return StartCoroutine(PopulateScrollHandOnSceneEnter());
+        // Neutral mode: show hub or 3 buttons, hide both tabs, hide ScrollHand (no pre-draw)
+        SetNeutralButtonsVisible(true);
+        if (flowerTileUI != null) flowerTileUI.SetActive(false);
+        if (charmScrollUI != null) charmScrollUI.SetActive(false);
+        if (ScrollHand.instance != null) ScrollHand.instance.gameObject.SetActive(false);
+    }
+
+    private void SetNeutralButtonsVisible(bool visible)
+    {
+        if (neutralHubObject != null)
+            neutralHubObject.SetActive(visible);
+        else
+        {
+            if (openFlowerTabButton != null) openFlowerTabButton.SetActive(visible);
+            if (openScrollTabButton != null) openScrollTabButton.SetActive(visible);
+            if (leaveButton != null) leaveButton.SetActive(visible);
+        }
+        // Cost text is part of neutral UI: hide when a tab is open
+        if (costText != null) costText.gameObject.SetActive(visible);
     }
 
 
@@ -85,34 +107,32 @@ public class QiTreeManager : MonoBehaviour
 
     public bool TryPurchaseFlowerTile(FlowerTile tile, int index)
     {
-        if (GameManager.playerData.qi < qiCost || hasPurchasedFlowerTile) 
+        if (hasPurchasedFlowerTile) 
         {
             ShowUnsuccessfulBuyPrompt();
             return false;
         }
 
-        GameManager.playerData.qi -= qiCost;
-        UpdateQiText(GameManager.playerData.qi);
-
+        // No Qi cost for selecting a flower; opening the tab already cost 100 Qi.
         GameManager.playerData.flowerTiles.Add(tile.instance);
         ftContainer.AddFlowerTile(tile.instance);
         shopInfoController.ForceClose();
         hasPurchasedFlowerTile = true;
 
         HideUnsuccessfulBuyPrompt();
+        CloseFlowerTab();
         return true;
     }
 
     public bool TryPurchaseCharmScroll(CharmScrollDefinition definition, int index)
     {
-        if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) 
+        if (hasPurchasedCharmScroll) 
         {
             ShowUnsuccessfulBuyPrompt();
             return false;
         }
 
-        GameManager.playerData.qi -= qiCost;
-        UpdateQiText(GameManager.playerData.qi);
+        // No Qi cost for using a scroll; opening the tab already cost 100 Qi.
         hasPurchasedCharmScroll = true;
 
         HideUnsuccessfulBuyPrompt();
@@ -121,19 +141,24 @@ public class QiTreeManager : MonoBehaviour
 
     public bool TryPurchaseCharmScroll(CharmScroll scroll, int index)
     {
-        if (GameManager.playerData.qi < qiCost || hasPurchasedCharmScroll) return false;
+        if (hasPurchasedCharmScroll) return false;
 
-        GameManager.playerData.qi -= qiCost;
-        UpdateQiText(GameManager.playerData.qi);
+        // No Qi cost for using a scroll; opening the tab already cost 100 Qi.
         hasPurchasedCharmScroll = true;
         return true;
     }
 
-    /// <summary>Returns a random charm scroll definition from the list. Reuses same pattern as flower tiles.</summary>
+    /// <summary>Returns a random charm scroll definition from the list, excluding DoubleQi (disabled in tree).</summary>
     public CharmScrollDefinition GetRandomCharmScrollDefinition()
     {
         if (scrollDefinitions == null || scrollDefinitions.Count == 0) return null;
-        return Utils.GetRandomItemInList(scrollDefinitions);
+        // Double Qi scroll is disabled in the tree and never offered
+        var allowed = new List<CharmScrollDefinition>();
+        foreach (var def in scrollDefinitions)
+            if (def != null && def.type != CharmScrollType.DoubleQi)
+                allowed.Add(def);
+        if (allowed.Count == 0) return null;
+        return Utils.GetRandomItemInList(allowed);
     }
 
     private void UpdateScrollShop()
@@ -150,7 +175,7 @@ public class QiTreeManager : MonoBehaviour
     public void UpdateQiText(int qi)
     {
         qiText.text = " " + qi;
-        costText.text = "Cost: " + qiCost + " (Limit 1)";
+        if (costText != null) costText.text = qiCost + " Qi to channel";
     }
 
     private void UpdateShop()
@@ -174,59 +199,79 @@ public class QiTreeManager : MonoBehaviour
         // UpdateFlowerTilesInventory();
     }
 
-    public void SwitchUI()
+    /// <summary>Open flower tab: costs 100 Qi, initializes 3 BuyOptions, shows flower UI, hides hub.</summary>
+    public void OpenFlowerTab()
     {
-        uiSwitch = !uiSwitch;
-        if (flowerTileUI != null) flowerTileUI.SetActive(!uiSwitch);
-        if (charmScrollUI != null) charmScrollUI.SetActive(uiSwitch);
-        if (uiSwitch)
-            StartCoroutine(ShowScrollHandAndPopulateTiles());
-        else if (ScrollHand.instance != null)
-            ScrollHand.instance.gameObject.SetActive(false);
+        if (GameManager.playerData == null || GameManager.playerData.qi < qiCost)
+        {
+            ShowUnsuccessfulBuyPrompt();
+            return;
+        }
+        GameManager.playerData.qi -= qiCost;
+        UpdateQiText(GameManager.playerData.qi);
+        UpdateShop();
+        hasPurchasedFlowerTile = false;
+        SetNeutralButtonsVisible(false);
+        if (flowerTileUI != null) flowerTileUI.SetActive(true);
+        if (charmScrollUI != null) charmScrollUI.SetActive(false);
+        if (ScrollHand.instance != null) ScrollHand.instance.gameObject.SetActive(false);
     }
 
-    private void SwitchToFlowerTileShop()
+    /// <summary>Open scroll tab: costs 100 Qi, initializes 3 BuyOptions, draws new hand, shows scroll UI, hides hub.</summary>
+    public void OpenScrollTab()
     {
-        flowerTileUI.SetActive(true);
-        charmScrollUI.SetActive(false);
+        if (GameManager.playerData == null || GameManager.playerData.qi < qiCost)
+        {
+            ShowUnsuccessfulBuyPrompt();
+            return;
+        }
+        GameManager.playerData.qi -= qiCost;
+        UpdateQiText(GameManager.playerData.qi);
+        UpdateScrollShop();
+        hasPurchasedCharmScroll = false;
+        SetNeutralButtonsVisible(false);
+        if (flowerTileUI != null) flowerTileUI.SetActive(false);
+        if (charmScrollUI != null) charmScrollUI.SetActive(true);
+        if (ScrollHand.instance != null)
+        {
+            ScrollHand.instance.SetCurrentCharmScroll(null);
+            ScrollHand.instance.AddCharmScrollFinishedListener(CloseScrollTabAndReturnToNeutral);
+        }
+        StartCoroutine(OpenScrollTabPopulateHand());
     }
 
-    private void SwitchToCharmScrollShop()
+    private IEnumerator OpenScrollTabPopulateHand()
     {
-        flowerTileUI.SetActive(false);
-        charmScrollUI.SetActive(true);
-    }
-
-    /// <summary>
-    /// When tree scene is entered: ensure deck exists and draw 14 tiles into Scroll Hand (hand stays hidden until tab is opened).
-    /// </summary>
-    private IEnumerator PopulateScrollHandOnSceneEnter()
-    {
-        UnityEngine.Debug.Log("[ScrollHand] PopulateScrollHandOnSceneEnter: started.");
-        if (ScrollHand.instance == null) { UnityEngine.Debug.LogWarning("[ScrollHand] PopulateScrollHandOnSceneEnter: ScrollHand.instance is null. Bailing."); yield break; }
-        if (TilesManager.instance == null) { UnityEngine.Debug.LogWarning("[ScrollHand] PopulateScrollHandOnSceneEnter: TilesManager.instance is null. Bailing."); yield break; }
+        if (ScrollHand.instance == null || TilesManager.instance == null) yield break;
         TilesManager.instance.EnsureDeckInitialized();
-        ScrollHand.instance.gameObject.SetActive(false);
+        ScrollHand.instance.gameObject.SetActive(true);
         ScrollHand.instance.ClearTiles();
         yield return ScrollHand.instance.DrawUntilFullHand();
-        UnityEngine.Debug.Log($"[ScrollHand] PopulateScrollHandOnSceneEnter: done. Hand count = {ScrollHand.instance.currentHand?.Count ?? 0}");
     }
 
-    /// <summary>
-    /// When Charm Scroll tab is opened: show Scroll Hand (uses tiles already drawn on scene enter). Only draws if hand is empty.
-    /// </summary>
-    private IEnumerator ShowScrollHandAndPopulateTiles()
+    /// <summary>Return to neutral: hide flower UI, show hub or 3 buttons.</summary>
+    public void CloseFlowerTab()
     {
-        yield return null;
-        if (ScrollHand.instance == null) yield break;
-        ScrollHand.instance.gameObject.SetActive(true);
-        bool handEmpty = ScrollHand.instance.currentHand == null || ScrollHand.instance.currentHand.Count == 0;
-        if (handEmpty && TilesManager.instance != null)
-        {
-            TilesManager.instance.EnsureDeckInitialized();
-            ScrollHand.instance.ClearTiles();
-            yield return ScrollHand.instance.DrawUntilFullHand();
-        }
+        if (flowerTileUI != null) flowerTileUI.SetActive(false);
+        SetNeutralButtonsVisible(true);
+    }
+
+    /// <summary>Return scroll hand to deck, hide scroll UI, return to neutral. Call from onCharmScrollFinished.</summary>
+    public void CloseScrollTabAndReturnToNeutral()
+    {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnScrollHandToDeck();
+        if (ScrollHand.instance != null)
+            ScrollHand.instance.gameObject.SetActive(false);
+        if (charmScrollUI != null) charmScrollUI.SetActive(false);
+        SetNeutralButtonsVisible(true);
+    }
+
+    /// <summary>Leave UpgradeTree scene (e.g. go to combat).</summary>
+    public void LeaveUpgradeTree()
+    {
+        if (GameManager.instance != null)
+            GameManager.instance.GoToCombat();
     }
 
     public void ShowUnsuccessfulBuyPrompt()

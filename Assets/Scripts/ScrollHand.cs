@@ -23,6 +23,19 @@ public class ScrollHand : HandBase
     [Tooltip("Invoked after the charm scroll action runs (e.g. exit menu, finish charm scroll usage).")]
     [SerializeField] private UnityEvent onCharmScrollFinished;
 
+    /// <summary>Add a one-shot listener that is removed when the scroll is applied. Use from QiTreeManager to close the tab.</summary>
+    public void AddCharmScrollFinishedListener(UnityAction callback)
+    {
+        if (onCharmScrollFinished == null || callback == null) return;
+        UnityAction wrapped = null;
+        wrapped = () =>
+        {
+            onCharmScrollFinished.RemoveListener(wrapped);
+            callback?.Invoke();
+        };
+        onCharmScrollFinished.AddListener(wrapped);
+    }
+
     /// <summary>
     /// Set the currently selected charm scroll (e.g. when the player picks a scroll in the menu).
     /// Call this before showing the scroll hand so validation and execution use the right scroll.
@@ -63,9 +76,12 @@ public class ScrollHand : HandBase
     private void UpdateSelectButtonState()
     {
         if (selectButton == null) return;
+        var button = selectButton.GetComponent<Button>();
+
         if (currentCharmScroll == null)
         {
-            selectButton.SetActive(false);
+            selectButton.SetActive(true);
+            if (button != null) button.interactable = false;
             return;
         }
 
@@ -74,14 +90,13 @@ public class ScrollHand : HandBase
 
         if (!hasSelection && requiresTiles)
         {
-            selectButton.SetActive(false);
+            selectButton.SetActive(true);
+            if (button != null) button.interactable = false;
             return;
         }
 
         selectButton.SetActive(true);
-        bool valid = IsSelectionValidForScroll();
-        var button = selectButton.GetComponent<Button>();
-        if (button != null) button.interactable = valid;
+        if (button != null) button.interactable = IsSelectionValidForScroll();
     }
 
     /// <summary>
@@ -95,8 +110,8 @@ public class ScrollHand : HandBase
     public override IEnumerator SortTilesInHand()
     {
         yield return base.SortTilesInHand();
-        if (selectButton != null) selectButton.SetActive(false);
         if (selectButtonText != null) selectButtonText.text = "Apply";
+        UpdateSelectButtonState();
     }
 
     /// <summary>
