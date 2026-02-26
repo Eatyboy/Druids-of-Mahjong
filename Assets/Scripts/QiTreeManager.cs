@@ -58,7 +58,7 @@ public class QiTreeManager : MonoBehaviour
         UpdateScrollShop();
         UpdateUI();
 
-        yield return null;
+        yield return StartCoroutine(PopulateScrollHandOnSceneEnter());
     }
 
 
@@ -170,15 +170,34 @@ public class QiTreeManager : MonoBehaviour
             ScrollHand.instance.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// When tree scene is entered: ensure deck exists and draw 14 tiles into Scroll Hand (hand stays hidden until tab is opened).
+    /// </summary>
+    private IEnumerator PopulateScrollHandOnSceneEnter()
+    {
+        UnityEngine.Debug.Log("[ScrollHand] PopulateScrollHandOnSceneEnter: started.");
+        if (ScrollHand.instance == null) { UnityEngine.Debug.LogWarning("[ScrollHand] PopulateScrollHandOnSceneEnter: ScrollHand.instance is null. Bailing."); yield break; }
+        if (TilesManager.instance == null) { UnityEngine.Debug.LogWarning("[ScrollHand] PopulateScrollHandOnSceneEnter: TilesManager.instance is null. Bailing."); yield break; }
+        TilesManager.instance.EnsureDeckInitialized();
+        ScrollHand.instance.gameObject.SetActive(false);
+        ScrollHand.instance.ClearTiles();
+        yield return ScrollHand.instance.DrawUntilFullHand();
+        UnityEngine.Debug.Log($"[ScrollHand] PopulateScrollHandOnSceneEnter: done. Hand count = {ScrollHand.instance.currentHand?.Count ?? 0}");
+    }
+
+    /// <summary>
+    /// When Charm Scroll tab is opened: show Scroll Hand (uses tiles already drawn on scene enter). Only draws if hand is empty.
+    /// </summary>
     private IEnumerator ShowScrollHandAndPopulateTiles()
     {
         yield return null;
-        if (ScrollHand.instance != null)
+        if (ScrollHand.instance == null) yield break;
+        ScrollHand.instance.gameObject.SetActive(true);
+        bool handEmpty = ScrollHand.instance.currentHand == null || ScrollHand.instance.currentHand.Count == 0;
+        if (handEmpty && TilesManager.instance != null)
         {
-            ScrollHand.instance.gameObject.SetActive(true);
+            TilesManager.instance.EnsureDeckInitialized();
             ScrollHand.instance.ClearTiles();
-            if (TilesManager.instance != null)
-                TilesManager.instance.EnsureDeckInitialized();
             yield return ScrollHand.instance.DrawUntilFullHand();
         }
     }

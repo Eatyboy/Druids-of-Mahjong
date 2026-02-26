@@ -38,7 +38,9 @@ public abstract class HandBase : MonoBehaviour
 
     public virtual void AddTile(Tile tile)
     {
-        if (tile == null || tileObjectPrefab == null || tileContainer == null) return;
+        if (tile == null) { UnityEngine.Debug.LogWarning("[ScrollHand] AddTile: tile is null. Skipping."); return; }
+        if (tileObjectPrefab == null) { UnityEngine.Debug.LogWarning("[ScrollHand] AddTile: tileObjectPrefab is null on " + gameObject.name + ". Assign in Inspector."); return; }
+        if (tileContainer == null) { UnityEngine.Debug.LogWarning("[ScrollHand] AddTile: tileContainer is null on " + gameObject.name + ". Assign in Inspector."); return; }
 
         PlayerTileObject newTileObj = Instantiate(tileObjectPrefab, tileContainer);
         newTileObj.rt.position = tileDrawOrigin != null ? tileDrawOrigin.position : tileContainer.position;
@@ -51,19 +53,24 @@ public abstract class HandBase : MonoBehaviour
     public virtual IEnumerator DrawTile()
     {
         yield return new WaitForSeconds(drawDuration);
-        if (TilesManager.instance != null && GameManager.playerData?.deck != null && GameManager.playerData.deck.Count > 0)
-            AddTile(TilesManager.instance.DrawFromDeck());
+        if (TilesManager.instance == null) { UnityEngine.Debug.LogWarning("[ScrollHand] DrawTile: TilesManager.instance is null. Cannot draw."); yield break; }
+        if (GameManager.playerData?.deck == null) { UnityEngine.Debug.LogWarning("[ScrollHand] DrawTile: GameManager.playerData.deck is null."); yield break; }
+        if (GameManager.playerData.deck.Count == 0) { UnityEngine.Debug.LogWarning("[ScrollHand] DrawTile: deck is empty. Assign TilesManager Base Tile Data List in UpgradeTree scene."); yield break; }
+        AddTile(TilesManager.instance.DrawFromDeck());
     }
 
     public virtual IEnumerator DrawUntilFullHand()
     {
+        UnityEngine.Debug.Log($"[ScrollHand] DrawUntilFullHand: target={currentHandSize}, current={currentHand?.Count ?? 0}, deck count={GameManager.playerData?.deck?.Count ?? -1}");
         while (currentHand.Count < currentHandSize)
         {
-            if (GameManager.playerData?.deck == null || GameManager.playerData.deck.Count == 0) yield break;
+            if (GameManager.playerData?.deck == null) { UnityEngine.Debug.LogWarning("[ScrollHand] DrawUntilFullHand: deck is null. Stopping early."); yield break; }
+            if (GameManager.playerData.deck.Count == 0) { UnityEngine.Debug.LogWarning("[ScrollHand] DrawUntilFullHand: deck is empty. Stopping early. Assign TilesManager Base Tile Data List."); yield break; }
             if (currentHand.Count >= currentHandSize) yield break;
             yield return DrawTile();
         }
         yield return SortTilesInHand();
+        UnityEngine.Debug.Log($"[ScrollHand] DrawUntilFullHand: finished. Hand count={currentHand?.Count ?? 0}");
     }
 
     public virtual void SelectTile(PlayerTileObject tile)

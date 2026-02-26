@@ -13,8 +13,13 @@ public class TilesManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null && instance != this) Destroy(gameObject);
-        else instance = this;
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void Start()
@@ -25,13 +30,22 @@ public class TilesManager : MonoBehaviour
     /// <summary>Call before drawing tiles (e.g. when opening Scroll Hand in Upgrade Tree) so the deck exists.</summary>
     public void EnsureDeckInitialized()
     {
-        if (GameManager.playerData?.deck == null || GameManager.playerData.deck.Count == 0)
+        bool needInit = GameManager.playerData?.deck == null || GameManager.playerData.deck.Count == 0;
+        UnityEngine.Debug.Log($"[ScrollHand] TilesManager.EnsureDeckInitialized: playerData exists={GameManager.playerData != null}, deck count={GameManager.playerData?.deck?.Count ?? -1}, will init={needInit}");
+        if (needInit)
             InitializeDeck();
     }
 
     private void InitializeDeck()
     {
-        GameManager.playerData.deck = new();
+        if (GameManager.playerData == null) { UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: GameManager.playerData is null."); return; }
+        GameManager.playerData.deck = new List<Tile>();
+
+        if (baseTileDataList == null || baseTileDataList.Count == 0)
+        {
+            UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: baseTileDataList is null or empty. Assign Base Tile Data List in Inspector (UpgradeTree scene TilesManager). Deck left empty.");
+            return;
+        }
 
         foreach (MahjongTile tile in baseTileDataList)
         {
@@ -44,11 +58,58 @@ public class TilesManager : MonoBehaviour
         }
 
         ShuffleDeck();
+        UnityEngine.Debug.Log($"[ScrollHand] TilesManager.InitializeDeck: deck filled with {GameManager.playerData.deck.Count} tiles (baseTileDataList count={baseTileDataList.Count}).");
     }
 
     public void ShuffleDeck()
     {
+        if (GameManager.playerData?.deck == null) return;
         Utils.ShuffleList(GameManager.playerData.deck);
+    }
+
+    /// <summary>
+    /// Return all tiles from the player hand and discard pile back into the deck, then shuffle. Call at end of battle.
+    /// </summary>
+    public void ReturnPlayerHandAndDiscardToDeck()
+    {
+        if (GameManager.playerData == null) return;
+        if (GameManager.playerData.deck == null)
+            GameManager.playerData.deck = new List<Tile>();
+
+        if (PlayerHand.instance != null)
+        {
+            List<Tile> handTiles = PlayerHand.instance.GetHandTileData();
+            if (handTiles != null)
+                GameManager.playerData.deck.AddRange(handTiles);
+            PlayerHand.instance.ClearTiles();
+        }
+
+        if (discardPile != null && discardPile.Count > 0)
+        {
+            GameManager.playerData.deck.AddRange(discardPile);
+            discardPile.Clear();
+        }
+
+        ShuffleDeck();
+    }
+
+    /// <summary>
+    /// Return all tiles from the scroll hand back into the deck, then shuffle. Call when exiting the tree (e.g. before GoToCombat).
+    /// </summary>
+    public void ReturnScrollHandToDeck()
+    {
+        if (GameManager.playerData == null) return;
+        if (ScrollHand.instance == null) return;
+        if (GameManager.playerData.deck == null)
+            GameManager.playerData.deck = new List<Tile>();
+
+        List<Tile> handTiles = ScrollHand.instance.GetHandTileData();
+        if (handTiles != null && handTiles.Count > 0)
+        {
+            GameManager.playerData.deck.AddRange(handTiles);
+            ScrollHand.instance.ClearTiles();
+            ShuffleDeck();
+        }
     }
 
     public Tile DrawFromDeck()

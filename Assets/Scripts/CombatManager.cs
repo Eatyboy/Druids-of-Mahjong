@@ -104,6 +104,8 @@ public class CombatManager : MonoBehaviour
 
     public void PlayerVictory()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnPlayerHandAndDiscardToDeck();
         Destroy(EnemyManager.instance.currentEnemy.gameObject);
         EnemyManager.instance.currentEnemy = null;
 
@@ -116,7 +118,8 @@ public class CombatManager : MonoBehaviour
     public void PlayerDefeat()
     {
         combatState = CombatState.Defeat;
-
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnPlayerHandAndDiscardToDeck();
         GameManager.instance.hpScale = 1.0f;
 
         GameManager.instance.QuitToTitleScreen();
