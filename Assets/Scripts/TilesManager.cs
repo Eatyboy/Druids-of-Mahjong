@@ -58,11 +58,9 @@ public class TilesManager : MonoBehaviour
 
         foreach (MahjongTile tile in baseTileDataList)
         {
-            if (tile.suit == TileSuit.Dragon) continue;
             for (int i = 0; i < defaultDuplicateCount; i++)
             {
-                // generate random tile should be removed later - Aiden
-                GameManager.playerData.deck.Add(GenerateRandomTile());
+                GameManager.playerData.deck.Add(new Tile(tile));
             }
         }
 
