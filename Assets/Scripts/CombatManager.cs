@@ -104,6 +104,8 @@ public class CombatManager : MonoBehaviour
 
     public void PlayerVictory()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnPlayerHandAndDiscardToDeck();
         Destroy(EnemyManager.instance.currentEnemy.gameObject);
         EnemyManager.instance.currentEnemy = null;
 

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using System.Numerics;
 using TMPro;
+using System.Diagnostics;
 
 public class BuyOption : MonoBehaviour
 {
@@ -23,9 +24,10 @@ public class BuyOption : MonoBehaviour
     [SerializeField] private RectTransform rt;
     [SerializeField] private int index;
     public bool hasPurchased;
+    [SerializeField] private TextMeshProUGUI textUI;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
-    public void Initialize(FlowerTile ft)
+    public void InitializeFT(FlowerTile ft)
     {
         this.cScroll = null;
         this.scrollDefinition = null;
@@ -52,21 +54,8 @@ public class BuyOption : MonoBehaviour
         hasPurchased = false;
     }
 
-    // can edit this to your liking
-    public void Initialize(CharmScroll cs)
-    {
-        this.fTile = null;
-        this.scrollDefinition = null;
-
-        rt = this.GetComponent<RectTransform>();
-        this.cScroll = cs;
-
-        cScroll = Instantiate(this.cScroll);
-        hasPurchased = false;
-    }
-
     /// <summary>Initialize this option with a random scroll definition (used by Scrolls under CharmScrollsUI).</summary>
-    public void Initialize(CharmScrollDefinition definition)
+    public void InitializeCS(CharmScrollDefinition definition)
     {
         this.fTile = null;
         this.cScroll = null;
@@ -77,6 +66,7 @@ public class BuyOption : MonoBehaviour
 
         if (scrollNameText != null && definition != null) scrollNameText.text = definition.scrollName;
         if (scrollDescriptionText != null && definition != null) scrollDescriptionText.text = definition.description;
+        textUI.text = definition.scrollName;
 
         var button = GetComponent<Button>();
         if (button != null)

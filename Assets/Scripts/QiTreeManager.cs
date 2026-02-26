@@ -16,8 +16,8 @@ public class QiTreeManager : MonoBehaviour
     public int qiCost = 100;
 
     [Header("Flower Tiles")]
-    [SerializeField] private GameObject buyOptionsObject;
-    [SerializeField] private BuyOption[] buyOptions; 
+    [SerializeField] private GameObject ftBuyOptionsObject;
+    [SerializeField] private BuyOption[] ftBuyOptions; 
     [SerializeField] private GameObject inventoryFlowerTilesObject;
     [SerializeField] private GameObject unsuccessfulBuyPromptObject;
 
@@ -29,6 +29,7 @@ public class QiTreeManager : MonoBehaviour
 
     [Header("Charm Scrolls (Scrolls under CharmScrollsUI)")]
     [SerializeField] private GameObject scrollBuyOptionsContainer;
+    [SerializeField] private BuyOption[] csBuyOptions; 
     [SerializeField] private List<CharmScrollDefinition> scrollDefinitions = new List<CharmScrollDefinition>();
 
     [Header("Menus")]
@@ -48,13 +49,13 @@ public class QiTreeManager : MonoBehaviour
         // race condition
         StartCoroutine(DelayedEnable(0.1f));
         uiSwitch = false;
+        SwitchToFlowerTileShop();
     }
 
     IEnumerator DelayedEnable(float sec)
     {
         yield return new WaitForSeconds(sec);
 
-        buyOptions = buyOptionsObject.GetComponentsInChildren<BuyOption>();
         hasPurchasedFlowerTile = false;
         hasPurchasedCharmScroll = false;
 
@@ -139,11 +140,10 @@ public class QiTreeManager : MonoBehaviour
     {
         if (scrollBuyOptionsContainer == null || scrollDefinitions == null || scrollDefinitions.Count == 0) return;
 
-        BuyOption[] scrollOptions = scrollBuyOptionsContainer.GetComponentsInChildren<BuyOption>();
-        for (int i = 0; i < scrollOptions.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
             CharmScrollDefinition def = GetRandomCharmScrollDefinition();
-            if (def != null) scrollOptions[i].Initialize(def);
+            if (def != null) csBuyOptions[i].InitializeCS(def);
         }
     }
 
@@ -163,7 +163,7 @@ public class QiTreeManager : MonoBehaviour
             FlowerTileInstance fti = FlowerTileManager.instance.GetRandomFlowerTile();
             FlowerTile addedFlowerTile = Instantiate(ftPrefab);
             addedFlowerTile.Initialize(fti, shopInfoController);
-            buyOptions[i].Initialize(addedFlowerTile);
+            ftBuyOptions[i].InitializeFT(addedFlowerTile);
         }
 
     }
@@ -183,6 +183,18 @@ public class QiTreeManager : MonoBehaviour
             StartCoroutine(ShowScrollHandAndPopulateTiles());
         else if (ScrollHand.instance != null)
             ScrollHand.instance.gameObject.SetActive(false);
+    }
+
+    private void SwitchToFlowerTileShop()
+    {
+        flowerTileUI.SetActive(true);
+        charmScrollUI.SetActive(false);
+    }
+
+    private void SwitchToCharmScrollShop()
+    {
+        flowerTileUI.SetActive(false);
+        charmScrollUI.SetActive(true);
     }
 
     /// <summary>
