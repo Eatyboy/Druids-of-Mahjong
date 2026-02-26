@@ -39,6 +39,18 @@ public class PlayerHand : HandBase
         foreach (Transform tileObj in tileContainer) Destroy(tileObj.gameObject);
     }
 
+    private void Update()
+    {
+        if (selectedTiles.Count == 0)
+        {
+            castSpellButton.SetActive(false);
+        }
+        else
+        {
+            castSpellButton.SetActive(true);
+        }
+    }
+
     public IEnumerator DrawTile()
     {
         yield return new WaitForSeconds(drawDuration);
@@ -72,7 +84,7 @@ public class PlayerHand : HandBase
         currentDiscards--;
         if (discardsText != null) discardsText.text = $"{currentDiscards}/{maxDiscards}";
 
-        StartCoroutine(DiscardTiles(drawWhenDone: true));
+        StartCoroutine(DiscardTiles(drawWhenDone: true, fromDiscardButton: true));
     }
 
     public IEnumerator DiscardAnim(Transform target, float punchAngle = -45f)
@@ -103,21 +115,27 @@ public class PlayerHand : HandBase
         discardDuration = Mathf.Max(minDuration, discardDuration - durDecrement);
     }
 
-    public IEnumerator DiscardTile(PlayerTileObject tileObj)
+    public IEnumerator DiscardTile(PlayerTileObject tileObj, bool addToDiscardPile = true)
     {
         yield return DiscardAnim(tileObj.transform);
-        TilesManager.instance.discardPile.Add(tileObj.tileData);
+        if (addToDiscardPile)
+            TilesManager.instance.discardPile.Add(tileObj.tileData);
         currentHand.Remove(tileObj);
         Destroy(tileObj.gameObject);
     }
 
-    public IEnumerator DiscardTiles(bool drawWhenDone = false)
+    public IEnumerator DiscardTiles(bool drawWhenDone = false, bool fromDiscardButton = false)
     {
         float duration = discardDuration;
+        bool permanentDiscardSingle = fromDiscardButton
+            && FlowerTileManager.instance != null
+            && FlowerTileManager.instance.IsFlowerTileActive(FlowerTileType.PermanentDiscard)
+            && selectedTiles.Count == 1;
+
         foreach (PlayerTileObject tileObj in selectedTiles.ToList())
         {
             yield return new WaitForSeconds(drawDuration);
-            yield return DiscardTile(tileObj);
+            yield return DiscardTile(tileObj, addToDiscardPile: !permanentDiscardSingle);
         }
         selectedTiles.Clear();
         discardDuration = duration;
@@ -143,7 +161,15 @@ public class PlayerHand : HandBase
 
         base.DeselectTile(tile);
         UpdateCurrentHandType();
-        if (selectedTiles.Count == 0 && castSpellButton != null) castSpellButton.SetActive(false);
+    }
+
+    // made these two functions public. if its an issue, let me know and ill revert it -aiden
+    public List<Tile> GetSelectedTileData()
+    {
+        List<Tile> list = new List<Tile>();
+        foreach (PlayerTileObject t in selectedTiles)
+            list.Add(t.tileData);
+        return list;
     }
 
     public List<Tile> GetPlayerHandTileData() => GetHandTileData();
@@ -177,7 +203,7 @@ public class PlayerHand : HandBase
         if (CombatManager.instance == null || CombatManager.instance.combatState != CombatState.PlayerTurn) return;
 
         CombatManager.instance.EnqueueAction(() => Player.instance.Attack(GetSelectedTileData()), nameof(Player.instance.Attack));
-        if (castSpellButton != null) castSpellButton.SetActive(false);
+        
         isTurnActive = false;
     }
 

@@ -97,6 +97,7 @@
 		<relationship name="effects">
 			<destination>{77ccc7e6-94cd-40aa-9c4b-5ba4e777dbf6}</destination>
 			<destination>{27a2c186-f426-42e1-838c-8e907c5f38ef}</destination>
+			<destination>{3cf9ace8-02fe-4903-9754-9718ee746a55}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{cc226abc-4450-46fe-a2e2-d05445d7fb28}" />
@@ -115,6 +116,17 @@
 		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{27a2c186-f426-42e1-838c-8e907c5f38ef}" />
+	<object class="CompressorEffect" id="{3cf9ace8-02fe-4903-9754-9718ee746a55}">
+		<property name="threshold">
+			<value>-30.5</value>
+		</property>
+		<property name="attackTime">
+			<value>2.20000005</value>
+		</property>
+		<property name="releaseTime">
+			<value>260</value>
+		</property>
+	</object>
 	<object class="RandomizerModulator" id="{93250766-a971-411f-8e94-0dbe5e9dfaa9}">
 		<property name="nameOfPropertyBeingModulated">
 			<value>pitch</value>

@@ -46,18 +46,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   combatMusic:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1701434607
+      Data2: 1300803703
+      Data3: -552023378
+      Data4: 1596012946
+    Path: event:/Music/CombatTheme
   treeMusic:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -139844443
+      Data2: 1222476081
+      Data3: -1772022121
+      Data4: -302052927
+    Path: event:/Music/TreeTheme
   tileClack:
     Guid:
       Data1: -1889362524

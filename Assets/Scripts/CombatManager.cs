@@ -117,6 +117,7 @@ public class CombatManager : MonoBehaviour
 
     public void PlayerDefeat()
     {
+        AudioManager.instance.StopMusic();
         combatState = CombatState.Defeat;
         AudioManager.instance.PlayOneShot(AudioManager.instance.gameOver);
 
