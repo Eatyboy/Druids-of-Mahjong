@@ -72,6 +72,7 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator DrawUntilFullHand()
     {
+        AudioManager.instance.PlayOneShot(AudioManager.instance.tileShuffle);
         while (currentHand.Count < currentHandSize)
         {
             if (GameManager.playerData.deck.Count == 0) yield break;
@@ -248,6 +249,8 @@ public class PlayerHand : MonoBehaviour
 
     public IEnumerator SortTilesInHand()
     {
+        AudioManager.instance.PlayOneShot(AudioManager.instance.whoosh);
+
         foreach (PlayerTileObject tile in selectedTiles)
         {
             tile.isSelected = false;

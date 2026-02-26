@@ -116,6 +116,7 @@ public class CombatManager : MonoBehaviour
     public void PlayerDefeat()
     {
         combatState = CombatState.Defeat;
+        AudioManager.instance.PlayOneShot(AudioManager.instance.gameOver);
 
         GameManager.instance.hpScale = 1.0f;
 

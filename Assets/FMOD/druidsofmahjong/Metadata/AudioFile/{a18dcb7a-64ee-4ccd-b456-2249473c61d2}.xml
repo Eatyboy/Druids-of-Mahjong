@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{a18dcb7a-64ee-4ccd-b456-2249473c61d2}">
+		<property name="assetPath">
+			<value>SFX/Tile_Clack_Short.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.1336281179138322</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{843fbea8-0082-4d18-89d2-0b19efa5f374}</destination>
+		</relationship>
+	</object>
+</objects>

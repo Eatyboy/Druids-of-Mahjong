@@ -24,4 +24,6 @@ MonoBehaviour:
     RefIds:
     - rid: 4727995076836327679
       type: {class: EightFourCheckerConfig, ns: , asm: Assembly-CSharp}
-      data: 
+      data:
+        eightMultiplier: 1.5
+        fourMultiplier: 0.75

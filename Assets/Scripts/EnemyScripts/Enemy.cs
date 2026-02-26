@@ -94,6 +94,7 @@ public class Enemy : MonoBehaviour, IDamageable
             ? new WaitUntil(() => parryContext.resolved)
             : new WaitForSeconds(attackDuration);
 
+        AudioManager.instance.PlayOneShot(AudioManager.instance.whoosh);
         if (parryContext.wasParried)
         {
             yield return attackTile.PlayParriedAnimation();
@@ -117,6 +118,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyDeath()
     {
+        AudioManager.instance.PlayOneShot(AudioManager.instance.enemyDeath);
         float elapsedTime = 0.0f;
         while (elapsedTime < deathAnimationDuration)
         {
@@ -139,6 +141,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         currentHP -= damageToTake;
         healthBar.SetHealth(currentHP);
+        AudioManager.instance.PlayOneShot(AudioManager.instance.enemyHurt);
         PopupSystem.instance.OpenPopup(EnemyManager.instance.enemyDamagePopupPreset, transform.position, damageToTake.ToString());
 
         if (currentHP <= 0) { 

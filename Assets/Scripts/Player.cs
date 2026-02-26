@@ -100,6 +100,7 @@ public class Player : MonoBehaviour
     public IEnumerator PlayerTakeDamage(int damageToTake)
     {
         ChangeHealth(-damageToTake);
+        AudioManager.instance.PlayOneShot(AudioManager.instance.playerHurt);
         yield break;
     }
 

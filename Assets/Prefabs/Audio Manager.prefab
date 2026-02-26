@@ -44,4 +44,95 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65538d299adedbf43ba1ea43787c6d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  combatMusic:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  treeMusic:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  tileClack:
+    Guid:
+      Data1: -1889362524
+      Data2: 1316431229
+      Data3: 50259875
+      Data4: 546010978
+    Path: event:/SFX/TileClack
+  tileShuffle:
+    Guid:
+      Data1: 587729841
+      Data2: 1075206919
+      Data3: -559903835
+      Data4: -1869640299
+    Path: event:/SFX/TileShuffle
+  uiHover:
+    Guid:
+      Data1: -2044021321
+      Data2: 1167085162
+      Data3: -2090379083
+      Data4: -1883805221
+    Path: event:/SFX/UIHover
+  uiClick:
+    Guid:
+      Data1: 1960584997
+      Data2: 1175271007
+      Data3: -270612606
+      Data4: 660005854
+    Path: event:/SFX/UIClick
+  whoosh:
+    Guid:
+      Data1: 1764604777
+      Data2: 1240512917
+      Data3: 1074891436
+      Data4: 1591860709
+    Path: event:/SFX/Whoosh
+  playerHurt:
+    Guid:
+      Data1: 177540400
+      Data2: 1214508347
+      Data3: -1846234956
+      Data4: 671830594
+    Path: event:/SFX/PlayerHurt
+  enemyHurt:
+    Guid:
+      Data1: -517437066
+      Data2: 1084276868
+      Data3: 1889627025
+      Data4: -2098148201
+    Path: event:/SFX/EnemyHurt
+  gameOver:
+    Guid:
+      Data1: -789428611
+      Data2: 1098249703
+      Data3: 823800455
+      Data4: 2055671458
+    Path: event:/SFX/GameOver
+  enemyDeath:
+    Guid:
+      Data1: -2833432
+      Data2: 1335805982
+      Data3: -806700415
+      Data4: -1382288156
+    Path: event:/SFX/EnemyDeath
+  qiOrb:
+    Guid:
+      Data1: -1486213741
+      Data2: 1243767978
+      Data3: 2024695203
+      Data4: 1396467933
+    Path: event:/SFX/QiOrb
+  treeChannel:
+    Guid:
+      Data1: -31596767
+      Data2: 1080208084
+      Data3: 725662617
+      Data4: -268569990
+    Path: event:/SFX/TreeChannel
   areBussesInitialized: 0
