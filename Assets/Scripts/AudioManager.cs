@@ -11,6 +11,7 @@ public class AudioManager : MonoBehaviour
     public EventInstance ambienceEventInstance;
 
     [Header("Music")]
+    public EventReference titleScreenMusic;
     public EventReference combatMusic;
     public EventReference treeMusic;
 

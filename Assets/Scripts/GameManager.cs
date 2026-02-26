@@ -46,6 +46,8 @@ public class GameManager : MonoBehaviour
     {
         if (TilesManager.instance != null)
             TilesManager.instance.ReturnScrollHandToDeck();
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.titleScreenSceneName, LoadSceneMode.Single);
 
         //gameState = GameState.TitleScreen;
@@ -59,8 +61,6 @@ public class GameManager : MonoBehaviour
 
         await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
 
-        AudioManager.instance.PlayMusic(AudioManager.instance.combatMusic);
-
         //gameState = GameState.InCombat;
     }
 
@@ -69,8 +69,6 @@ public class GameManager : MonoBehaviour
         AudioManager.instance.StopMusic();
 
         await SceneManager.LoadSceneAsync(Bootstrapper.treeScreenSceneName, LoadSceneMode.Single);
-
-        AudioManager.instance.PlayMusic(AudioManager.instance.treeMusic);
         //gameState = GameState.AtTree;
     }
 

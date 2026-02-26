@@ -43,6 +43,11 @@ public class QiTreeManager : MonoBehaviour
         else instance = this;
     }
 
+    private void Start()
+    {
+        AudioManager.instance.PlayMusic(AudioManager.instance.treeMusic);
+    }
+
     private void OnEnable()
     {
         HideUnsuccessfulBuyPrompt();
