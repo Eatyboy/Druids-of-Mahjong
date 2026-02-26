@@ -56,3 +56,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9bff7710ddfe445f5b8a2c048470fddd, type: 2}
   - {fileID: 11400000, guid: ae59c63640691a74280dee6a5da7e39a, type: 2}
   - {fileID: 11400000, guid: f32cb1edcf6f39f43b96b1ba539b5395, type: 2}
+  - {fileID: 11400000, guid: c138568facdc7404a990786d068a5617, type: 2}
+  - {fileID: 11400000, guid: 95009176147980a4eb2d015ab7f037a8, type: 2}
+  - {fileID: 11400000, guid: db5ccb83cd86b8b4d9b4c004e08c8143, type: 2}
+  - {fileID: 11400000, guid: 96e422d29834d6d4880dd89d97273961, type: 2}
+  - {fileID: 11400000, guid: e457545f6ab53ba46b5f26eb0238a07c, type: 2}
+  inCombatScene: 0
