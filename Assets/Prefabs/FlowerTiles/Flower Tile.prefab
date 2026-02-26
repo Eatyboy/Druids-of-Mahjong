@@ -35,8 +35,8 @@ RectTransform:
   - {fileID: 5020593142876358880}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -95,6 +95,20 @@ MonoBehaviour:
   rectTransform: {fileID: 3589175133294577107}
   image: {fileID: 6974049624830460296}
   infoController: {fileID: 0}
+  BeginDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  EndDragEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  tileContainer: {fileID: 0}
+  ogIndex: 0
+  isDraggable: 0
+  isDragging: 0
+  wasDragged: 0
+  returnDuration: 0.25
+  ogScale: {x: 0, y: 0, z: 0}
+  scaleFactor: 1.2
   initialized: 0
 --- !u!1 &5719671353379553684
 GameObject:

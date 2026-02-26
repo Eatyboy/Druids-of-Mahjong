@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -16,10 +18,10 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     // Dragging Variables
     [HideInInspector] public UnityEvent<FlowerTile> BeginDragEvent;
     [HideInInspector] public UnityEvent<FlowerTile> EndDragEvent;
-    [SerializeField] private Canvas tileContainer;
-    [SerializeField] private LayoutElement layoutElement;
+    [SerializeField] private Canvas tileContainer; // Assign the Tile Container to it
+    private Vector3 ogPosition;
+    public int ogIndex;
     private Vector3 offset;
-    private float settleZone = 0.5f;
     public bool isDraggable = false; // Updated once added to player tiles
     public bool isDragging = false;
     [HideInInspector] public bool wasDragged;
@@ -35,8 +37,10 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private void Start()
     {
         tileContainer = GetComponentInParent<Canvas>();
-        layoutElement = GetComponent<LayoutElement>();
         ogScale = transform.localScale;
+        Debug.Log("Local: " + transform.localPosition);
+        Debug.Log("World: " + transform.position);
+        Debug.Log("Anchored: "+ rectTransform.anchoredPosition);
     }
 
     private void Awake()
@@ -110,10 +114,12 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (isDraggable) {
+            ogPosition = transform.localPosition;
+            ogIndex = transform.GetSiblingIndex();
+
             BeginDragEvent.Invoke(this);
             Vector2 mousePosition = Input.mousePosition;
             offset = mousePosition - (Vector2)transform.position;
-            layoutElement.ignoreLayout = true;
             tileContainer.GetComponent<GraphicRaycaster>().enabled = false;
             image.raycastTarget = false;
             isDragging = true;
@@ -128,10 +134,10 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         tileContainer.GetComponent<GraphicRaycaster>().enabled = true;
         image.raycastTarget = true;
 
-        //StartCoroutine(ReturnAnim(this.transform));
-        layoutElement.ignoreLayout = true;
+        StartCoroutine(ReturnAnim(this.transform));
 
         isDragging = false;
+        FlowerTileContainer.instance.selectedTile = null;
     }
 
     public IEnumerator ReturnAnim(Transform target, float punchAngle = -45f)
@@ -169,5 +175,6 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnDrag(PointerEventData eventData)
     {
+        FlowerTileContainer.instance.selectedTile = this;
     }
 }
