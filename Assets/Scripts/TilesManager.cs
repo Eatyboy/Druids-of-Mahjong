@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,65 +14,107 @@ public class TilesManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null && instance != this) Destroy(gameObject);
-        else instance = this;
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public void Start()
     {
-        if (GameManager.playerData.deck == null)
-        {
-            InitializeDeck();
-        }
+        EnsureDeckInitialized();
+    }
 
-        // force sets
-        // Tile a = GenerateRandomTile();
-        // for (int i = 0; i < 3; i++)
-        // {
-        //     deck.Add(a);
-        // }
-        // t = GenerateRandomTile();
-        // for (int i = 0; i < 3; i++)
-        // {
-        //     deck.Add(t);
-        // }
-        // force nine run
-        // for (int i = 0; i < 9; i++)
-        // {
-        //     Tile t = new(baseTileDataList[i]);
-        //     deck.Add(t);
-        // }
-        // // force pair
-        // Tile b = GenerateRandomTile();
-        // for (int i = 0; i < 2; i++)
-        // {
-        //     deck.Add(b);
-        // }
-        // deck.Add(baseTileDataList[0]);
-        // deck.Add(baseTileDataList[1]);
-        // deck.Add(baseTileDataList[2]);
+    /// <summary>Call before drawing tiles (e.g. when opening Scroll Hand in Upgrade Tree) so the deck exists.</summary>
+    public void EnsureDeckInitialized()
+    {
+        bool needInit = GameManager.playerData?.deck == null || GameManager.playerData.deck.Count == 0;
+        UnityEngine.Debug.Log($"[ScrollHand] TilesManager.EnsureDeckInitialized: playerData exists={GameManager.playerData != null}, deck count={GameManager.playerData?.deck?.Count ?? -1}, will init={needInit}");
+        if (needInit)
+            InitializeDeck();
+    }
+
+    IEnumerator Delay(float sec)
+    {
+        yield return new WaitForSeconds(sec);
     }
 
     private void InitializeDeck()
     {
-        GameManager.playerData.deck = new();
+        StartCoroutine(Delay(0.1f));
+        if (GameManager.playerData == null) { UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: GameManager.playerData is null."); return; }
+        GameManager.playerData.deck = new List<Tile>();
+
+        if (baseTileDataList == null || baseTileDataList.Count == 0)
+        {
+            UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: baseTileDataList is null or empty. Assign Base Tile Data List in Inspector (UpgradeTree scene TilesManager). Deck left empty.");
+            return;
+        }
 
         foreach (MahjongTile tile in baseTileDataList)
         {
-            if (tile.suit == TileSuit.Dragon) continue;
             for (int i = 0; i < defaultDuplicateCount; i++)
             {
-                // generate random tile should be removed later - Aiden
-                GameManager.playerData.deck.Add(GenerateRandomTile());
+                GameManager.playerData.deck.Add(new Tile(tile));
             }
+        }
+
+        ShuffleDeck();
+        UnityEngine.Debug.Log($"[ScrollHand] TilesManager.InitializeDeck: deck filled with {GameManager.playerData.deck.Count} tiles (baseTileDataList count={baseTileDataList.Count}).");
+    }
+
+    public void ShuffleDeck()
+    {
+        if (GameManager.playerData?.deck == null) return;
+        Utils.ShuffleList(GameManager.playerData.deck);
+    }
+
+    /// <summary>
+    /// Return all tiles from the player hand and discard pile back into the deck, then shuffle. Call at end of battle.
+    /// </summary>
+    public void ReturnPlayerHandAndDiscardToDeck()
+    {
+        if (GameManager.playerData == null) return;
+        if (GameManager.playerData.deck == null)
+            GameManager.playerData.deck = new List<Tile>();
+
+        if (PlayerHand.instance != null)
+        {
+            List<Tile> handTiles = PlayerHand.instance.GetHandTileData();
+            if (handTiles != null)
+                GameManager.playerData.deck.AddRange(handTiles);
+            PlayerHand.instance.ClearTiles();
+        }
+
+        if (discardPile != null && discardPile.Count > 0)
+        {
+            GameManager.playerData.deck.AddRange(discardPile);
+            discardPile.Clear();
         }
 
         ShuffleDeck();
     }
 
-    public void ShuffleDeck()
+    /// <summary>
+    /// Return all tiles from the scroll hand back into the deck, then shuffle. Call when exiting the tree (e.g. before GoToCombat).
+    /// </summary>
+    public void ReturnScrollHandToDeck()
     {
-        Utils.ShuffleList(GameManager.playerData.deck);
+        if (GameManager.playerData == null) return;
+        if (ScrollHand.instance == null) return;
+        if (GameManager.playerData.deck == null)
+            GameManager.playerData.deck = new List<Tile>();
+
+        List<Tile> handTiles = ScrollHand.instance.GetHandTileData();
+        if (handTiles != null && handTiles.Count > 0)
+        {
+            GameManager.playerData.deck.AddRange(handTiles);
+            ScrollHand.instance.ClearTiles();
+            ShuffleDeck();
+        }
     }
 
     public Tile DrawFromDeck()
@@ -86,5 +129,19 @@ public class TilesManager : MonoBehaviour
     public Tile GenerateRandomTile()
     {
         return new(Utils.GetRandomItemInList(baseTileDataList));
+    }
+
+    /// <summary>
+    /// Returns the first MahjongTile in baseTileDataList with the given suit and rank, or null.
+    /// Used e.g. to resolve face sprite when a tile's suit is changed (charm scrolls).
+    /// </summary>
+    public MahjongTile GetBaseTileData(TileSuit suit, int rank)
+    {
+        if (baseTileDataList == null) return null;
+        foreach (MahjongTile t in baseTileDataList)
+        {
+            if (t.suit == suit && t.rank == rank) return t;
+        }
+        return null;
     }
 }

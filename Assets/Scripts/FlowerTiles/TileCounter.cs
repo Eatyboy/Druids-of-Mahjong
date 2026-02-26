@@ -7,14 +7,13 @@ using System.Linq;
 
 public class TileCounter : FlowerTileEffect
 {
-
-    private readonly float tileMult = 1.0f; // Damage multiplier
+    [Configurable] public float addedDamagePerTile = 1.0f;
 
     public override IEnumerator OnIntraAttack(Player.PlayerAttackContext ctx)
     {
         int count = ctx.selectedHand.Count;
 
-        ctx.addedDamageModifier += count * tileMult;
+        ctx.addedDamageModifier += count * addedDamagePerTile;
         yield break;
     }
 }

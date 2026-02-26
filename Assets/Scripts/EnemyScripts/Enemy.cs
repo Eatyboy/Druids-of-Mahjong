@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -20,9 +21,14 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private Vector2 attackTileOffset;
     [SerializeField] private float attackDuration = 2.0f;
 
+    [SerializeField] private Vector2 idleAnimationOffset;
+    [SerializeField] private float idleAnimationCycleDuration = 1.0f;
     [SerializeField] private float deathAnimationDuration = 2.0f;
 
     public bool isTurnActive = false;
+    public bool isAlive = false;
+    private float idleAnimationTime = 0.0f;
+    private Vector2 startingPos; 
 
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private HealthBarUI healthBar;
@@ -38,6 +44,28 @@ public class Enemy : MonoBehaviour, IDamageable
         currentHP = maxHP;
         healthBar.SetMaxHealth(maxHP);
         healthBar.SetHealth(currentHP);
+        isAlive = true;
+        idleAnimationTime = 0.0f;
+        startingPos = transform.position;
+    }
+
+    private void Update()
+    {
+        if (isAlive)
+        {
+            idleAnimationTime += Time.deltaTime;
+            float w = 2.0f * Mathf.PI / idleAnimationCycleDuration;
+            float t = Mathf.Sin(w * idleAnimationTime);
+            transform.position = startingPos + t * idleAnimationOffset;
+        }
+    }
+
+    public void SetHealth(int health)
+    {
+        currentHP = health;
+        maxHP = health;
+        healthBar.SetMaxHealth(maxHP);
+        healthBar.SetHealth(currentHP);
     }
 
     public IEnumerator EnemyAttack(Tile intendedTile)
@@ -49,30 +77,30 @@ public class Enemy : MonoBehaviour, IDamageable
         yield return attackTile.PlayDrawAnimation();
 
         ParryHandler.ParryContext parryContext;
-        List<Tile> expandedPlayerHand = PlayerHand.instance.currentHand
-            .Select(obj => obj.tileData)
-            .Concat(new[] { attackTile.tileData })
-            .ToList();
-        (MahjongHandTypes type, List<Tile> tiles) parryHand = MahjongHands
-            .GetAllHandCombinations(expandedPlayerHand)
-            .Where(hand => hand.tiles.Contains(intendedTile))
-            .OrderByDescending(hand => hand.type)
-            .FirstOrDefault();
-        bool canParry = parryHand.type != MahjongHandTypes.None
-            && parryHand.type != MahjongHandTypes.Pair
-            && parryHand.type != MahjongHandTypes.ThreePairs
-            && parryHand.type != MahjongHandTypes.AllPairs;
+        var augmentedPlayerHand = PlayerHand.instance.GetPlayerHandTileData().Append(attackTile.tileData).ToList();
+        var optimalHandTask = MahjongHands.GetOptimalHandAsync(augmentedPlayerHand, attackTile.tileData);
+        yield return new WaitUntil(() => optimalHandTask.IsCompleted);
+        if (optimalHandTask.IsFaulted)
+        {
+            Debug.LogError("Failed to get the optimal hand for parry");
+            yield break;
+        }
+        var (type, tiles) = optimalHandTask.Result;
+        bool canParry = type != MahjongHandTypes.None
+            && type != MahjongHandTypes.Pair
+            && type != MahjongHandTypes.ThreePairs
+            && type != MahjongHandTypes.AllPairs;
 
         if (canParry)
         {
             List<PlayerTileObject> parryTileObjects = new();
-            foreach (Tile tile in parryHand.tiles)
+            foreach (Tile tile in tiles)
             {
                 var obj = PlayerHand.instance.currentHand.FirstOrDefault(t => t.tileData == tile);
                 if (obj != null)
                     parryTileObjects.Add(obj);
             }
-            parryContext = new(this, parryHand.type, parryHand.tiles, parryTileObjects, attackTile);
+            parryContext = new(this, type, tiles, parryTileObjects, attackTile);
             Player.instance.parryHandler.OpenParryWindow(parryContext);
         }
         else
@@ -85,6 +113,7 @@ public class Enemy : MonoBehaviour, IDamageable
             ? new WaitUntil(() => parryContext.resolved)
             : new WaitForSeconds(attackDuration);
 
+        AudioManager.instance.PlayOneShot(AudioManager.instance.whoosh);
         if (parryContext.wasParried)
         {
             yield return attackTile.PlayParriedAnimation();
@@ -108,6 +137,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyDeath()
     {
+        isAlive = false;
+        AudioManager.instance.PlayOneShot(AudioManager.instance.enemyDeath);
         float elapsedTime = 0.0f;
         while (elapsedTime < deathAnimationDuration)
         {
@@ -128,8 +159,11 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyTakeDamage(int damageToTake)
     {
+        if (damageToTake == 0) yield break;
+
         currentHP -= damageToTake;
         healthBar.SetHealth(currentHP);
+        AudioManager.instance.PlayOneShot(AudioManager.instance.enemyHurt);
         PopupSystem.instance.OpenPopup(EnemyManager.instance.enemyDamagePopupPreset, transform.position, damageToTake.ToString());
 
         if (currentHP <= 0) { 

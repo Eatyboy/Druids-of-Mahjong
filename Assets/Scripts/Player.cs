@@ -100,6 +100,7 @@ public class Player : MonoBehaviour
     public IEnumerator PlayerTakeDamage(int damageToTake)
     {
         ChangeHealth(-damageToTake);
+        AudioManager.instance.PlayOneShot(AudioManager.instance.playerHurt);
         yield break;
     }
 
@@ -108,6 +109,16 @@ public class Player : MonoBehaviour
         GameManager.playerData.health = Mathf.Clamp(GameManager.playerData.health, 0, GameManager.playerData.maxHealth);
 
         healthBar.SetHealth(GameManager.playerData.health);
+    }
+
+    // Refreshes the health bar from current playerData
+    public void RefreshHealthBar()
+    {
+        if (healthBar != null && GameManager.playerData != null)
+        {
+            healthBar.SetMaxHealth(GameManager.playerData.maxHealth);
+            healthBar.SetHealth(GameManager.playerData.health);
+        }
     }
 
     public void AddQi(int qiChange)

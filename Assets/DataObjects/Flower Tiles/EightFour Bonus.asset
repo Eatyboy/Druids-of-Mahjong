@@ -13,7 +13,17 @@ MonoBehaviour:
   m_Name: EightFour Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
   flowerTile: 5
-  tileName: Eight/Four Bonus
-  sprite: {fileID: 3217917795003240664, guid: 8bf583b5919fc6342a35bb44fa1e2a91, type: 3}
+  tileName: Lady Luck
+  sprite: {fileID: 21300000, guid: fb8005945ac65f245897a8f5170e1291, type: 3}
   description: Multiply damage by x1.5 for every 8 tile played and x0.75 for every
     4 tile played
+  effectConfig:
+    rid: 4727995076836327679
+  references:
+    version: 2
+    RefIds:
+    - rid: 4727995076836327679
+      type: {class: EightFourCheckerConfig, ns: , asm: Assembly-CSharp}
+      data:
+        eightMultiplier: 1.5
+        fourMultiplier: 0.75

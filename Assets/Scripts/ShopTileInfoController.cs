@@ -9,6 +9,13 @@ public class ShopTileInfoController : FlowerTileInfoController
         hoverCount++;
         Vector2 pos = RectTransformUtility.CalculateRelativeRectTransformBounds(canvas.transform, currentFlowerTile.transform).center;
         Vector2 screenOffset = new(0.5f * Screen.width, -0.5f * Screen.height);
-        flowerTileInfo.Open(currentFlowerTile.data, pos + screenOffset + offset);
+        flowerTileInfo.Open(currentFlowerTile.instance.data, pos + screenOffset + offset);
+    }
+
+    public void ForceClose()
+    {
+        hoverCount = 0;
+        CancelInvoke(nameof(CheckClose));
+        Invoke(nameof(CheckClose), 0.01f);
     }
 }

@@ -23,17 +23,17 @@ public class CombatManager : MonoBehaviour
     public Queue<(Func<IEnumerator> action, string actionName)> actionQueue = new();
     public bool isPlayerTurnNext;
     private int qiDroppedThisRound = 0;
+    private string currentAction = "None";
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
-
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
+        AudioManager.instance.PlayMusic(AudioManager.instance.combatMusic);
         StartCombat();
     }
 
@@ -55,7 +55,6 @@ public class CombatManager : MonoBehaviour
                     yield return EnemyManager.instance.SpawnEnemy();
 
                     combatState = CombatState.PlayerTurn;
-                    FlowerTileManager.instance.InitializeFlowerTiles(FlowerTileManager.instance.infoController);
                     break;
 
                 case CombatState.PlayerTurn:
@@ -78,7 +77,9 @@ public class CombatManager : MonoBehaviour
                 case CombatState.TurnResolution:
                     while (actionQueue.Count > 0)
                     {
-                        yield return actionQueue.Dequeue().action.Invoke();
+                        var action = actionQueue.Dequeue();
+                        currentAction = action.actionName;
+                        yield return action.action.Invoke();
                     }
 
                     if (GameManager.playerData.health <= 0) combatState = CombatState.Defeat;
@@ -104,18 +105,25 @@ public class CombatManager : MonoBehaviour
 
     public void PlayerVictory()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnPlayerHandAndDiscardToDeck();
         Destroy(EnemyManager.instance.currentEnemy.gameObject);
         EnemyManager.instance.currentEnemy = null;
 
         roundEndUI.gameObject.SetActive(true);
+        GameManager.instance.hpScale *= GameManager.instance.hpScaleRate;
 
         roundEndUI.Initialize(qiDroppedThisRound);
     }
 
     public void PlayerDefeat()
     {
+        AudioManager.instance.StopMusic();
         combatState = CombatState.Defeat;
-        
+        AudioManager.instance.PlayOneShot(AudioManager.instance.gameOver);
+
+        GameManager.instance.hpScale = 1.0f;
+
         GameManager.instance.QuitToTitleScreen();
     }
 

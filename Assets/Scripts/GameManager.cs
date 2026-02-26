@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 //public enum GameState
@@ -19,6 +20,10 @@ public class GameManager : MonoBehaviour
     //public GameState gameState = GameState.TitleScreen;
     private PlayerData _playerData = null;
     public static PlayerData playerData => instance._playerData;
+
+    // Enemy Data
+    public float hpScale = 1.0f; 
+    public float hpScaleRate = 1.5f;
 
     private void Awake()
     {
@@ -39,6 +44,10 @@ public class GameManager : MonoBehaviour
 
     public async void QuitToTitleScreen()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnScrollHandToDeck();
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.titleScreenSceneName, LoadSceneMode.Single);
 
         //gameState = GameState.TitleScreen;
@@ -46,6 +55,10 @@ public class GameManager : MonoBehaviour
 
     public async void GoToCombat()
     {
+        if (TilesManager.instance != null)
+            TilesManager.instance.ReturnScrollHandToDeck();
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
 
         //gameState = GameState.InCombat;
@@ -53,13 +66,15 @@ public class GameManager : MonoBehaviour
 
     public async void GoToTree()
     {
+        AudioManager.instance.StopMusic();
+
         await SceneManager.LoadSceneAsync(Bootstrapper.treeScreenSceneName, LoadSceneMode.Single);
         //gameState = GameState.AtTree;
     }
 
     public void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (Keyboard.current.escapeKey.wasReleasedThisFrame)
         {
             Utils.QuitGame();
         }

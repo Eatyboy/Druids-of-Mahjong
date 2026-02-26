@@ -1,70 +1,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class FlowerTileManager : MonoBehaviour
 {
     public static FlowerTileManager instance;
 
-    [Header("References")]
-    [SerializeField] private RectTransform flowerTileContainer;
-    public FlowerTileInfoController infoController;
-    [SerializeField] private List<FlowerTile> flowerTilePrefabs;
-    private Dictionary<FlowerTileType, FlowerTile> flowerTileMap = new();
+    [SerializeField] private List<FlowerTileData> flowerTileDataObjects;
+    private Dictionary<FlowerTileType, FlowerTileData> flowerTileMap = new();
 
-    [Header("Data")]
-    public List<FlowerTile> playerFlowerTiles = new();
+    private List<FlowerTileInstance> playerFlowerTiles => GameManager.playerData.flowerTiles;
+    [SerializeField] private bool inCombatScene;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
 
-        // canvas
-        DontDestroyOnLoad(gameObject.transform.parent);
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
     {
-        foreach (FlowerTile flowerTile in flowerTilePrefabs)
+        for (int i = 0; i < flowerTileDataObjects.Count; i++)
         {
+            var flowerTile = flowerTileDataObjects[i];
+
             if (flowerTile == null)
             {
-                Debug.LogError("Flower tile manager has a null flower tile");
+                Debug.LogError($"Flower tile manager has a null flower tile data at index {i}");
             }
-            else if (flowerTile.data == null) 
+            else if (flowerTile.flowerTile == FlowerTileType.None)
             {
-                Debug.LogError($"{flowerTile.name} has null data");
+                Debug.LogWarning($"{flowerTile.name} is a None flower tile");
             }
-            else if (flowerTile.data.flowerTile == FlowerTileType.None)
+            else if (flowerTile.effectConfig == null)
             {
                 Debug.LogWarning($"{flowerTile.name} is a None flower tile");
             }
             else
             {
-                flowerTileMap.Add(flowerTile.data.flowerTile, flowerTile);
+                flowerTileMap.Add(flowerTile.flowerTile, flowerTile);
             }
         }
 
-        foreach (FlowerTileType ft in GameManager.playerData.flowerTiles)
+        // DEBUG: not 100% sure if this is the way to do it
+        if (!inCombatScene) return;
+
+        foreach (FlowerTileInstance fti in playerFlowerTiles)
         {
-            if (flowerTileMap.TryGetValue(ft, out FlowerTile flowerTile))
-            {
-                playerFlowerTiles.Add(flowerTile);
-            }
-            else
-            {
-                Debug.LogError($"Failed to add {ft} to player's flower tiles");
-            }
+            fti.effect.OnInitialize(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData());
         }
-    }
-
-    public void AddFlowerTile(FlowerTile flowerTilePrefab)
-    {
-        FlowerTile addedFlowerTile = Instantiate(flowerTilePrefab, flowerTileContainer);
-        addedFlowerTile.Initialize(infoController);
-        playerFlowerTiles.Add(addedFlowerTile);
     }
 
     public bool IsFlowerTileActive(FlowerTileType flowerTileType)
@@ -72,95 +58,106 @@ public class FlowerTileManager : MonoBehaviour
         return playerFlowerTiles.Any((flowerTile) => flowerTile.data.flowerTile == flowerTileType);
     }
 
-    private void Update()
-    {
-        if (Keyboard.current.fKey.wasReleasedThisFrame)
-        {
-            AddFlowerTile(Utils.GetRandomItemInList(flowerTilePrefabs));
-        }
-    }
-
-    public void InitializeFlowerTiles(FlowerTileInfoController infoController)
-    {
-        foreach (FlowerTile ft in playerFlowerTiles)
-        {
-            ft.Initialize(infoController);
-        }
-    }
 
     public void ActivateFlowerTilesOnPreAttack(Player.PlayerAttackContext attackContext)
     {
-        foreach (FlowerTile ft in playerFlowerTiles)
+        foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            Copier copier = ft.effect as Copier;
+
+            if (copier != null)
+            {
+                copier.ClearCopiedEffect();
+
+                break;
+            }
+        }
+
+        for (int i = 0; i < playerFlowerTiles.Count; i++)
+        {
+            FlowerTileInstance ft = playerFlowerTiles[i];
+            if (ft.effect == null) continue;
+
+            Copier copier = ft.data.flowerTile == FlowerTileType.Copier ? ft.effect as Copier : null;
+            
+            if (copier != null && i > 0 && playerFlowerTiles[i - 1].effect != null)
+            {
+                FlowerTileInstance prev = playerFlowerTiles[i - 1];
+                
+                FlowerTileEffect copiedEffect = prev.data.effectConfig.CreateInstance();
+
+                copier.AddCopiedEffect(copiedEffect);
+            }
+
             CombatManager.instance.EnqueueAction(
-                () => ft.effectClass.OnPreAttack(attackContext),
-                nameof(ft.effectClass.OnPreAttack)
+                () => ft.effect.OnPreAttack(attackContext),
+                nameof(ft.effect.OnPreAttack)
             );
         }
     }
 
     public void ActivateFlowerTilesOnIntraAttack(Player.PlayerAttackContext attackContext)
     {
-        foreach (FlowerTile ft in playerFlowerTiles)
+        foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
-                () => ft.effectClass.OnIntraAttack(attackContext),
-                nameof(ft.effectClass.OnIntraAttack)
+                () => ft.effect.OnIntraAttack(attackContext),
+                nameof(ft.effect.OnIntraAttack)
             );
         }
     }
     public void ActivateFlowerTilesOnPostAttack(Player.PlayerAttackContext attackContext)
     {
-        foreach (FlowerTile ft in playerFlowerTiles)
+        foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
-                () => ft.effectClass.OnPostAttack(attackContext),
-                nameof(ft.effectClass.OnPostAttack)
+                () => ft.effect.OnPostAttack(attackContext),
+                nameof(ft.effect.OnPostAttack)
             );
         }
     }
 
     public void ActivateFlowerTilesOnIncomingDamage(int dmg)
     {
-        foreach (FlowerTile ft in playerFlowerTiles)
+        foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
-                () => ft.effectClass.OnIncomingAttack(dmg),
-                nameof(ft.effectClass.OnIncomingAttack)
+                () => ft.effect.OnIncomingAttack(dmg),
+                nameof(ft.effect.OnIncomingAttack)
             );
         }
     }
 
     public void ActivateFlowerTilesOnTakeDamage(int dmg)
     {
-        foreach (FlowerTile ft in playerFlowerTiles)
+        foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
-                () => ft.effectClass.OnTakeDamage(dmg),
-                nameof(ft.effectClass.OnTakeDamage)
+                () => ft.effect.OnTakeDamage(dmg),
+                nameof(ft.effect.OnTakeDamage)
             );
         }
     }
 
     public void ActivateFlowerTilesOnTurnStart()
     {
-        foreach (FlowerTile ft in playerFlowerTiles)
+        foreach (FlowerTileInstance ft in playerFlowerTiles)
         {
+            if (ft.effect == null) continue;
             CombatManager.instance.EnqueueAction(
-                () => ft.effectClass.OnTurnStart(),
-                nameof(ft.effectClass.OnTurnStart)
+                () => ft.effect.OnTurnStart(),
+                nameof(ft.effect.OnTurnStart)
             );
         }
     }
 
-    // kinda makes the whole private thing pointless, can revise if needed
-    public List<FlowerTile> GetAllFlowerTiles()
+    public FlowerTileInstance GetRandomFlowerTile()
     {
-        return flowerTilePrefabs;
-    } 
-
-    public FlowerTile GetRandomFlowerTile()
-    {
-        return Utils.GetRandomItemInList(flowerTilePrefabs);
+        FlowerTileData data = Utils.GetRandomItemInList(flowerTileDataObjects);
+        return new FlowerTileInstance(data);
     }
 }

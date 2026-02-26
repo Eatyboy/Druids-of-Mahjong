@@ -1,15 +1,10 @@
-using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.XR;
-using System;
-using System.Linq;
 
 public class SuitChecker : FlowerTileEffect
 {
-    public TileSuit suit;
+    [Configurable] public TileSuit suit;
 
-    public int damage;
+    [Configurable] public int damage;
 
     public override IEnumerator OnIntraAttack(Player.PlayerAttackContext ctx)
     {

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FlatDamageBonus : FlowerTileEffect 
 {
-    public int flatDamageBonus = 1;
+    [Configurable] public int flatDamageBonus = 1;
 
     public override IEnumerator OnIntraAttack(Player.PlayerAttackContext attackContext)
     {

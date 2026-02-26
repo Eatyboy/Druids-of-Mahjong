@@ -2,9 +2,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public abstract class FlowerTileEffect : MonoBehaviour
+[System.Serializable]
+public abstract class FlowerTileEffect
 {
-    public IEnumerator OnInitialize(List<Tile> playerHand, List<Tile> selectedHand) { yield break; }
+    public virtual string GetDynamicDescription() { return string.Empty; }
+
+    public virtual IEnumerator OnInitialize(List<Tile> playerHand, List<Tile> selectedHand) { yield break; }
 
     // These three correspond to the three phases of attack damage calculation:
     // Before the base damage is computed, before the intermediate (base + added) * increased
@@ -18,4 +21,14 @@ public abstract class FlowerTileEffect : MonoBehaviour
     public virtual IEnumerator OnTakeDamage(int damageTaken) { yield break; }
     public virtual IEnumerator OnDiscard() { yield break; }
     public virtual IEnumerator OnTurnStart() { yield break; }
+
+    public virtual string Serialize() 
+    { 
+        return JsonUtility.ToJson(this);
+    }
+
+    public virtual void Deserialize(string jsonData)
+    {
+        JsonUtility.FromJsonOverwrite(jsonData, this);
+    }
 }
