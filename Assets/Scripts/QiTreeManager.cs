@@ -167,7 +167,7 @@ public class QiTreeManager : MonoBehaviour
         {
             FlowerTileInstance fti = FlowerTileManager.instance.GetRandomFlowerTile();
             FlowerTile addedFlowerTile = Instantiate(ftPrefab);
-            addedFlowerTile.Initialize(fti, shopInfoController);
+            addedFlowerTile.Initialize(fti, ftBuyOptionsObject.transform as RectTransform, shopInfoController);
             ftBuyOptions[i].InitializeFT(addedFlowerTile);
         }
 

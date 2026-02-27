@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
@@ -15,6 +16,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     [SerializeField] private Image image;
 
     public FlowerTileInfoController infoController;
+    private RectTransform container;
 
     // Dragging Variables
     [HideInInspector] public UnityEvent<FlowerTile> BeginDragEvent;
@@ -49,20 +51,38 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         rectTransform = GetComponent<RectTransform>();
         initialized = false;
     }
+    
+    private Vector2 ScreenPointToPointInContainer(Vector2 point)
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            container,
+            point,
+            null, // null if Screen Space Overlay
+            out Vector2 localPoint
+        );
+
+        return localPoint;
+    }
 
     void Update()
     {
+        Debug.Log("Screen: "+ Mouse.current.position.ReadValue());
+        Debug.Log("World: " + Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
+        Debug.Log("Local: " + ScreenPointToPointInContainer(Mouse.current.position.ReadValue()));
+
         if (isDragging)
         {
-            Vector2 targetPosition = Input.mousePosition - offset;
-            transform.position = targetPosition;
+            Vector2 localMousePos = ScreenPointToPointInContainer(Mouse.current.position.ReadValue());
+            Vector2 targetPosition = localMousePos + (Vector2)offset;
+            rectTransform.anchoredPosition = targetPosition;
         }
     }
 
-    public void Initialize(FlowerTileInstance flowerTileInstance, FlowerTileInfoController infoController)
+    public void Initialize(FlowerTileInstance flowerTileInstance, RectTransform container, FlowerTileInfoController infoController)
     {
         this.instance = flowerTileInstance;
         this.infoController = infoController;
+        this.container = container;
         UpdateImage();
 
         // can be null if not in combat scene; will be checked for initialization again in GameManager pre-battle state
@@ -120,11 +140,11 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         if (isDraggable) {
             ogPosition = transform.localPosition;
-            ogIndex = transform.GetSiblingIndex();
+            ogIndex = FlowerTileContainer.instance.flowerTileObjects.IndexOf(this);
 
             BeginDragEvent.Invoke(this);
-            Vector2 mousePosition = Input.mousePosition;
-            offset = mousePosition - (Vector2)transform.position;
+            Vector2 localMousePos = ScreenPointToPointInContainer(Mouse.current.position.ReadValue());
+            offset = rectTransform.anchoredPosition - localMousePos;
             tileContainer.GetComponent<GraphicRaycaster>().enabled = false;
             image.raycastTarget = false;
             isDragging = true;
@@ -139,19 +159,20 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         tileContainer.GetComponent<GraphicRaycaster>().enabled = true;
         image.raycastTarget = true;
 
-        StartCoroutine(ReturnAnim(this.transform));
+        StartCoroutine(ReturnAnim());
 
         isDragging = false;
         FlowerTileContainer.instance.selectedTile = null;
     }
 
-    public IEnumerator ReturnAnim(Transform target, float punchAngle = -45f)
+    public IEnumerator ReturnAnim(float punchAngle = -45f)
     {
-        float startRotation = target.eulerAngles.z;
+        float startRotation = transform.eulerAngles.z;
         float targetRotation = startRotation + punchAngle;
 
-        Vector3 startPos = target.localPosition;
-        Vector3 endPos = Vector3.zero;
+        Vector3 startPos = rectTransform.anchoredPosition;
+        int index = FlowerTileContainer.instance.flowerTileObjects.IndexOf(this);
+        Vector3 endPos = FlowerTileContainer.instance.GetSlotPosition(index);
 
         float elapsedTime = 0f;
         float durDecrement = 0.05f;
@@ -165,14 +186,15 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             float punchStrength = Mathf.Sin(t * Mathf.PI); // 0 -> 1 -> 0
 
             float currentAngle = Mathf.Lerp(startRotation, targetRotation, punchStrength);
-            target.eulerAngles = new Vector3(0, 0, currentAngle);   // Punch Rotation Effect
-            target.localPosition = Vector3.Lerp(startPos, endPos, t);
+            transform.eulerAngles = new Vector3(0, 0, currentAngle);   // Punch Rotation Effect
+            rectTransform.anchoredPosition = Vector3.Lerp(startPos, endPos, t);
 
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        target.eulerAngles = new Vector3(0, 0, startRotation);
+        transform.eulerAngles = new Vector3(0, 0, startRotation);
+        rectTransform.anchoredPosition = endPos;
         returnDuration = Mathf.Max(minDuration, returnDuration - durDecrement);
         wasDragged = false;
         yield return new WaitForEndOfFrame();

@@ -13,12 +13,12 @@ GameObject:
   - component: {fileID: 333905700849570538}
   - component: {fileID: 2046464743557330139}
   m_Layer: 5
-  m_Name: Flower Tile Container
+  m_Name: Flower Tile Slots
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5524739587606367786
 RectTransform:
   m_ObjectHideFlags: 0
@@ -33,10 +33,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8958652500308186116}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -30, y: 0}
-  m_SizeDelta: {x: -60, y: 0}
+  m_SizeDelta: {x: 680.8, y: 222.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7606600208142849749
 MonoBehaviour:
@@ -335,6 +335,41 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &3284020144312065765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4570075322577550937}
+  m_Layer: 0
+  m_Name: FlowerTileContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4570075322577550937
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3284020144312065765}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8958652500308186116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -30, y: 0}
+  m_SizeDelta: {x: 680.8, y: 222.8}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5178682022897438493
 GameObject:
   m_ObjectHideFlags: 0
@@ -505,6 +540,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
+  - {fileID: 4570075322577550937}
   - {fileID: 5524739587606367786}
   - {fileID: 4054822611712538285}
   m_Father: {fileID: 0}
@@ -579,12 +615,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1183785a7235c9c499f6ff1cd85b6ca6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileContainer
-  flowerTileContainer: {fileID: 5524739587606367786}
+  flowerTileContainer: {fileID: 4570075322577550937}
+  flowerTileSlotsContainer: {fileID: 5524739587606367786}
   infoController: {fileID: 894232820659142902}
   flowerTilePrefab: {fileID: 2586444533356537900, guid: 514b89d8f58dc3649a985806470597a9, type: 3}
   flowerTileSlotPrefab: {fileID: 3751277541116460454, guid: 0116d8db1ba7bc34bafaa2a602bd9192, type: 3}
+  flowerTileSlots: []
   flowerTileObjects: []
   selectedTile: {fileID: 0}
+  containerOffset: {x: 0, y: 0}
+  spacing: 15
 --- !u!114 &1490750323154345895
 MonoBehaviour:
   m_ObjectHideFlags: 0

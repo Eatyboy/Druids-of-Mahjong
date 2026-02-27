@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using System;
+using UnityEngine.UI;
 
 public class FlowerTileContainer : MonoBehaviour
 {
@@ -9,17 +11,30 @@ public class FlowerTileContainer : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private RectTransform flowerTileContainer;
+    [SerializeField] private RectTransform flowerTileSlotsContainer;
     public FlowerTileInfoController infoController;
     [SerializeField] private FlowerTile flowerTilePrefab;
     [SerializeField] private GameObject flowerTileSlotPrefab;
 
+    public Transform[] flowerTileSlots;
     public List<FlowerTile> flowerTileObjects = new();
     public FlowerTile selectedTile; // Currently Held Tile
+
+    [Header("Flower Tile Positioning")]
+    [SerializeField] private Vector2 containerOffset = Vector2.zero;
+    [SerializeField] private float spacing = 0.0f;
+    [SerializeField] private float swapDuration = 0.25f;
 
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
         else instance = this;
+
+        flowerTileSlots = new Transform[flowerTileContainer.childCount];
+        for (int i = 0; i < flowerTileContainer.childCount; ++i)
+        {
+            flowerTileSlots[i] = flowerTileContainer.GetChild(i);
+        }
     }
 
     private void OnEnable()
@@ -31,8 +46,10 @@ public class FlowerTileContainer : MonoBehaviour
     {
         GameObject tileSlot = Instantiate(flowerTileSlotPrefab, flowerTileContainer);
         FlowerTile addedFlowerTile = Instantiate(flowerTilePrefab, tileSlot.transform);
-        addedFlowerTile.Initialize(flowerTileInstance, infoController);
+        int addedTileIndex = flowerTileObjects.Count;
+        addedFlowerTile.Initialize(flowerTileInstance, flowerTileContainer, infoController);
         flowerTileObjects.Add(addedFlowerTile);
+        addedFlowerTile.rectTransform.anchoredPosition = GetSlotPosition(addedTileIndex);
     }
 
     private void Update()
@@ -43,33 +60,59 @@ public class FlowerTileContainer : MonoBehaviour
             GameManager.playerData.flowerTiles.Add(fti);
             AddFlowerTile(fti);
         }
-        if(selectedTile == null) { return; }
+        if (selectedTile == null) { return; }
+        int selectedIndex = flowerTileObjects.IndexOf(selectedTile);
         for (int i = 0; i < flowerTileObjects.Count; i++)
         {
-
-            if (selectedTile.transform.position.x > flowerTileObjects[i].transform.position.x)
+            if (selectedTile.rectTransform.anchoredPosition.x > flowerTileObjects[i].rectTransform.anchoredPosition.x && selectedIndex < i)
             {
-                if (selectedTile.GetComponentIndex() < flowerTileObjects[i].GetComponentIndex())
-                {
-                    Swap(i);
-                    break;
-                }
+                StartCoroutine(Swap(selectedIndex, i));
+                break;
             }
 
-            if (selectedTile.transform.position.x < flowerTileObjects[i].transform.position.x)
+            if (selectedTile.rectTransform.anchoredPosition.x < flowerTileObjects[i].rectTransform.anchoredPosition.x && selectedIndex > i)
             {
-                if (selectedTile.GetComponentIndex() > flowerTileObjects[i].GetComponentIndex())
-                {
-                    Swap(i);
-                    break;
-                }
+                StartCoroutine(Swap(selectedIndex, i));
+                break;
             }
         }
     }
 
-    private void Swap(int index)
+    public Vector2 GetSlotPosition(int index)
     {
-        Debug.Log("Swap");
+        if (index < 0 || index >= flowerTileObjects.Count)
+        {
+            Debug.LogError("Tried to get the slot position at an out of bounds index");
+            return Vector2.zero;
+        }
+
+        float width = flowerTilePrefab.rectTransform.rect.width;
+        float x = flowerTileContainer.rect.xMax - (width + spacing) * index - 0.5f * width;
+        return new(x + containerOffset.x, containerOffset.y);
+    }
+
+    private IEnumerator Swap(int selectedIndex, int index)
+    {
+        (flowerTileObjects[selectedIndex], flowerTileObjects[index]) = (flowerTileObjects[index], flowerTileObjects[selectedIndex]);
+
+        FlowerTile swapped = flowerTileObjects[index];
+        swapped.GetComponent<GraphicRaycaster>().enabled = false;
+        Vector2 startPos = swapped.rectTransform.anchoredPosition;
+        Vector2 endPos = GetSlotPosition(index);
+        float elapsedTime = 0.0f;
+        while (elapsedTime < swapDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.SmoothStep(0.0f, 1.0f, elapsedTime / swapDuration);
+
+            swapped.rectTransform.anchoredPosition = Vector2.Lerp(startPos, endPos, t);
+
+            yield return null;
+        }
+
+        swapped.rectTransform.anchoredPosition = endPos;
+        swapped.GetComponent<GraphicRaycaster>().enabled = true;
+
         /*isCrossing = true;
 
         Transform focusedParent = selectedCard.transform.parent;
