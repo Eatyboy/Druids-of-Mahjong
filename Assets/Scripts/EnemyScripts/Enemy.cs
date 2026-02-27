@@ -21,9 +21,14 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private Vector2 attackTileOffset;
     [SerializeField] private float attackDuration = 2.0f;
 
+    [SerializeField] private Vector2 idleAnimationOffset;
+    [SerializeField] private float idleAnimationCycleDuration = 1.0f;
     [SerializeField] private float deathAnimationDuration = 2.0f;
 
     public bool isTurnActive = false;
+    public bool isAlive = false;
+    private float idleAnimationTime = 0.0f;
+    private Vector2 startingPos; 
 
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private HealthBarUI healthBar;
@@ -39,6 +44,20 @@ public class Enemy : MonoBehaviour, IDamageable
         currentHP = maxHP;
         healthBar.SetMaxHealth(maxHP);
         healthBar.SetHealth(currentHP);
+        isAlive = true;
+        idleAnimationTime = 0.0f;
+        startingPos = transform.position;
+    }
+
+    private void Update()
+    {
+        if (isAlive)
+        {
+            idleAnimationTime += Time.deltaTime;
+            float w = 2.0f * Mathf.PI / idleAnimationCycleDuration;
+            float t = Mathf.Sin(w * idleAnimationTime);
+            transform.position = startingPos + t * idleAnimationOffset;
+        }
     }
 
     public void SetHealth(int health)
@@ -118,6 +137,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public IEnumerator EnemyDeath()
     {
+        isAlive = false;
         AudioManager.instance.PlayOneShot(AudioManager.instance.enemyDeath);
         float elapsedTime = 0.0f;
         while (elapsedTime < deathAnimationDuration)

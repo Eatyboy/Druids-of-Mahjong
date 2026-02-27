@@ -33,6 +33,7 @@ public class CombatManager : MonoBehaviour
 
     private void Start()
     {
+        AudioManager.instance.PlayMusic(AudioManager.instance.combatMusic);
         StartCombat();
     }
 

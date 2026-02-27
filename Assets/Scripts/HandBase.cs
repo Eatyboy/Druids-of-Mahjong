@@ -61,6 +61,7 @@ public abstract class HandBase : MonoBehaviour
 
     public virtual IEnumerator DrawUntilFullHand()
     {
+        AudioManager.instance.PlayOneShot(AudioManager.instance.tileShuffle);
         UnityEngine.Debug.Log($"[ScrollHand] DrawUntilFullHand: target={currentHandSize}, current={currentHand?.Count ?? 0}, deck count={GameManager.playerData?.deck?.Count ?? -1}");
         while (currentHand.Count < currentHandSize)
         {
@@ -117,6 +118,7 @@ public abstract class HandBase : MonoBehaviour
 
     public virtual IEnumerator SortTilesInHand()
     {
+        AudioManager.instance.PlayOneShot(AudioManager.instance.whoosh);
         if (selectedTiles != null)
         {
             foreach (PlayerTileObject tile in selectedTiles)
