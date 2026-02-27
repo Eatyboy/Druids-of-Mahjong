@@ -595,9 +595,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1592484029996612260}
-        m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
-        m_MethodName: ResumeGame
+      - m_Target: {fileID: 5021742427299035115, guid: 8b288a86b7dc9884894d9dd28079d51e, type: 3}
+        m_TargetAssemblyTypeName: CheatSheetManager, Assembly-CSharp
+        m_MethodName: ShowCheatSheet
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1000,9 +1000,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1592484029996612260}
-        m_TargetAssemblyTypeName: PauseMenuManager, Assembly-CSharp
-        m_MethodName: ResumeGame
+      - m_Target: {fileID: 1893231015476260949, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+        m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
+        m_MethodName: ShowSettings
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
