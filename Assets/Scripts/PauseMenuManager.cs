@@ -68,6 +68,4 @@ public class PauseMenuManager : MonoBehaviour
         ResumeGame();
         GameManager.instance.QuitToTitleScreen();
     }
-
-    // 
 }
