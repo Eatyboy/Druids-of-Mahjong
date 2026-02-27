@@ -63,6 +63,8 @@ MonoBehaviour:
   spawnableEnemies:
   - enemyPrefab: {fileID: -6853596958071401160, guid: eed6e5c837ac46a4ea242b0ae508dc7b, type: 3}
     spawnWeight: 10
+  - enemyPrefab: {fileID: 4478613436663275410, guid: e579501874981c8418623b5847087747, type: 3}
+    spawnWeight: 5
   enemySpawn: {fileID: 0}
   enemyDamagePopupPreset: {fileID: 11400000, guid: fed3bfd54caace145b0d3e095a4a549b, type: 2}
   qiDropPopupPreset: {fileID: 11400000, guid: f21c38a4a53a5a2418c27eab9eb30e3b, type: 2}
