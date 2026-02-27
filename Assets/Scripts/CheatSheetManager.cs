@@ -31,6 +31,7 @@ public class CheatSheetManager : MonoBehaviour
         }
 
         HideAllHandTypes();
+        HideCheatSheet();
     }
 
     private void HideAllHandTypes()
