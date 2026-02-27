@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
   flowerTile: 17
   tileName: Permanent Discard
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: b630a84de45edc24d947c573f085719c, type: 3}
   description: If exactly 1 tile is discarded, it is permanently removed from the
     deck
   effectConfig:

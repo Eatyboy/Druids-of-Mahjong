@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
   flowerTile: 16
   tileName: Magic Square
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: b630a84de45edc24d947c573f085719c, type: 3}
   description: +15 bonus damage if the ranks of all numbered tiles in the hand add
     up to exactly 15
   effectConfig:

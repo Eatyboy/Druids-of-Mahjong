@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
   flowerTile: 14
   tileName: Mixed Sets
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 2e4c91dd32b4b4b4890d8aaf924c3f9b, type: 3}
   description: Sets, pairs, and quads can be made with mixed (numbered) suits
   effectConfig:
     rid: 5585033692652503040
