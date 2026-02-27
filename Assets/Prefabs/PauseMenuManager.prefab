@@ -264,6 +264,7 @@ GameObject:
   - component: {fileID: 143511355645978745}
   - component: {fileID: 173117742397427633}
   - component: {fileID: 877914198246132499}
+  - component: {fileID: 4930261410371188814}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -385,6 +386,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &4930261410371188814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497189483108967188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &1595349779971744501
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,7 +431,7 @@ RectTransform:
   m_Father: {fileID: 2996588413735498553}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -472,6 +485,7 @@ GameObject:
   - component: {fileID: 858188976353728285}
   - component: {fileID: 2912388593604805725}
   - component: {fileID: 2098811871218882112}
+  - component: {fileID: 2639551713281719634}
   m_Layer: 5
   m_Name: GlossaryBtn
   m_TagString: Untagged
@@ -593,6 +607,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &2639551713281719634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698125946434190949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &2072744675554044131
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,7 +804,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1286126190279445398
 RectTransform:
   m_ObjectHideFlags: 0
@@ -864,6 +890,7 @@ GameObject:
   - component: {fileID: 4557318742008337864}
   - component: {fileID: 2077038940173678317}
   - component: {fileID: 2056334969656433358}
+  - component: {fileID: 3852192980404941520}
   m_Layer: 5
   m_Name: SettingsBtn
   m_TagString: Untagged
@@ -985,6 +1012,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &3852192980404941520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2999879098688018447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &4040102379547814877
 GameObject:
   m_ObjectHideFlags: 0
@@ -1002,7 +1041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2445129520400466186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1155,7 +1194,7 @@ RectTransform:
   m_Father: {fileID: 5959985601220658758}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1275,6 +1314,7 @@ GameObject:
   - component: {fileID: 1696688815941155311}
   - component: {fileID: 7861344321759378932}
   - component: {fileID: 2488522229176190967}
+  - component: {fileID: 9000557667199200406}
   m_Layer: 5
   m_Name: ResumeButton
   m_TagString: Untagged
@@ -1396,6 +1436,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &9000557667199200406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5266380097641407049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIButton
 --- !u!1 &5420694270853012706
 GameObject:
   m_ObjectHideFlags: 0

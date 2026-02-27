@@ -440,7 +440,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 625514477}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1580668369}
+        m_TargetAssemblyTypeName: SettingsManager, Assembly-CSharp
+        m_MethodName: ShowSettings
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &625514477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3807,6 +3819,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8881a57d59d1116409cccf4c9d29331e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIButton
+--- !u!1001 &1580668368
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 338768300744790503, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_Name
+      value: SettingsMenuManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 804.31586
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 682.7147
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184757498762146943, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3230269260500349625, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4353946476402566084, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+--- !u!114 &1580668369 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1893231015476260949, guid: 5d10c970e1f67e642974bf2613d02f87, type: 3}
+  m_PrefabInstance: {fileID: 1580668368}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4657b541d0e62340918a4e2fab9473a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SettingsManager
 --- !u!1 &1630000807
 GameObject:
   m_ObjectHideFlags: 0
@@ -4485,3 +4573,4 @@ SceneRoots:
   - {fileID: 1850042008}
   - {fileID: 1491585137}
   - {fileID: 743899140}
+  - {fileID: 1580668368}
