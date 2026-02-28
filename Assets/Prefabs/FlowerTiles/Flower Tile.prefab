@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3840069229827320092}
   - component: {fileID: 4591764170279316950}
   - component: {fileID: 2586444533356537900}
+  - component: {fileID: 3906418477420251387}
   m_Layer: 5
   m_Name: Flower Tile
   m_TagString: Untagged
@@ -93,8 +94,12 @@ MonoBehaviour:
   instance:
     data: {fileID: 0}
   rectTransform: {fileID: 3589175133294577107}
+  canvasGroup: {fileID: 3906418477420251387}
   image: {fileID: 6974049624830460296}
   infoController: {fileID: 0}
+  returnDuration: 0.25
+  punchAngle: -45
+  rotationDuration: 0.15
   BeginDragEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -105,11 +110,22 @@ MonoBehaviour:
   ogIndex: 0
   isDraggable: 0
   isDragging: 0
-  wasDragged: 0
-  returnDuration: 0.25
   ogScale: {x: 0, y: 0, z: 0}
   scaleFactor: 1.2
+  scaleDuration: 0.05
   initialized: 0
+--- !u!225 &3906418477420251387
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3751277541116460454}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5719671353379553684
 GameObject:
   m_ObjectHideFlags: 0

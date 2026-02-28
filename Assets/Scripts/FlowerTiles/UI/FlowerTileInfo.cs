@@ -11,9 +11,11 @@ public class FlowerTileInfo : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     [SerializeField] private FlowerTileInfoController controller;
 
-    public void Open(FlowerTileData flowerTileData, Vector2 anchoredPosition)
+    public void Open(FlowerTileData flowerTileData, RectTransform target, RectTransform container, Vector2 offset)
     {
-        rectTransform.anchoredPosition = anchoredPosition;
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(null, target.position);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(container, screenPoint, null, out Vector2 localPoint);
+        rectTransform.anchoredPosition = localPoint + offset + container.anchoredPosition;
 
         infoNameText.text = flowerTileData.tileName;
         infoDescriptionText.text = flowerTileData.description;

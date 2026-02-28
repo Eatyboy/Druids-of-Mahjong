@@ -23,7 +23,7 @@ public class QiTreeManager : MonoBehaviour
 
     [SerializeField] private bool hasPurchasedFlowerTile;
     [SerializeField] private bool hasPurchasedCharmScroll;
-    public FlowerTileContainer ftContainer;
+    public FlowerTileUI ftContainer;
     public ShopTileInfoController shopInfoController;
     [SerializeField] private FlowerTile ftPrefab;
 

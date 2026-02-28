@@ -4,6 +4,7 @@ using UnityEngine;
 public class FlowerTileInfoController : MonoBehaviour
 {
     [SerializeField] protected FlowerTileInfo flowerTileInfo;
+    [SerializeField] protected RectTransform flowerTileContainer;
 
     [SerializeField] protected Vector2 offset;
     protected int hoverCount = 0;
@@ -17,15 +18,19 @@ public class FlowerTileInfoController : MonoBehaviour
 
     public virtual void PointerEntered()
     {
-        hoverCount++;
-        flowerTileInfo.Open(currentFlowerTile.instance.data, currentFlowerTile.rectTransform.anchoredPosition + offset);
+        //hoverCount++;
+        flowerTileInfo.Open(currentFlowerTile.instance.data, 
+            currentFlowerTile.rectTransform,
+            flowerTileContainer, 
+            offset);
     }
 
     public void PointerExited()
     {
-        hoverCount--;
-        CancelInvoke(nameof(CheckClose));
-        Invoke(nameof(CheckClose), 0.01f);
+        flowerTileInfo.Close();
+        //hoverCount--;
+        //CancelInvoke(nameof(CheckClose));
+        //Invoke(nameof(CheckClose), 0.01f);
     }
     
     protected void CheckClose()

@@ -12,13 +12,29 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private static IEnumerator NoOpCoroutine() { yield break; }
     public FlowerTileInstance instance;
     public RectTransform rectTransform;
+    public CanvasGroup canvasGroup;
 
     [SerializeField] private Image image;
 
     public FlowerTileInfoController infoController;
     private RectTransform container;
 
-    // Dragging Variables
+    [Header("Movement")]
+    private Vector2 startPosition;
+    private Vector2 targetPosition;
+    [SerializeField] private float returnDuration = 1.0f;
+    private float returningElapsedTime;
+    private bool isReturning = false;
+
+    [Header("Punch Rotation")]
+    [SerializeField] private float punchAngle = -45.0f;
+    [SerializeField] private float rotationDuration = 1.0f;
+    private float startAngle;
+    private float targetAngle;
+    private float rotatingElapsedTime;
+    private bool isRotating = false;
+
+    [Header("Dragging")]
     [HideInInspector] public UnityEvent<FlowerTile> BeginDragEvent;
     [HideInInspector] public UnityEvent<FlowerTile> EndDragEvent;
     [SerializeField] private Canvas tileContainer; // Assign the Tile Container to it
@@ -27,12 +43,15 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     private Vector3 offset;
     public bool isDraggable = false; // Updated once added to player tiles
     public bool isDragging = false;
-    [HideInInspector] public bool wasDragged;
-    [SerializeField] private float returnDuration = 0.25f;
 
-    // Hover Scale
+    [Header("Hover Scaling")]
     public Vector3 ogScale;
     public float scaleFactor = 1.2f;
+    [SerializeField] private float scaleDuration;
+    private Vector3 startScale;
+    private Vector3 targetScale;
+    private float scalingElapsedTime;
+    private bool isScaling = false;
 
     // need this to differentiate between flower tiles already initialized and those not (f key vs bought) to prevent stacking
     public bool initialized;
@@ -41,9 +60,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         tileContainer = GetComponentInParent<Canvas>();
         ogScale = transform.localScale;
-        Debug.Log("Local: " + transform.localPosition);
-        Debug.Log("World: " + transform.position);
-        Debug.Log("Anchored: "+ rectTransform.anchoredPosition);
+        targetPosition = rectTransform.anchoredPosition;
     }
 
     private void Awake()
@@ -57,7 +74,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             container,
             point,
-            null, // null if Screen Space Overlay
+            null,
             out Vector2 localPoint
         );
 
@@ -66,15 +83,55 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     void Update()
     {
-        Debug.Log("Screen: "+ Mouse.current.position.ReadValue());
-        Debug.Log("World: " + Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
-        Debug.Log("Local: " + ScreenPointToPointInContainer(Mouse.current.position.ReadValue()));
-
         if (isDragging)
         {
             Vector2 localMousePos = ScreenPointToPointInContainer(Mouse.current.position.ReadValue());
             Vector2 targetPosition = localMousePos + (Vector2)offset;
             rectTransform.anchoredPosition = targetPosition;
+        }
+
+        if (isReturning)
+        {
+            returningElapsedTime += Time.deltaTime;
+            float t = returningElapsedTime / returnDuration;
+            t = Utils.ExpEaseIn(t, 4.0f);
+            rectTransform.anchoredPosition = Vector2.Lerp(startPosition, targetPosition, t);
+
+            if (returningElapsedTime >= returnDuration)
+            {
+                isReturning = false;
+                rectTransform.anchoredPosition = targetPosition;
+                canvasGroup.blocksRaycasts = true;
+            }
+        }
+
+        if (isRotating)
+        {
+            rotatingElapsedTime += Time.deltaTime;
+            float t = rotatingElapsedTime / returnDuration;
+            t = Mathf.Sin(t * Mathf.PI) * Mathf.Sin(t * Mathf.PI);
+            float currentAngle = Mathf.Lerp(startAngle, targetAngle, t);
+            transform.eulerAngles = new Vector3(0, 0, currentAngle);
+
+            if (rotatingElapsedTime >= returnDuration)
+            {
+                isRotating = false;
+                transform.eulerAngles = new Vector3(0, 0, startAngle);
+            }
+        }
+
+        if (isScaling)
+        {
+            scalingElapsedTime += Time.deltaTime;
+            float t = scalingElapsedTime + Time.deltaTime / scaleDuration;
+            t = Mathf.SmoothStep(0.0f, 1.0f, t);
+            transform.localScale = Vector3.Lerp(startScale, targetScale, t);
+
+            if (scalingElapsedTime >= scaleDuration)
+            {
+                isScaling = false;
+                transform.localScale = targetScale;
+            }
         }
     }
 
@@ -113,34 +170,29 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     {
         infoController.currentFlowerTile = this;
         infoController.PointerEntered();
-        StartCoroutine(ScaleAnim(ogScale, ogScale * scaleFactor));
+
+        StartScaleAnim(ogScale * scaleFactor);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         infoController.PointerExited();
-        StartCoroutine(ScaleAnim(transform.localScale, ogScale));
+        StartScaleAnim(ogScale);
     }
 
-    public IEnumerator ScaleAnim(Vector3 startScale, Vector3 endScale)
+    public void StartScaleAnim(Vector3 endScale)
     {
-        float elapsedTime = 0f;
-        float playDuration = 0.01f;
-
-        while (elapsedTime < playDuration)
-        {
-            transform.localScale = Vector3.Lerp(ogScale, endScale, elapsedTime / playDuration);
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        yield return null;
+        startScale = transform.localScale;
+        targetScale = endScale;
+        scalingElapsedTime = 0.0f;
+        isScaling = true;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (isDraggable) {
             ogPosition = transform.localPosition;
-            ogIndex = FlowerTileContainer.instance.flowerTileObjects.IndexOf(this);
+            ogIndex = FlowerTileUI.instance.flowerTileObjects.IndexOf(this);
 
             BeginDragEvent.Invoke(this);
             Vector2 localMousePos = ScreenPointToPointInContainer(Mouse.current.position.ReadValue());
@@ -148,7 +200,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             tileContainer.GetComponent<GraphicRaycaster>().enabled = false;
             image.raycastTarget = false;
             isDragging = true;
-            wasDragged = true;
+            transform.SetAsLastSibling();
         }
     }
 
@@ -159,49 +211,31 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         tileContainer.GetComponent<GraphicRaycaster>().enabled = true;
         image.raycastTarget = true;
 
-        StartCoroutine(ReturnAnim());
+        StartReturnAnim(doPunch: true);
 
         isDragging = false;
-        FlowerTileContainer.instance.selectedTile = null;
+        FlowerTileUI.instance.selectedTile = null;
     }
 
-    public IEnumerator ReturnAnim(float punchAngle = -45f)
+    public void StartReturnAnim(bool doPunch = false)
     {
-        float startRotation = transform.eulerAngles.z;
-        float targetRotation = startRotation + punchAngle;
+        int index = FlowerTileUI.instance.flowerTileObjects.IndexOf(this);
+        startPosition = rectTransform.anchoredPosition;
+        targetPosition = FlowerTileUI.instance.GetSlotPosition(index);
+        returningElapsedTime = 0.0f;
+        isReturning = true;
 
-        Vector3 startPos = rectTransform.anchoredPosition;
-        int index = FlowerTileContainer.instance.flowerTileObjects.IndexOf(this);
-        Vector3 endPos = FlowerTileContainer.instance.GetSlotPosition(index);
-
-        float elapsedTime = 0f;
-        float durDecrement = 0.05f;
-        float minDuration = 0.1f;
-
-        while (elapsedTime < returnDuration)
+        if (doPunch)
         {
-            float t = elapsedTime / returnDuration;
-
-            // Punch curve: goes up then back down
-            float punchStrength = Mathf.Sin(t * Mathf.PI); // 0 -> 1 -> 0
-
-            float currentAngle = Mathf.Lerp(startRotation, targetRotation, punchStrength);
-            transform.eulerAngles = new Vector3(0, 0, currentAngle);   // Punch Rotation Effect
-            rectTransform.anchoredPosition = Vector3.Lerp(startPos, endPos, t);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            startAngle = transform.eulerAngles.z;
+            targetAngle = startAngle + punchAngle;
+            rotatingElapsedTime = 0.0f;
+            isRotating = true;
         }
-
-        transform.eulerAngles = new Vector3(0, 0, startRotation);
-        rectTransform.anchoredPosition = endPos;
-        returnDuration = Mathf.Max(minDuration, returnDuration - durDecrement);
-        wasDragged = false;
-        yield return new WaitForEndOfFrame();
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        FlowerTileContainer.instance.selectedTile = this;
+        FlowerTileUI.instance.selectedTile = this;
     }
 }

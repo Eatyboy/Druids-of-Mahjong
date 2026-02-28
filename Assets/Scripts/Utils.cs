@@ -88,6 +88,11 @@ public static class Utils
         return t == 0.0f ? 0.0f : Mathf.Pow(2.0f, 10.0f * t - 10.0f);
     }
 
+    public static float ExpEaseIn(float t, float intensity)
+    {
+        return t == 0.0f ? 0.0f : (Mathf.Exp(intensity * t) - 1.0f) / (Mathf.Exp(intensity) - 1.0f);
+    }
+
     public static bool AreDisjoint<T>(IEnumerable<T> a, IEnumerable<T> b)
     {
         var set = new HashSet<T>(a);
