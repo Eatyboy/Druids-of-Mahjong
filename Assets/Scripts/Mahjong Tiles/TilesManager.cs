@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TilesManager : MonoBehaviour
@@ -11,6 +12,8 @@ public class TilesManager : MonoBehaviour
 
     public List<MahjongTile> baseTileDataList;
     public List<Tile> discardPile;
+    public Dictionary<int, MahjongTile> baseTileDataIDMap;
+    public Dictionary<int, Sprite> baseTileFaceSprites;
 
     private void Awake()
     {
@@ -21,6 +24,9 @@ public class TilesManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        baseTileDataIDMap = baseTileDataList.ToDictionary(t => t.GetBaseTileID(), t => t);
+        baseTileFaceSprites = baseTileDataList.ToDictionary(t => t.GetBaseTileID(), t => t.faceSprite);
     }
 
     public void InitializeDeck()

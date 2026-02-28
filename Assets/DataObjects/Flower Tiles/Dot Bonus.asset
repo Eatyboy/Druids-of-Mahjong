@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Dot Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 3
+  id: 3
   tileName: Lotus Pod
   sprite: {fileID: 21300000, guid: 5920e348e419e1c44837807e243163a5, type: 3}
   description: +1 added damage for each dot tile played

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 [System.Serializable]
 public abstract class FlowerTileEffect
@@ -27,8 +28,8 @@ public abstract class FlowerTileEffect
         return JsonUtility.ToJson(this);
     }
 
-    public virtual void Deserialize(string jsonData)
+    public static FlowerTileEffect Deserialize(string jsonData, Type effectType)
     {
-        JsonUtility.FromJsonOverwrite(jsonData, this);
+        return (FlowerTileEffect)JsonUtility.FromJson(jsonData, effectType);
     }
 }

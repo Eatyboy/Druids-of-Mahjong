@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -14,5 +15,8 @@ public class EightFourCheckerConfig : FlowerTileEffectConfig
         rt.fourMultiplier = fourMultiplier;
         return rt;
     }
+
+    public override Type GetEffectType() => typeof(EightFourChecker);
+
 }
 

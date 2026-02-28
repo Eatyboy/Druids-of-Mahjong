@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Random Wind
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 6
+  id: 6
   tileName: Way of the Wind
   sprite: {fileID: 21300000, guid: b630a84de45edc24d947c573f085719c, type: 3}
   description: Multiply damage by x1.5 for each wind tile that matches the current
@@ -25,4 +25,4 @@ MonoBehaviour:
     - rid: 4727995076836327682
       type: {class: RandomWindCheckerConfig, ns: , asm: Assembly-CSharp}
       data:
-        currentWind: 0
+        damageMultiplier: 1.5

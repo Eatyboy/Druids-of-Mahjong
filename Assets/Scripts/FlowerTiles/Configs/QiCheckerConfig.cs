@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -12,5 +13,8 @@ public class QiCheckerConfig : FlowerTileEffectConfig
         rt.qiMult = qiMult;
         return rt;
     }
+
+    public override Type GetEffectType() => typeof(QiChecker);
+
 }
 

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [System.Serializable]
@@ -12,6 +13,22 @@ public class FlowerTileInstance
         effect = data.effectConfig.CreateInstance();
     }
 
+    public FlowerTileInstance(FlowerTileSaveData saveData)
+    {
+        data = FlowerTileManager.instance.flowerTileMap[saveData.tileType];
+        Type effectType = data.effectConfig.GetEffectType();
+        effect = FlowerTileEffect.Deserialize(saveData.effectDataJson, effectType);
+    }
+
+    public FlowerTileSaveData GetSaveData()
+    {
+        return new FlowerTileSaveData()
+        {
+            tileType = data.id,
+            effectDataJson = effect.Serialize(),
+        };
+    }
+
     public string GetDescription()
     {
         var dynamicDescription = effect.GetDynamicDescription();
@@ -19,4 +36,11 @@ public class FlowerTileInstance
             ? data.description
             : dynamicDescription;
     }
+}
+
+[System.Serializable]
+public class FlowerTileSaveData
+{
+    public FlowerTileType tileType;
+    public string effectDataJson;
 }

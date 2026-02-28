@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Qi Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 7
+  id: 7
   tileName: Qi Bonus
   sprite: {fileID: 21300000, guid: 24ed0a4114bb96b4e971a7ded7450284, type: 3}
   description: +1 added damage for qi accumulated
@@ -24,4 +24,4 @@ MonoBehaviour:
     - rid: 4727995076836327681
       type: {class: QiCheckerConfig, ns: , asm: Assembly-CSharp}
       data:
-        qi: 1
+        qiMult: 1

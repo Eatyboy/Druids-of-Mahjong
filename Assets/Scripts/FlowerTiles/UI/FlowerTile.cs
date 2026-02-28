@@ -113,7 +113,7 @@ public class FlowerTile : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             float currentAngle = Mathf.Lerp(startAngle, targetAngle, t);
             transform.eulerAngles = new Vector3(0, 0, currentAngle);
 
-            if (rotatingElapsedTime >= returnDuration)
+            if (rotatingElapsedTime >= rotationDuration)
             {
                 isRotating = false;
                 transform.eulerAngles = new Vector3(0, 0, startAngle);

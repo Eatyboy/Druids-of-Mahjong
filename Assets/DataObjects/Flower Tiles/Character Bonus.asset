@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Character Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 4
+  id: 4
   tileName: Rose Festival
   sprite: {fileID: 21300000, guid: 115a1fedcf4b763408a232ce49969eb5, type: 3}
   description: +1 added damage for each character tile played

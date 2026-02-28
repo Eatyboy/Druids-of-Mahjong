@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +8,7 @@ public class FlowerTileManager : MonoBehaviour
     public static FlowerTileManager instance;
 
     [SerializeField] private List<FlowerTileData> flowerTileDataObjects;
-    private Dictionary<FlowerTileType, FlowerTileData> flowerTileMap = new();
+    public Dictionary<FlowerTileType, FlowerTileData> flowerTileMap = new();
 
     private List<FlowerTileInstance> playerFlowerTiles => GameManager.playerData.flowerTiles;
 
@@ -29,7 +30,7 @@ public class FlowerTileManager : MonoBehaviour
             {
                 Debug.LogError($"Flower tile manager has a null flower tile data at index {i}");
             }
-            else if (flowerTile.flowerTile == FlowerTileType.None)
+            else if (flowerTile.id == FlowerTileType.None)
             {
                 Debug.LogWarning($"{flowerTile.name} is a None flower tile");
             }
@@ -39,14 +40,14 @@ public class FlowerTileManager : MonoBehaviour
             }
             else
             {
-                flowerTileMap.Add(flowerTile.flowerTile, flowerTile);
+                flowerTileMap.Add(flowerTile.id, flowerTile);
             }
         }
     }
 
     public bool IsFlowerTileActive(FlowerTileType flowerTileType)
     {
-        return playerFlowerTiles.Any((flowerTile) => flowerTile.data.flowerTile == flowerTileType);
+        return playerFlowerTiles.Any((flowerTile) => flowerTile.data.id == flowerTileType);
     }
 
     public void ActivateFlowerTilesOnPreAttack(Player.PlayerAttackContext attackContext)
@@ -68,7 +69,7 @@ public class FlowerTileManager : MonoBehaviour
             FlowerTileInstance ft = playerFlowerTiles[i];
             if (ft.effect == null) continue;
 
-            Copier copier = ft.data.flowerTile == FlowerTileType.Copier ? ft.effect as Copier : null;
+            Copier copier = ft.data.id == FlowerTileType.Copier ? ft.effect as Copier : null;
             
             if (copier != null && i > 0 && playerFlowerTiles[i - 1].effect != null)
             {

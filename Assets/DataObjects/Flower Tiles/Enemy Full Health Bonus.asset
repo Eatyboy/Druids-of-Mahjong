@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Enemy Full Health Bonus
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 8
+  id: 8
   tileName: Giantslayer
   sprite: {fileID: 21300000, guid: b630a84de45edc24d947c573f085719c, type: 3}
   description: Multiplies damage based if enemy is at full health

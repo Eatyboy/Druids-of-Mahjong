@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -14,6 +15,45 @@ public class PlayerData
     public List<Tile> deck = null;
     public int maxFlowerTiles = 5;
     public List<FlowerTileInstance> flowerTiles = new();
+
+    public PlayerData() { }
+
+    public PlayerData(PlayerSaveData saveData)
+    {
+        gameState = saveData.gameState;
+        health = saveData.health;
+        maxHealth = saveData.maxHealth;
+        qi = saveData.qi;
+        deck = saveData.deck.Select(t => new Tile(t)).ToList();
+        maxFlowerTiles = saveData.maxFlowerTiles;
+        flowerTiles = saveData.flowerTiles.Select(ft => new FlowerTileInstance(ft)).ToList();
+    }
+
+    public PlayerSaveData GetSaveData()
+    {
+        return new PlayerSaveData()
+        {
+            gameState = gameState, 
+            health = health, 
+            maxHealth = maxHealth, 
+            qi = qi,
+            deck = deck.Select(t => t.GetSaveData()).ToList(),
+            maxFlowerTiles = maxFlowerTiles,
+            flowerTiles = flowerTiles.Select(ft => ft.GetSaveData()).ToList(), 
+        };
+    }
+}
+
+[Serializable]
+public class PlayerSaveData
+{
+    public GameState gameState = GameState.TitleScreen;
+    public int health = 10;
+    public int maxHealth = 10;
+    public int qi = 0;
+    public List<TileSaveData> deck = null;
+    public int maxFlowerTiles = 5;
+    public List<FlowerTileSaveData> flowerTiles = new();
 }
 
 public static class SaveSystem
@@ -27,7 +67,7 @@ public static class SaveSystem
 
     public static async Task Save(PlayerData data)
     {
-        string jsonData = JsonUtility.ToJson(data, true);
+        string jsonData = JsonUtility.ToJson(data.GetSaveData(), true);
 
         using (StreamWriter sw = new(savePath, false))
         {
@@ -53,7 +93,7 @@ public static class SaveSystem
         using (StreamReader sr = new(savePath))
         {
             string jsonData = await sr.ReadToEndAsync();
-            return JsonUtility.FromJson<PlayerData>(jsonData);
+            return new PlayerData(JsonUtility.FromJson<PlayerSaveData>(jsonData));
         }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -10,5 +11,8 @@ public class MagicSquareConfig : FlowerTileEffectConfig
         var rt = new MagicSquare();
         return rt;
     }
+
+    public override Type GetEffectType() => typeof(MagicSquare);
+
 }
 

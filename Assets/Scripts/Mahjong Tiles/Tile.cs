@@ -23,6 +23,15 @@ public class Tile
         faceSprite = tile.faceSprite;
     }
 
+    public Tile(TileSaveData saveData)
+    {
+        baseTileData = TilesManager.instance.baseTileDataIDMap[saveData.baseTileID];
+        suit = saveData.suit;
+        rank = saveData.rank;
+        damageValue = saveData.damageValue;
+        faceSprite = TilesManager.instance.baseTileFaceSprites[saveData.faceSpriteID];
+    }
+
     public bool SameAs(object obj)
     {
         if (obj is not Tile other) return false;
@@ -47,4 +56,26 @@ public class Tile
 
         return suitValue + rank;
     }
+
+    public TileSaveData GetSaveData()
+    {
+        return new TileSaveData
+        {
+            baseTileID = baseTileData.GetBaseTileID(),
+            suit = suit,
+            rank = rank,
+            damageValue = damageValue,
+            faceSpriteID = GetTileID()
+        };
+    }
+}
+
+[Serializable]
+public class TileSaveData
+{
+    public int baseTileID;
+    public TileSuit suit = TileSuit.None;
+    public int rank = 0;
+    public int damageValue = 0;
+    public int faceSpriteID;
 }

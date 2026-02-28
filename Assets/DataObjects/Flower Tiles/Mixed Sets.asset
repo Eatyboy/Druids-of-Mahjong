@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aa1cf0d85d01fd4c8f65c9245d622d6, type: 3}
   m_Name: Mixed Sets
   m_EditorClassIdentifier: Assembly-CSharp::FlowerTileData
-  flowerTile: 14
+  id: 14
   tileName: Mixed Sets
   sprite: {fileID: 21300000, guid: 2e4c91dd32b4b4b4890d8aaf924c3f9b, type: 3}
   description: Sets, pairs, and quads can be made with mixed (numbered) suits

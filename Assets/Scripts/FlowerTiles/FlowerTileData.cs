@@ -26,17 +26,10 @@ public enum FlowerTileType
 [CreateAssetMenu(fileName = "New Flower Tile", menuName = "Flower Tile")]
 public class FlowerTileData : ScriptableObject
 {
-    public FlowerTileType flowerTile;
+    public FlowerTileType id;
     public string tileName;
     public Sprite sprite;
     public string description;
 
     [SerializeReference, SubclassSelector] public FlowerTileEffectConfig effectConfig;
-}
-
-[System.Serializable]
-public class FlowerTileSaveData
-{
-    public string tileID;
-    public string effectJson;
 }

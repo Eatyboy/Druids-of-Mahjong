@@ -34,6 +34,23 @@ public class EffectConfigScriptGenerator : EditorWindow
         Debug.Log($"Generated config scripts for {runtimeTypes.Count} effect(s).");
     }
 
+    [MenuItem("Tools/Flower Tiles/Clean Config Scripts")]
+    public static void CleanConfigs()
+    {
+        string folder = "Assets/Scripts/FlowerTiles/Configs";
+
+        if (!Directory.Exists(folder)) return;
+
+        var filePaths = Directory.GetFiles(folder);
+        foreach (var file in filePaths)
+        {
+            File.Delete(file);
+        }
+
+        Directory.Delete(folder);
+        AssetDatabase.Refresh();
+    }
+
     private static List<Type> GetEffectTypes()
     {
         return AppDomain.CurrentDomain.GetAssemblies()
@@ -124,6 +141,7 @@ public class EffectConfigScriptGenerator : EditorWindow
         var sb = new StringBuilder();
 
         sb.AppendLine("using UnityEngine;");
+        sb.AppendLine("using System;");
         sb.AppendLine("using System.Collections.Generic;");
         sb.AppendLine();
         sb.AppendLine("[System.Serializable]");
@@ -154,6 +172,10 @@ public class EffectConfigScriptGenerator : EditorWindow
 
         sb.AppendLine("        return rt;");
         sb.AppendLine("    }");
+
+        sb.AppendLine();
+        sb.AppendLine($"    public override Type GetEffectType() => typeof({runtimeType});");
+        sb.AppendLine();
         sb.AppendLine("}");
         sb.AppendLine();
 
