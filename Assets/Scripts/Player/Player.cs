@@ -14,8 +14,6 @@ public class Player : MonoBehaviour
     [SerializeField] private QiCounter qiCounter;
     public ParryHandler parryHandler;
 
-    [SerializeField] private float baseMaxHealth = 10.0f;
-
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);

@@ -23,34 +23,14 @@ public class TilesManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Start()
+    public void InitializeDeck()
     {
-        EnsureDeckInitialized();
-    }
-
-    /// <summary>Call before drawing tiles (e.g. when opening Scroll Hand in Upgrade Tree) so the deck exists.</summary>
-    public void EnsureDeckInitialized()
-    {
-        bool needInit = GameManager.playerData?.deck == null || GameManager.playerData.deck.Count == 0;
-        UnityEngine.Debug.Log($"[ScrollHand] TilesManager.EnsureDeckInitialized: playerData exists={GameManager.playerData != null}, deck count={GameManager.playerData?.deck?.Count ?? -1}, will init={needInit}");
-        if (needInit)
-            InitializeDeck();
-    }
-
-    IEnumerator Delay(float sec)
-    {
-        yield return new WaitForSeconds(sec);
-    }
-
-    private void InitializeDeck()
-    {
-        StartCoroutine(Delay(0.1f));
         if (GameManager.playerData == null) { UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: GameManager.playerData is null."); return; }
         GameManager.playerData.deck = new List<Tile>();
 
         if (baseTileDataList == null || baseTileDataList.Count == 0)
         {
-            UnityEngine.Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: baseTileDataList is null or empty. Assign Base Tile Data List in Inspector (UpgradeTree scene TilesManager). Deck left empty.");
+            Debug.LogWarning("[ScrollHand] TilesManager.InitializeDeck: baseTileDataList is null or empty. Assign Base Tile Data List in Inspector (UpgradeTree scene TilesManager). Deck left empty.");
             return;
         }
 
@@ -63,7 +43,7 @@ public class TilesManager : MonoBehaviour
         }
 
         ShuffleDeck();
-        UnityEngine.Debug.Log($"[ScrollHand] TilesManager.InitializeDeck: deck filled with {GameManager.playerData.deck.Count} tiles (baseTileDataList count={baseTileDataList.Count}).");
+        Debug.Log($"[ScrollHand] TilesManager.InitializeDeck: deck filled with {GameManager.playerData.deck.Count} tiles (baseTileDataList count={baseTileDataList.Count}).");
     }
 
     public void ShuffleDeck()

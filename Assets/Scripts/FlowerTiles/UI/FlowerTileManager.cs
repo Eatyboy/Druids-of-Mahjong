@@ -10,7 +10,6 @@ public class FlowerTileManager : MonoBehaviour
     private Dictionary<FlowerTileType, FlowerTileData> flowerTileMap = new();
 
     private List<FlowerTileInstance> playerFlowerTiles => GameManager.playerData.flowerTiles;
-    [SerializeField] private bool inCombatScene;
 
     private void Awake()
     {
@@ -43,21 +42,12 @@ public class FlowerTileManager : MonoBehaviour
                 flowerTileMap.Add(flowerTile.flowerTile, flowerTile);
             }
         }
-
-        // DEBUG: not 100% sure if this is the way to do it
-        if (!inCombatScene) return;
-
-        foreach (FlowerTileInstance fti in playerFlowerTiles)
-        {
-            fti.effect.OnInitialize(PlayerHand.instance.GetPlayerHandTileData(), PlayerHand.instance.GetSelectedTileData());
-        }
     }
 
     public bool IsFlowerTileActive(FlowerTileType flowerTileType)
     {
         return playerFlowerTiles.Any((flowerTile) => flowerTile.data.flowerTile == flowerTileType);
     }
-
 
     public void ActivateFlowerTilesOnPreAttack(Player.PlayerAttackContext attackContext)
     {

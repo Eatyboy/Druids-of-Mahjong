@@ -19,7 +19,6 @@ public class PlayerHand : HandBase
     [SerializeField] private float discardDuration = 0.25f;
     [SerializeField] private float playDuration = 0.25f;
 
-    public List<FlowerTile> flowerTiles;
     public int maxDiscards;
     public int currentDiscards;
     public bool isTurnActive = false;

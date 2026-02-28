@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-//public enum GameState
-//{
-//    TitleScreen,
-//    InMap,
-//    InCombat,
-//    AtTree,
-//}
+public enum GameState
+{
+    TitleScreen,
+    InMap,
+    InCombat,
+    AtTree,
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviour
     public float hpScale = 1.0f; 
     public float hpScaleRate = 1.5f;
 
+    [SerializeField] private float transitionFadeDuration = 1.0f;
+
     private void Awake()
     {
         if (instance != null && instance != this) Destroy(gameObject);
@@ -35,11 +38,36 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-#if UNITY_EDITOR
-        _playerData = new PlayerData();
-#else
-        _playerData = SaveSystem.LoadData();
-#endif
+//#if UNITY_EDITOR
+//        _playerData = new PlayerData();
+//#endif
+    }
+
+    public async Task NewGame()
+    {
+        await SaveSystem.DeleteSave();
+        _playerData = new();
+        TilesManager.instance.InitializeDeck();
+        await SaveSystem.Save(_playerData);
+        GoToCombat();
+    }
+
+    public async Task LoadGame()
+    {
+        _playerData = await SaveSystem.Load();
+        if (_playerData.gameState == GameState.InCombat)
+        {
+            GoToCombat();
+        }
+        else if (_playerData.gameState == GameState.AtTree)
+        {
+            GoToTree();
+        }
+        else
+        {
+            Debug.LogError($"Invalid Player data game state: {_playerData.gameState}");
+            QuitToTitleScreen();
+        }
     }
 
     public async void QuitToTitleScreen()
@@ -48,33 +76,50 @@ public class GameManager : MonoBehaviour
             TilesManager.instance.ReturnScrollHandToDeck();
         AudioManager.instance.StopMusic();
 
+        await CoroutineTask.Run(this, ScreenFader.FadeOut(transitionFadeDuration));
+        await SaveSystem.Save(_playerData);
         await SceneManager.LoadSceneAsync(Bootstrapper.titleScreenSceneName, LoadSceneMode.Single);
+        await CoroutineTask.Run(this, ScreenFader.FadeIn(transitionFadeDuration));
 
-        //gameState = GameState.TitleScreen;
+        _playerData.gameState = GameState.TitleScreen;
     }
 
     public async void GoToCombat()
     {
         AudioManager.instance.StopMusic();
 
+        await CoroutineTask.Run(this, ScreenFader.FadeOut(transitionFadeDuration));
         await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
+        await CoroutineTask.Run(this, ScreenFader.FadeIn(transitionFadeDuration));
 
-        //gameState = GameState.InCombat;
+        _playerData.gameState = GameState.InCombat;
     }
 
     public async void GoToTree()
     {
         AudioManager.instance.StopMusic();
 
+        await CoroutineTask.Run(this, ScreenFader.FadeOut(transitionFadeDuration));
         await SceneManager.LoadSceneAsync(Bootstrapper.treeScreenSceneName, LoadSceneMode.Single);
-        //gameState = GameState.AtTree;
+        await CoroutineTask.Run(this, ScreenFader.FadeIn(transitionFadeDuration));
+
+        _playerData.gameState = GameState.AtTree;
     }
 
-    public void Update()
+    //public void Update()
+    //{
+    //    if (Keyboard.current.escapeKey.wasReleasedThisFrame)
+    //    {
+    //        Utils.QuitGame();
+    //    }
+    //}
+
+    // This is only for testing
+#if UNITY_EDITOR
+    [ContextMenu("Delete Save Data")]
+    private async void DeleteSaveData()
     {
-        if (Keyboard.current.escapeKey.wasReleasedThisFrame)
-        {
-            Utils.QuitGame();
-        }
+        await SaveSystem.DeleteSave();
     }
+#endif
 }

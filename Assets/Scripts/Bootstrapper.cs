@@ -21,6 +21,8 @@ public class Bootstrapper : MonoBehaviour
         isInitialized = true;
         DontDestroyOnLoad(gameObject);
         Application.runInBackground = true;
+
+        SaveSystem.Initialize();
     }
 
     private void Start()

@@ -245,7 +245,6 @@ public class QiTreeManager : MonoBehaviour
     private IEnumerator OpenScrollTabPopulateHand()
     {
         if (ScrollHand.instance == null || TilesManager.instance == null) yield break;
-        TilesManager.instance.EnsureDeckInitialized();
         ScrollHand.instance.gameObject.SetActive(true);
         ScrollHand.instance.ClearTiles();
         yield return ScrollHand.instance.DrawUntilFullHand();

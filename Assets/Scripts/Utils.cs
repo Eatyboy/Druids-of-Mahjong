@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -128,5 +130,22 @@ public static class Utils
         }
 
         return result;
+    }
+}
+
+public static class CoroutineTask
+{
+    public static Task Run(MonoBehaviour mb, IEnumerator coroutine)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        mb.StartCoroutine(WrapCoroutine(coroutine, tcs));
+        return tcs.Task;
+    }
+
+    private static IEnumerator WrapCoroutine(IEnumerator coroutine, TaskCompletionSource<bool> tcs)
+    {
+        yield return coroutine;
+        tcs.SetResult(true);
     }
 }
