@@ -10,6 +10,7 @@ public class PlayerData
     public int maxHealth = 10;
     public int qi = 0;
     public List<Tile> deck = null;
+    public int maxFlowerTiles = 5;
     public List<FlowerTileInstance> flowerTiles = new();
 }
 

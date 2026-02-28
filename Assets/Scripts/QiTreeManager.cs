@@ -24,7 +24,7 @@ public class QiTreeManager : MonoBehaviour
 
     [SerializeField] private bool hasPurchasedFlowerTile;
     [SerializeField] private bool hasPurchasedCharmScroll;
-    public FlowerTileContainer ftContainer;
+    public FlowerTileUI ftContainer;
     public ShopTileInfoController shopInfoController;
     [SerializeField] private FlowerTile ftPrefab;
 
@@ -189,7 +189,7 @@ public class QiTreeManager : MonoBehaviour
         {
             FlowerTileInstance fti = FlowerTileManager.instance.GetRandomFlowerTile();
             FlowerTile addedFlowerTile = Instantiate(ftPrefab);
-            addedFlowerTile.Initialize(fti, shopInfoController);
+            addedFlowerTile.Initialize(fti, ftBuyOptionsObject.transform as RectTransform, shopInfoController);
             ftBuyOptions[i].InitializeFT(addedFlowerTile);
         }
 
