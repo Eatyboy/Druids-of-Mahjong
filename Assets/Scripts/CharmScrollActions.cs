@@ -76,16 +76,22 @@ public static class CharmScrollActions
             Player.instance.RefreshHealthBar();
     }
 
-    // Doubles up to a certain amount of qi
+    // Doubles up to a certain amount of qi. Works in UpgradeTree (no Player) and in Combat.
     public static void DoubleQi(int maxThreshold)
     {
-        if (Player.instance == null || GameManager.playerData == null || maxThreshold < 0) return;
+        if (GameManager.playerData == null || maxThreshold < 0) return;
 
         int current = GameManager.playerData.qi;
         int newQi = current <= maxThreshold ? current * 2 : current + maxThreshold;
         int delta = newQi - current;
         if (delta <= 0) return;
 
-        Player.instance.AddQi(delta);
+        GameManager.playerData.qi += delta;
+
+        // Refresh UI: combat scene has Player, tree scene has QiTreeManager
+        if (Player.instance != null)
+            Player.instance.AddQi(0);
+        if (QiTreeManager.instance != null)
+            QiTreeManager.instance.UpdateQiText(GameManager.playerData.qi);
     }
 }

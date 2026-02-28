@@ -55,8 +55,6 @@ public class GameManager : MonoBehaviour
 
     public async void GoToCombat()
     {
-        if (TilesManager.instance != null)
-            TilesManager.instance.ReturnScrollHandToDeck();
         AudioManager.instance.StopMusic();
 
         await SceneManager.LoadSceneAsync(Bootstrapper.combatScreenSceneName, LoadSceneMode.Single);
