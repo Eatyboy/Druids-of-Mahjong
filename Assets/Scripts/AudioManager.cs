@@ -44,7 +44,7 @@ public class AudioManager : MonoBehaviour
     [HideInInspector] public bool areBussesInitialized = false;
     private bool isMusicPlaying = false;
 
-    private const float DEFAULT_VOLUME = 0.5f;
+    public const float DEFAULT_VOLUME = 0.5f;
 
     private void Awake()
     {

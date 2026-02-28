@@ -59,10 +59,14 @@ public class PlayerSaveData
 public static class SaveSystem
 {
     public static string savePath { get; private set; }
+    public static string settingsPath { get; private set; }
+
+    public static bool loaded { get; private set; }
 
     public static void Initialize()
     {
         savePath = Application.persistentDataPath + "/saveData.json";
+        settingsPath = Application.persistentDataPath + "/settings.json";
     }
 
     public static async Task Save(PlayerData data)
@@ -70,6 +74,16 @@ public static class SaveSystem
         string jsonData = JsonUtility.ToJson(data.GetSaveData(), true);
 
         using (StreamWriter sw = new(savePath, false))
+        {
+            await sw.WriteAsync(jsonData);
+        }
+    }
+
+    public static async Task SaveSettings()
+    {
+        string jsonData = JsonUtility.ToJson(SettingsManager.instance.GetSaveData());
+
+        using (StreamWriter sw = new(settingsPath, false))
         {
             await sw.WriteAsync(jsonData);
         }
@@ -83,7 +97,15 @@ public static class SaveSystem
         }
     }
 
-    public static async Task<PlayerData> Load()
+    public static async Task DeleteSettings()
+    {
+        if (File.Exists(settingsPath))
+        {
+            await Task.Run(() => File.Delete(settingsPath));
+        }
+    }
+
+    public static async Task<PlayerData> LoadPlayerSave()
     {
         if (!File.Exists(savePath))
         {
@@ -93,7 +115,28 @@ public static class SaveSystem
         using (StreamReader sr = new(savePath))
         {
             string jsonData = await sr.ReadToEndAsync();
-            return new PlayerData(JsonUtility.FromJson<PlayerSaveData>(jsonData));
+            var playerSaveData = JsonUtility.FromJson<PlayerSaveData>(jsonData);
+            return new PlayerData(playerSaveData);
+        }
+    }
+
+    public static async Task LoadSettings()
+    {
+        loaded = false;
+
+        if (!File.Exists(settingsPath))
+        {
+            await SaveSettings();
+            loaded = true;
+            return;
+        }
+
+        using (StreamReader sr = new(settingsPath))
+        {
+            string jsonData = await sr.ReadToEndAsync();
+            var settingsSaveData = JsonUtility.FromJson<SettingsSaveData>(jsonData);
+            SettingsManager.instance.LoadSettings(settingsSaveData);
+            loaded = true;
         }
     }
 }

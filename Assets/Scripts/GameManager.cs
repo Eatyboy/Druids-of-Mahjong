@@ -36,11 +36,13 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    void Start()
+    private async void Start()
     {
 //#if UNITY_EDITOR
 //        _playerData = new PlayerData();
 //#endif
+
+        await SaveSystem.LoadSettings();
     }
 
     public async Task NewGame()
@@ -54,7 +56,7 @@ public class GameManager : MonoBehaviour
 
     public async Task LoadGame()
     {
-        _playerData = await SaveSystem.Load();
+        _playerData = await SaveSystem.LoadPlayerSave();
         if (_playerData.gameState == GameState.InCombat)
         {
             GoToCombat();
