@@ -75,6 +75,21 @@ public class SettingsManager : MonoBehaviour
         }
     }
 
+    public async void ResetToDefault()
+    {
+        AudioManager.instance.masterVolume = AudioManager.DEFAULT_VOLUME;
+        AudioManager.instance.musicVolume = AudioManager.DEFAULT_VOLUME;
+        AudioManager.instance.sfxVolume = AudioManager.DEFAULT_VOLUME;
+        AudioManager.instance.ambienceVolume = AudioManager.DEFAULT_VOLUME;
+
+        masterVolumeSlider.SetValueWithoutNotify(AudioManager.instance.masterVolume);
+        musicVolumeSlider.SetValueWithoutNotify(AudioManager.instance.musicVolume);
+        sfxVolumeSlider.SetValueWithoutNotify(AudioManager.instance.sfxVolume);
+        ambienceVolumeSlider.SetValueWithoutNotify(AudioManager.instance.ambienceVolume);
+        
+        await SaveSystem.SaveSettings();
+    }
+
     public void LoadSettings(SettingsSaveData saveData)
     {
         AudioManager.instance.masterVolume = saveData.masterVolume;
